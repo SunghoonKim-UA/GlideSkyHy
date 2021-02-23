@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>GlideSkyHy</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom fonts for this template -->
+  <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
+
+  <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+
+  <!-- Custom styles for this template -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+  <style type="text/css">
+    /* Always set the map height explicitly to define the size of the div
+     * element that contains the map. */
+    #map {
+      height: 100%;
+    }
+
+    /* Optional: Makes the sample page fill the window. */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  <script>
+    let map;
+
+    function initMap() {
+      var curr_lat = 32.223;
+      var curr_lng = -110.975;
+
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: curr_lat, lng: curr_lng },
+        zoom: 15,
+        mapTypeId: "satellite",
+      });
+
+
+      const bounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(curr_lat+0.1, curr_lng+0.1),
+        new google.maps.LatLng(curr_lat-0.1, curr_lng-0.1)
+      );
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+            map.setCenter(pos);
+          },
+          () => {
+            handleLocationError(true, infoWindow, map.getCenter());
+          }
+        );
+      } else {
+        // Browser doesn't support Geolocation
+        handleLocationError(false, infoWindow, map.getCenter());
+      }
+
+      // let image = "/img/glider.png";
+      let image = "/img/glider.png";
+
+      /**
+       * The custom USGSOverlay object contains the USGS image,
+       * the bounds of the image, and a reference to the map.
+       */
+      class USGSOverlay extends google.maps.OverlayView {
+        constructor(bounds, image) {
+          super();
+          this.bounds = bounds;
+          this.image = image;
+        }
+        /**
+         * onAdd is called when the map's panes are ready and the overlay has been
+         * added to the map.
+         */
+        onAdd() {
+          this.div = document.createElement("div");
+          this.div.style.borderStyle = "none";
+          this.div.style.borderWidth = "0px";
+          this.div.style.position = "absolute";
+          // Create the img element and attach it to the div.
+          const img = document.createElement("img");
+          img.src = this.image;
+          img.style.width = "100%";
+          img.style.height = "100%";
+          img.style.position = "absolute";
+          this.div.appendChild(img);
+          // Add the element to the "overlayLayer" pane.
+          const panes = this.getPanes();
+          panes.overlayLayer.appendChild(this.div);
+        }
+        draw() {
+          // We use the south-west and north-east
+          // coordinates of the overlay to peg it to the correct position and size.
+          // To do this, we need to retrieve the projection from the overlay.
+          const overlayProjection = this.getProjection();
+          // Retrieve the south-west and north-east coordinates of this overlay
+          // in LatLngs and convert them to pixel coordinates.
+          // We'll use these coordinates to resize the div.
+          const sw = overlayProjection.fromLatLngToDivPixel(
+            this.bounds.getSouthWest()
+          );
+          const ne = overlayProjection.fromLatLngToDivPixel(
+            this.bounds.getNorthEast()
+          );
+
+          // Resize the image's div to fit the indicated dimensions.
+          if (this.div) {
+            // this.div.style.left = sw.x + "px";
+            // this.div.style.top = ne.y + "px";
+            // this.div.style.width = ne.x - sw.x + "px";
+            // this.div.style.height = sw.y - ne.y + "px";
+            this.div.style.left = "0px";
+            this.div.style.top = "0px";
+            this.div.style.width = "100px";
+            this.div.style.height = "100px";
+          }
+        }
+        /**
+         * The onRemove() method will be called automatically from the API if
+         * we ever set the overlay's map property to 'null'.
+         */
+        onRemove() {
+          if (this.div) {
+            this.div.parentNode.removeChild(this.div);
+            delete this.div;
+          }
+        }
+        /**
+         *  Set the visibility to 'hidden' or 'visible'.
+         */
+        hide() {
+          if (this.div) {
+            this.div.style.visibility = "hidden";
+          }
+        }
+        show() {
+          if (this.div) {
+            this.div.style.visibility = "visible";
+          }
+        }
+        toggle() {
+          if (this.div) {
+            if (this.div.style.visibility === "hidden") {
+              this.show();
+            } else {
+              console.log("hide");
+              this.hide();
+            }
+          }
+        }
+        toggleDOM(map) {
+          if (this.getMap()) {
+            this.setMap(null);
+          } else {
+            this.setMap(map);
+          }
+        }
+      }
+      const overlay = new USGSOverlay(bounds, image);
+      overlay.setMap(map);
+      const toggleButton = document.createElement("button");
+      toggleButton.textContent = "Toggle";
+      toggleButton.classList.add("custom-map-control-button");
+      const toggleDOMButton = document.createElement("button");
+      toggleDOMButton.textContent = "Toggle DOM Attachment";
+      toggleDOMButton.classList.add("custom-map-control-button");
+      toggleButton.addEventListener("click", () => {
+        overlay.toggle();
+      });
+      toggleDOMButton.addEventListener("click", () => {
+        overlay.toggleDOM(map);
+      });
+      map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toggleDOMButton);
+      map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toggleButton);
+    }
+    </script>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">GlideSkyHy</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Pilot View
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">GroundCrew View</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Sign up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Log in</a>
+            <!-- Dropdown - Login-->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                aria-labelledby="userDropdown">
+                <form name="user" id="user" class="user" method="post" action="/login">
+                  <div class="form-group">
+                      <input type="username" class="form-control form-control-user"
+                          id="u_name" aria-describedby="emailHelp"
+                          placeholder="Enter UserName" required>
+                  </div>
+                  <div class="form-group">
+                      <input type="password" class="form-control form-control-user"
+                          id="pass_wd" placeholder="Password" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary active">Login</button>
+              </form>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <!-- <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center"> -->
+        <div id="map"></div>
+
+        <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+        <script
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOSIwGZ0y53C6T_GUnfocU0muCr7bvt1Y&callback=initMap&libraries=&v=weekly"
+          async
+        ></script>
+      <!-- </div>
+    </div>
+  </div> -->
+
+  <!-- Bootstrap core JavaScript -->
+  <!-- <script src="vendor/jquery/jquery.slim.min.js"></script> -->
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+  // Attach a submit handler to the form
+  $( "#user" ).submit(function( event ) {
+
+    // Stop form from submitting normally
+    event.preventDefault();
+
+    // Get some values from elements on the page:
+    var $form = $( this ),
+      v_u_name = $form.find( "input[id='u_name']" ).val(),
+      v_pass_wd = $form.find( "input[id='pass_wd']" ).val(),
+      url = $form.attr( "action" );
+      console.log("term:"+v_u_name);
+
+    // Send the data using post
+    var posting = $.post( url, { u_name:v_u_name, pass_wd:v_pass_wd } );
+
+    // Put the results in a div
+    posting.done(function( data ) {
+      var content = $( data ).find( "#content" );
+      $( "#result" ).empty().append( content );
+    });
+  });
+  </script>
+  <div id="result"></div>
+</body>
+
+</html>
