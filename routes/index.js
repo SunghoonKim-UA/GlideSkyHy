@@ -15,7 +15,7 @@ router.post('/login', (req, res) => {
           // })
           // console.log(cnt);
           // .catch(() => { res.send('Sorry! Something went wrong.'); });
-    res.send('Sorry! testing.');
+    res.send('Sorry! testing...');
     // if (errors.isEmpty()) {
     //   const registration = new Registration(req.body);
     //   registration.save()
