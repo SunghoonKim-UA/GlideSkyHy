@@ -11,4 +11,4 @@ const gliderSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Glider', gliderSchema);
+module.exports = mongoose.model('glider', gliderSchema);
