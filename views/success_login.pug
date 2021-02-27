@@ -1,4 +1,5 @@
-extends layout
-
 block content
-  div glider.user_name
+  div(class="alert alert-success" role="alert") Welcome! #{user_name}
+
+  div(class="form-group")
+    input(type="submit" class="btn btn-primary active" value="Logout")

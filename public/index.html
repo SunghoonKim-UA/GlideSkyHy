@@ -217,22 +217,16 @@
             <a class="nav-link" href="#">Sign up</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Log in</a>
+            <a id="currTitle4" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Log in</a>
             <!-- Dropdown - Login-->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                 aria-labelledby="userDropdown">
-                <form name="user" id="user" class="user" method="post" action="/login">
-                  <div class="form-group">
-                      <input type="username" class="form-control form-control-user"
-                          id="u_name" aria-describedby="emailHelp"
-                          placeholder="Enter UserName" required>
-                  </div>
-                  <div class="form-group">
-                      <input type="password" class="form-control form-control-user"
-                          id="pass_wd" placeholder="Password" required>
-                  </div>
-                  <button type="submit" class="btn btn-primary active">Login</button>
-              </form>
+                <form id="user" class="user" action="/login" method="POST">
+                  <div id="dlg_login"></div>
+                </form>
+                <form id="user1" class="user" action="/logout" method="GET">
+                  <div id="dlg_logout"></div>
+                </form>
             </div>
           </li>
         </ul>
@@ -258,11 +252,17 @@
   <!-- Bootstrap core JavaScript -->
   <!-- <script src="vendor/jquery/jquery.slim.min.js"></script> -->
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="js/sk_common.js"></script>
   <script>
-  // Attach a submit handler to the form
-  $( "#user" ).submit(function( event ) {
+  // 1. LOADING
+  $.get("/getCurrSt").done(function(data){
+    checkLogin(data);
+  });
 
+  // 2. LOGIN FORM
+  $( "#user" ).submit(function( event ) {
     // Stop form from submitting normally
+    console.log("111");
     event.preventDefault();
 
     // Get some values from elements on the page:
@@ -277,12 +277,25 @@
 
     // Put the results in a div
     posting.done(function( data ) {
-      var content = $( data ).find( "#content" );
-      $( "#result" ).empty().append( content );
+      checkLogin(data);
+    });
+  });
+
+  // 3. LOGOUT FORM
+  $( "#user1" ).submit(function( event ) {
+    // Stop form from submitting normally
+    event.preventDefault();
+    var $form = $( this ),
+    url = $form.attr( "action" );
+
+    // Send the data using post
+    $.get(url).done(function(data){
+      setCurrTitle4("Log In");
+      $("#dlg_logout").html(data);
+      $("#dlg_login").html("");
     });
   });
   </script>
-  <div id="result"></div>
 </body>
 
 </html>

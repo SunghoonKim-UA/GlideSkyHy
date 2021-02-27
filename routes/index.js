@@ -3,30 +3,43 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const glider = mongoose.model('glider');
 
+router.get('/getCurrSt', (req, res) => {
+    console.log(req.path+":"+req.cookies._id);
+    if(req.cookies._id == null || req.cookies._id == undefined)  {
+      res.render("login");
+    } else {
+      var execObj = glider.findById(req.cookies._id).exec();
+      execObj.then(function (glider) {
+        console.log(req.path+":"+"glider:"+glider)
+        if(glider == null)  {
+          res.render("login");
+        } else {
+          res.render("success_login", {user_name : glider.user_name});
+        }
+      });
+    }
+});
+
+router.get('/logout', (req, res) => {
+    console.log(req.path+":"+req.cookies._id);
+    res.clearCookie('_id');
+    res.render("login");
+});
+
 router.post('/login', (req, res) => {
-    console.log(req.body);
-    console.log(glider.findOne({ user_name: req.body.u_name }));
-    var execObj = glider.findOne({ user_name: req.body.u_name })
+    console.log(req.path+":"+req.body);
+    // console.log(glider.findOne({ user_name: req.body.u_name, password: req.body.pass_wd }));
+    var execObj = glider.findOne({ user_name: req.body.u_name, password: req.body.pass_wd })
                         .exec();
-    execObj.then(function (glider) {console.log("glider:"+glider)});
-          // .then((gliders) => {
-          //   console.log("result:"+gliders);
-          //   // res.render('success_login', { title: 'Welcome Msg', gliders });
-          // })
-          // console.log(cnt);
-          // .catch(() => { res.send('Sorry! Something went wrong.'); });
-    res.send('Sorry! testing...');
-    // if (errors.isEmpty()) {
-    //   const registration = new Registration(req.body);
-    //   registration.save()
-    //     .then(() => { res.send('Thank you for your registration!'); })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       res.send('Sorry! Something went wrong.');
-    //     });
-    // }
-    //
-    // res.render('form', { title: 'Registration form' });
+    execObj.then(function (glider) {
+      console.log(req.path+":"+"glider:"+glider)
+      if(glider == null)  {
+        res.render("login", {message : "Invalid ID/PWD"});
+      } else {
+        res.cookie('_id',glider._id);
+        res.render("success_login", {user_name : glider.user_name});
+      }
+    });
 });
 
 module.exports = router;
