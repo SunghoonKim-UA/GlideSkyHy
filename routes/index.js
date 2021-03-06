@@ -54,7 +54,7 @@ router.post('/login', (req, res) => {
     execObj.then(function (glider) {
       console.log(req.path+":"+"glider:"+glider)
       if(glider == null)  {
-        res.render("login", {message : "Invalid ID/PWD"});
+        res.render("login", {message : "Invalid Username and Password"});
       } else {
         res.cookie('_id',glider._id);
         res.render("success_login", {user_name : glider.user_name});

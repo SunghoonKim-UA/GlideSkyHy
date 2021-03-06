@@ -52,7 +52,7 @@
           // console.log("position.coords.latitude:"+position.coords.latitude);
           curr_lat = position.coords.latitude;
           curr_lng = position.coords.longitude;
-          console.log("current:"+curr_lat+"//"+curr_lng);
+          // console.log("current:"+curr_lat+"//"+curr_lng);
         }
       );
     }
@@ -104,21 +104,20 @@
           this.div.style.borderStyle = "none";
           this.div.style.borderWidth = "0px";
           this.div.style.position = "absolute";
+          // Create the div element for name&alt and attach it to the div.
+          const label = document.createElement("div");
+          label.innerHTML = "Name: "+this.name+"<BR><BR>Altitud: "+this.alt;
+          label.style.width = "100%";
+          label.classList.add("bg-success");
+          label.classList.add("h6");
+          this.div.appendChild(label);
           // Create the img element and attach it to the div.
           const img = document.createElement("img");
           img.src = this.image;
           img.style.width = "100%";
           img.style.height = "100%";
-          img.style.position = "absolute";
+          // img.style.position = "absolute";
           this.div.appendChild(img);
-          // Create the div element for name&alt and attach it to the div.
-          const label = document.createElement("div");
-          label.innerText = this.name+"//"+this.alt;
-          label.classList.add("form-group");
-          label.style.borderStyle = "visible";
-          label.style.borderWidth = "1px";
-          label.style.position = "absolute";
-          this.div.appendChild(label);
           // Add the element to the "overlayLayer" pane.
           const panes = this.getPanes();
           panes.overlayLayer.appendChild(this.div);
@@ -128,7 +127,7 @@
           const point = overlayProjection.fromLatLngToDivPixel(
             new google.maps.LatLng(this.lat, this.lng)
           );
-          console.log("point:"+point.x+"//"+point.y);
+          // console.log("point:"+point.x+"//"+point.y);
 
           // Resize the image's div to fit the indicated dimensions.
           if (this.div) {
