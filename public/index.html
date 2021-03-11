@@ -190,23 +190,19 @@
           const overlay = new GliderOverlay(value.position[0], value.position[1], image, value.name, value.position[2]);
           overlay.setMap(map);
 
-          function nextPosition(newLat, newLong){
-            setTimeout(sleep, 2000, newLat, newLong); // 2 sec
-          }
-
-          function sleep(newLat, newLong) {
-            overlay.lat = newLat;
-            overlay.lng = newLong;
+          function nextPosition() {
+            overlay.lat = overlay.lat+1;
+            overlay.lng = overlay.lng+1;
 
             // to refresh googlemap without manual events
             map.setZoom(map.getZoom()+0.0000001);
             map.setZoom(Math.round(map.getZoom()));
+            //console.log("overlay.lat:"+overlay.lat);
+            //console.log("overlay.lng:"+overlay.lng);
           }
 
-          for (var step = 1; step < 25; step++) {
-            nextPosition(overlay.lat+0.01, overlay.lng+0.01);
-            // setTimeout(sleep, 2000, overlay.lat+0.01, overlay.lng+0.01); // 2 sec
-          }
+
+          setInterval(nextPosition, 5000); // 2 sec
 
         });
       });
