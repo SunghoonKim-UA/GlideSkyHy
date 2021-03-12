@@ -63,7 +63,7 @@
     function initMap() {
       map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: curr_lat, lng: curr_lng },
-        zoom: 15,
+        zoom: 14.4,
         mapTypeId: "satellite",
       });
 
@@ -71,8 +71,10 @@
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
+                //lat: position.coords.latitude,
+              //lng: position.coords.longitude,
+              lat: 32.428646,
+              lng: -111.389273,
             };
             map.setCenter(pos);
           },
@@ -107,19 +109,20 @@
           this.div = document.createElement("div");
           this.div.style.borderStyle = "none";
           this.div.style.borderWidth = "0px";
+          //this.div.style.borderColor = "black";
           this.div.style.position = "absolute";
           // Create the div element for name&alt and attach it to the div.
           const label = document.createElement("div");
-          label.innerHTML = "Name: "+this.name+"<BR><BR>Altitud: "+this.alt;
-          label.style.width = "100%";
-          label.classList.add("bg-success");
+          label.innerHTML = this.name+"<BR>"+this.alt+" ft"+"<BR>"+this.cl_rate+" knts";
+          label.style.width = "80%";
+          label.classList.add("bg-light");
           label.classList.add("h6");
           this.div.appendChild(label);
           // Create the img element and attach it to the div.
           const img = document.createElement("img");
           img.src = this.image;
-          img.style.width = "100%";
-          img.style.height = "100%";
+          img.style.width = "75%";
+          img.style.height = "75%";
           // img.style.position = "absolute";
           this.div.appendChild(img);
           // Add the element to the "overlayLayer" pane.
