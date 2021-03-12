@@ -64,3 +64,27 @@ router.post('/login', (req, res) => {
 });
 
 module.exports = router;
+
+
+
+router.get('/Database_Location_Read', (req, res) => {
+    console.log("Database_Location_Read:"+req.query.lat_s+":"+req.query.lat_e+":"+req.query.lng_s+":"+req.query.lng_e);
+    if(req.query.lat_s == undefined || req.query.lat_s > 180 || req.query.lat_s < -180
+     ||req.query.lat_e == undefined || req.query.lat_e > 180 || req.query.lat_e < -180
+     ||req.query.lng_s == undefined || req.query.lng_s > 180 || req.query.lng_s < -180
+     ||req.query.lng_e == undefined || req.query.lng_e > 180 || req.query.lng_e < -180)  {
+      console.log("Invalid lat and lng");
+      res.status(500).send({ error: 'Invalid lat and lng' })
+    } else {
+      var execObj = location.find({ 'position.0': { $gte: req.query.lat_s, $lte: req.query.lat_e }
+                                  , 'position.1': { $gte: req.query.lng_s, $lte: req.query.lng_e } })
+                            .exec();
+      execObj.then(function (location) {
+        //console.log(req.path+":"+"location:"+location);
+        res.status(200).send(location); // send json location data to client 
+      });
+    }
+});
+
+
+

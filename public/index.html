@@ -25,6 +25,8 @@
   <!-- <script src="vendor/jquery/jquery.slim.min.js"></script> -->
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="js/sk_common.js"></script>
+  <!--<script  type="text/javascript"  src="../routes/index.js"></script>-->
+
 
   <style type="text/css">
     /* Always set the map height explicitly to define the size of the div
@@ -42,6 +44,7 @@
     }
   </style>
   <script>
+
     let map;
     var curr_lat = 0;
     var curr_lng = 0;
@@ -87,13 +90,14 @@
        * the bounds of the image, and a reference to the map.
        */
       class GliderOverlay extends google.maps.OverlayView {
-        constructor(lat, lng, image, name, alt) {
+        constructor(lat, lng, image, name, alt, vert_speed) {
           super();
           this.lat = lat;
           this.lng = lng;
           this.image = image;
           this.name = name;
           this.alt = alt;
+          this.vert_speed = vert_speed;
         }
         /**
          * onAdd is called when the map's panes are ready and the overlay has been
@@ -189,15 +193,33 @@
         jQuery.each(data, function( index, value ) { // for each: index in data update glider position
           console.log("name:"+value.name);
           console.log("position:"+value.position);
-          const overlay = new GliderOverlay(value.position[0], value.position[1], image, value.name, value.position[2]);
+          const overlay = new GliderOverlay(value.position[0], value.position[1], image, value.name, value.position[2], value.position[3]);
           overlay.setMap(map);
 
 
           function nextPosition() {
-            // database 
-            overlay.lat = overlay.lat+1;
-            overlay.lng = overlay.lng+1;
+            // Database 
+            //var nearbyGlider = Database_Location_Read(overlay.lat-2, overlay.lat+2, overlay.lng-2, overlay.lng+2);
+            
+            $.get("/Database_Location_Read", { lat_s: overlay.lat-2, lat_e: overlay.lat+2, lng_s: overlay.lng-2, lng_e: overlay.lng+2 })
+             .done(function(data_nearby){
+              jQuery.each(data_nearby, function( index_n, value_n ) {
+                  console.log("!!!!!!!1index_n:"+index_n);
+                  console.log("!!!!!!value_n:"+value_n);
+                  if(value.position[3] < value_n.position[3] && value.name != value_n.name){
+                    overlay.lat = value_n.position[0];
+                    overlay.lng = value_n.position[1];
+                    overlay.alt = value_n.position[2];
+                    overlay.vert_speed = value_n.position[3];
+                    map.setZoom(map.getZoom()+0.0000001);
+                    map.setZoom(Math.round(map.getZoom()));
+                    return false;
+                  }
 
+              });
+            });
+
+            
             // to refresh googlemap without manual events
             map.setZoom(map.getZoom()+0.0000001);
             map.setZoom(Math.round(map.getZoom()));
@@ -205,7 +227,7 @@
             //console.log("overlay.lng:"+overlay.lng);
           }
 
-          setInterval(nextPosition, 5000); // 2 sec
+          setInterval(nextPosition, 5000); // 5 sec
 
 
 
