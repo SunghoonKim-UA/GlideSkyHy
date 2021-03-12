@@ -197,37 +197,33 @@
           overlay.setMap(map);
 
 
-          function nextPosition() {
+
+          function nextPosition(value_n) {
             // Database 
-            //var nearbyGlider = Database_Location_Read(overlay.lat-2, overlay.lat+2, overlay.lng-2, overlay.lng+2);
-            
-            $.get("/Database_Location_Read", { lat_s: overlay.lat-2, lat_e: overlay.lat+2, lng_s: overlay.lng-2, lng_e: overlay.lng+2 })
-             .done(function(data_nearby){
-              jQuery.each(data_nearby, function( index_n, value_n ) {
-                  console.log("!!!!!!!1index_n:"+index_n);
-                  console.log("!!!!!!value_n:"+value_n);
-                  if(value.position[3] < value_n.position[3] && value.name != value_n.name){
-                    overlay.lat = value_n.position[0];
-                    overlay.lng = value_n.position[1];
-                    overlay.alt = value_n.position[2];
-                    overlay.vert_speed = value_n.position[3];
-                    map.setZoom(map.getZoom()+0.0000001);
-                    map.setZoom(Math.round(map.getZoom()));
-                    return false;
-                  }
+            overlay.lat = value_n.lat;
+            overlay.lng = value_n.lng;
+            overlay.alt = value_n.alt;
+            overlay.vert_speed = value_n.vertical_speed;
 
-              });
-            });
-
-            
             // to refresh googlemap without manual events
             map.setZoom(map.getZoom()+0.0000001);
             map.setZoom(Math.round(map.getZoom()));
-            //console.log("overlay.lat:"+overlay.lat);
-            //console.log("overlay.lng:"+overlay.lng);
           }
 
-          setInterval(nextPosition, 5000); // 5 sec
+
+          $.get("/Database_History_Read", { name: value.name })
+          .done(function(data_history){
+            // data_history : sort later
+            //document.write(data_history);
+            jQuery.each(data_history, function( index_n, value_n ) {
+                 setInterval(setTimeout(nextPosition, 5000, value_n)); // 5 sec
+            });
+          });
+
+
+
+
+          //setInterval(nextPosition, 15000); // 5 sec
 
 
 

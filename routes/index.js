@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const glider = mongoose.model('glider');
 const location = mongoose.model('location');
+const history = mongoose.model('flight_history');
 
 router.get('/getCurrSt', (req, res) => {
     console.log(req.path+":"+req.cookies._id);
@@ -67,23 +68,16 @@ module.exports = router;
 
 
 
-router.get('/Database_Location_Read', (req, res) => {
-    console.log("Database_Location_Read:"+req.query.lat_s+":"+req.query.lat_e+":"+req.query.lng_s+":"+req.query.lng_e);
-    if(req.query.lat_s == undefined || req.query.lat_s > 180 || req.query.lat_s < -180
-     ||req.query.lat_e == undefined || req.query.lat_e > 180 || req.query.lat_e < -180
-     ||req.query.lng_s == undefined || req.query.lng_s > 180 || req.query.lng_s < -180
-     ||req.query.lng_e == undefined || req.query.lng_e > 180 || req.query.lng_e < -180)  {
-      console.log("Invalid lat and lng");
-      res.status(500).send({ error: 'Invalid lat and lng' })
-    } else {
-      var execObj = location.find({ 'position.0': { $gte: req.query.lat_s, $lte: req.query.lat_e }
-                                  , 'position.1': { $gte: req.query.lng_s, $lte: req.query.lng_e } })
-                            .exec();
-      execObj.then(function (location) {
-        //console.log(req.path+":"+"location:"+location);
-        res.status(200).send(location); // send json location data to client 
-      });
-    }
+router.get('/Database_History_Read', (req, res) => {
+    console.log("Database_History_Read:"+req.query.name);
+    
+    var execObj = history.find({ 'Name': req.query.name })
+                          .exec();
+
+    execObj.then(function (history) {
+      console.log("Database_History_Read history:"+history);
+      res.status(200).send(history); // send json location data to client 
+    });
 });
 
 

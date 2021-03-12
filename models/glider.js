@@ -13,3 +13,15 @@ const locationSchema = new mongoose.Schema({
 }, {collection:'location'});
 
 module.exports = mongoose.model('location', locationSchema);
+
+
+const historySchema = new mongoose.Schema({
+  Name: String,
+  timestamp: Date,
+  lat: Number,
+  lng: Number,
+  alt: Number,
+  vertical_speed: Number,
+}, {collection:'flight_history'});
+
+module.exports = mongoose.model('flight_history', historySchema);
