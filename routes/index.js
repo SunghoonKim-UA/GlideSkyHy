@@ -21,6 +21,7 @@ router.get('/getCurrSt', (req, res) => {
     }
 });
 
+// Fetch from location table in specific region with lat long conditions
 router.get('/getCurrGlider', (req, res) => {
     console.log("getCurrGlider:"+req.query.lat_s+":"+req.query.lat_e+":"+req.query.lng_s+":"+req.query.lng_e);
     if(req.query.lat_s == undefined || req.query.lat_s > 180 || req.query.lat_s < -180
@@ -35,7 +36,7 @@ router.get('/getCurrGlider', (req, res) => {
                             .exec();
       execObj.then(function (location) {
         console.log(req.path+":"+"location:"+location);
-        res.status(200).send(location);
+        res.status(200).send(location); // send json location data to client 
       });
     }
 });
