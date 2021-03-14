@@ -37,7 +37,7 @@ router.get('/getCurrGlider', (req, res) => {
                             .exec();
       execObj.then(function (location) {
         console.log(req.path+":"+"location:"+location);
-        res.status(200).send(location); // send json location data to client 
+        res.status(200).send(location); // send json location data to client
       });
     }
 });
@@ -70,15 +70,39 @@ module.exports = router;
 
 router.get('/Database_History_Read', (req, res) => {
     console.log("Database_History_Read:"+req.query.name);
-    
+
     var execObj = history.find({ 'Name': req.query.name })
-                          .exec();
+                         .limit(10)
+                         .sort({ timestamp: -1 })
+                         .exec();
 
     execObj.then(function (history) {
       console.log("Database_History_Read history:"+history);
-      res.status(200).send(history); // send json location data to client 
+      res.status(200).send(history); // send json location data to client
     });
 });
 
+router.get('/genData', (req, res) => {
+    console.log("genData");
+    location.deleteMany({ name: "Sunghoon" }).exec();
+    history.deleteMany({ Name: "Sunghoon" }).exec();
+    location.deleteMany({ name: "Aishr" }).exec();
+    history.deleteMany({ Name: "Aishr" }).exec();
 
+    const location_mock = new location();
+    location_mock.name = "Aishr";
+    location_mock.position = [32.45, -111.42, 830, 10];
+    location_mock.save();
 
+    const hist_mock = new history();
+    hist_mock.Name = "Aishr"; hist_mock.lat = 32.45; hist_mock.lng = -111.42; hist_mock.alt = 830; hist_mock.vertical_speed = 10; hist_mock.timestamp = new Date((new Date()).getTime()-( 5*60*1000));
+    hist_mock.save();
+    const hist_mock1 = new history();
+    hist_mock1.Name = "Aishr"; hist_mock1.lat = 32.451; hist_mock1.lng = -111.424; hist_mock1.alt = 830; hist_mock1.vertical_speed = 10; hist_mock1.timestamp = new Date((new Date()).getTime()-(10*60*1000));
+    hist_mock1.save();
+    const hist_mock2 = new history();
+    hist_mock2.Name = "Aishr"; hist_mock2.lat = 32.452; hist_mock2.lng = -111.426; hist_mock2.alt = 830; hist_mock2.vertical_speed = 10; hist_mock1.timestamp = new Date((new Date()).getTime()-(10*60*1000));
+    hist_mock2.save();
+
+    res.status(200).send("Generate mockdata successfully"); // send json location data to client
+});
