@@ -72,8 +72,8 @@ router.get('/Database_History_Read', (req, res) => {
     console.log("Database_History_Read:"+req.query.name);
 
     var execObj = history.find({ 'Name': req.query.name })
-                         .limit(10)
-                         .sort({ timestamp: -1 })
+                         // .limit(10)
+                         .sort({ timestamp: 1 })
                          .exec();
 
     execObj.then(function (history) {
