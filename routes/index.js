@@ -98,10 +98,10 @@ router.get('/genData', (req, res) => {
     hist_mock.Name = "Aishr"; hist_mock.lat = 32.45; hist_mock.lng = -111.42; hist_mock.alt = 830; hist_mock.vertical_speed = 10; hist_mock.timestamp = new Date((new Date()).getTime()-( 5*60*1000));
     hist_mock.save();
     const hist_mock1 = new history();
-    hist_mock1.Name = "Aishr"; hist_mock1.lat = 32.451; hist_mock1.lng = -111.424; hist_mock1.alt = 830; hist_mock1.vertical_speed = 10; hist_mock1.timestamp = new Date((new Date()).getTime()-(10*60*1000));
+    hist_mock1.Name = "Aishr"; hist_mock1.lat = 32.452; hist_mock1.lng = -111.426; hist_mock1.alt = 830; hist_mock1.vertical_speed = 10; hist_mock1.timestamp = new Date((new Date()).getTime()-(10*60*1000));
     hist_mock1.save();
     const hist_mock2 = new history();
-    hist_mock2.Name = "Aishr"; hist_mock2.lat = 32.452; hist_mock2.lng = -111.426; hist_mock2.alt = 830; hist_mock2.vertical_speed = 10; hist_mock1.timestamp = new Date((new Date()).getTime()-(10*60*1000));
+    hist_mock2.Name = "Aishr"; hist_mock2.lat = 32.451; hist_mock2.lng = -111.424; hist_mock2.alt = 830; hist_mock2.vertical_speed = 10; hist_mock1.timestamp = new Date((new Date()).getTime()-(15*60*1000));
     hist_mock2.save();
 
     res.status(200).send("Generate mockdata successfully"); // send json location data to client

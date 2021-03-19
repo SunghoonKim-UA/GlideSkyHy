@@ -24,6 +24,7 @@
   <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
   <!-- Bootstrap core JavaScript -->
   <!-- <script src="vendor/jquery/jquery.slim.min.js"></script> -->
+  <script src="vendor/easeljs.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="js/sk_common.js"></script>
   <!--<script  type="text/javascript"  src="../routes/index.js"></script>-->
@@ -63,6 +64,7 @@
 
     function initMap() {
       var overlayObjList = [];
+      var colorList = ['red', 'orange', 'yellow', 'green', 'white'];
       map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: curr_lat, lng: curr_lng },
         zoom: 14.4,
@@ -90,62 +92,146 @@
       }
 
       /**
-       * The custom GliderOverlay object contains the Glider image+name+altitude,
+       * The custom GliderOverlay object contains the Glider image+name+altitude+path,
        * the bounds of the image, and a reference to the map.
        */
       class GliderOverlay extends google.maps.OverlayView {
-        constructor(lat, lng, image, name, alt, vert_speed) {
+        constructor(curr_location, image, name, alt, vert_speed, path) {
           super();
-          this.lat = lat;
-          this.lng = lng;
+          this.lat = curr_location[0];
+          this.lng = curr_location[1];
           this.image = image;
           this.name = name;
           this.alt = alt;
           this.vert_speed = vert_speed;
+          this.path = path;
+          this.min_lat = this.lat;
+          this.max_lat = this.lat;
+          this.min_lng = this.lng;
+          this.max_lng = this.lng;
+
+          for(var ii=0;ii<path.length;ii++) {
+            if(this.min_lat > path[ii].lat) this.min_lat = path[ii].lat;
+            if(this.max_lat < path[ii].lat) this.max_lat = path[ii].lat;
+            if(this.min_lng > path[ii].lng) this.min_lng = path[ii].lng;
+            if(this.max_lng < path[ii].lng) this.max_lng = path[ii].lng;
+          }
         }
         /**
-         * onAdd is called when the map's panes are ready and the overlay has been
-         * added to the map.
+         * canvas objects includes current_glider and glider's path together
+         *   current_glider : image + location label
+         *   glider's path(max 10) : circle
+         * next, locate objects and make segments at draw method
          */
         onAdd() {
+          // 0. div
           this.div = document.createElement("div");
           this.div.style.borderStyle = "none";
           this.div.style.borderWidth = "0px";
-          //this.div.style.borderColor = "black";
+          // this.div.style.borderColor = "black";
           this.div.style.position = "absolute";
-          // Create the div element for name&alt and attach it to the div.
-          const label = document.createElement("div");
-          label.innerHTML = this.name+"<BR>"+this.alt+" ft"+"<BR>"+this.vert_speed+" knts";
-          label.style.width = "80%";
-          label.classList.add("bg-light");
-          label.classList.add("h6");
-          this.div.appendChild(label);
-          // Create the img element and attach it to the div.
-          const img = document.createElement("img");
-          img.src = this.image;
-          img.style.width = "75%";
-          img.style.height = "75%";
-          // img.style.position = "absolute";
-          this.div.appendChild(img);
+
+          // 1. canvas
+          this.canvas = document.createElement("canvas");
+          this.div.appendChild(this.canvas);
+
           // Add the element to the "overlayLayer" pane.
           const panes = this.getPanes();
           panes.overlayLayer.appendChild(this.div);
         }
         draw() {
+          const label_width = 80, label_height = 45, history_width = 14;
           const overlayProjection = this.getProjection();
+          // 0. fix the size&location of div&canvas
+          const nw_point = overlayProjection.fromLatLngToDivPixel(
+            new google.maps.LatLng(this.max_lat, this.min_lng)
+          );
+          const se_point = overlayProjection.fromLatLngToDivPixel(
+            new google.maps.LatLng(this.min_lat, this.max_lng)
+          );
+          // console.log("nw_point:"+this.max_lat+"//"+this.min_lng+"//"+nw_point.x+"//"+(nw_point.y));
+          // console.log("se_point:"+this.min_lat+"//"+this.max_lng+"//"+se_point.x+"//"+(se_point.y));
+          // Resize div to fit the indicated dimensions.
+          if (this.div) {
+            this.div.style.left = (nw_point.x-history_width) + "px";
+            this.div.style.top = (nw_point.y-history_width) + "px";
+            this.div.style.width  = calGap(se_point.x, nw_point.x)+label_width+history_width*2 + "px";
+            this.div.style.height = calGap(nw_point.y, se_point.y)+history_width*2 + "px";
+            this.canvas.style.left = (nw_point.x-history_width) + "px";
+            this.canvas.style.top = (nw_point.y-history_width) + "px";
+            this.canvas.width  = calGap(se_point.x, nw_point.x)+label_width+history_width*2; // to stretch label_width
+            this.canvas.height = calGap(nw_point.y, se_point.y)+history_width*2;
+            // console.log("div size:"+this.div.style.left+"//"+this.div.style.top+"//"+this.div.style.width+"//"+this.div.style.height);
+          }
+          // console.log("lat/lng:"+this.max_lat+"//"+this.min_lat+"//"+this.max_lng+"//"+this.min_lng+"//"+this.lat+"//"+this.lng);
+          // 1. add current_glider
           const point = overlayProjection.fromLatLngToDivPixel(
             new google.maps.LatLng(this.lat, this.lng)
           );
-          // console.log("point:"+point.x+"//"+point.y);
+          const point_x = calGap(point.x, nw_point.x+history_width);
+          const point_y = calGap(point.y, nw_point.y+history_width);
+          // console.log("point:"+this.lat+"//"+this.lng+"//"+point.x+"//"+(point.y));
 
-          // Resize the image's div to fit the indicated dimensions.
-          if (this.div) {
-            this.div.style.left = (point.x-50) + "px";
-            this.div.style.top = (point.y-50) + "px";
-            this.div.style.width = "100px";
-            this.div.style.height = "100px";
-          }
+          var stage = new createjs.Stage(this.canvas);
+          // 1.1 location label : div element for name&alt and attach it to the div.
+          var text_bg = new createjs.Shape();
+          text_bg.graphics.beginFill("#FFFFFF").drawRect(point_x, point_y, label_width, label_height);
+          stage.addChild(text_bg);
+          var text = new createjs.Text(this.name+"\n"+this.alt+" ft"+"\n"+this.vert_speed+" knts", "15px Arial", "#000000");
+          text.x = point_x;
+          text.y = point_y;
+          stage.addChild(text);
+
+          // 1.2 image : div element for name&alt and attach it to the div.
+          var glider_icon = new createjs.Bitmap(this.image);
+          glider_icon.scaleX = 1/3; glider_icon.scaleY = 1/3;
+          glider_icon.regX = 44;
+          glider_icon.regY = 58;
+          glider_icon.x = point_x;
+          glider_icon.y = point_y+label_height;
+          stage.addChild(glider_icon);
+
+          // 2. add glider's path and segments
+          var seq = 0;
+          // start path!
+          var path_asis_x, path_asis_y;
+          var path1 = new createjs.Shape();
+
+          jQuery.each(this.path, function( index, value ) { // for each: index in data update glider position
+            seq++;
+            const history_point = overlayProjection.fromLatLngToDivPixel(
+              new google.maps.LatLng(value.lat, value.lng)
+            );
+
+            // add path
+            if(seq>1) {
+              path1.graphics.setStrokeStyle(10).beginStroke("red")
+                   .moveTo(path_asis_x, path_asis_y).lineTo(calGap(history_point.x, nw_point.x)+history_width, calGap(history_point.y, nw_point.y)+history_width);
+              path1.alpha = 0.3
+              stage.addChild(path1);
+            }
+            path_asis_x = calGap(history_point.x, nw_point.x)+history_width;
+            path_asis_y = calGap(history_point.y, nw_point.y)+history_width;
+
+            // add circle
+            var history_bg = new createjs.Shape();
+            history_bg.graphics.beginFill("#000000").drawCircle(calGap(history_point.x, nw_point.x)+history_width, calGap(history_point.y, nw_point.y)+history_width, history_width);
+            stage.addChild(history_bg);
+
+            // add initial
+            var history_text = new createjs.Text(value.Name.substring(0,1)+seq, "10px Arial", "#FFFFFF");
+            history_text.x = calGap(history_point.x, nw_point.x)+history_width/2;
+            history_text.y = calGap(history_point.y, nw_point.y)+history_width/2;
+            stage.addChild(history_text);
+          });
+          path1.graphics.setStrokeStyle(10).beginStroke("red")
+               .moveTo(path_asis_x, path_asis_y).lineTo(glider_icon.x+glider_icon.regX, glider_icon.y+glider_icon.regY-15);
+          path1.alpha = 0.3
+          stage.addChild(path1);
+
+          stage.update();
         }
+
         /**
          * The onRemove() method will be called automatically from the API if
          * we ever set the overlay's map property to 'null'.
@@ -187,90 +273,27 @@
         }
       }
 
-      // my path overlay
-      class GliderPathOverlay extends GliderOverlay {
-        constructor(lat, lng, image, name, alt, vert_speed, seq) {
-          super();
-          // 22, 21, 20, 19, 18, 16, 14, 12, 10
-          var dot_arr = [22, 22, 21, 20, 19, 18, 16, 14, 12, 10];
-
-          this.lat = lat;
-          this.lng = lng;
-          this.image = image;
-          this.name = name;
-          this.alt = alt;
-          this.vert_speed = vert_speed;
-          this.seq = seq;
-          this.dot_size = "25";
-        }
-        onAdd() {
-          this.div = document.createElement("div");
-          this.div.innerHTML=this.name.substring(0,1)+this.seq;
-          this.div.style.borderStyle = "none";
-          this.div.style.borderWidth = "0px";
-          this.div.classList.add("dot_1");
-          this.div.style.position = "absolute";
-          // Add the element to the "overlayLayer" pane.
-          const panes = this.getPanes();
-          panes.overlayLayer.appendChild(this.div);
-        }
-        draw() {
-          const overlayProjection = this.getProjection();
-          const point = overlayProjection.fromLatLngToDivPixel(
-            new google.maps.LatLng(this.lat, this.lng)
-          );
-
-          // Resize the image's div to fit the indicated dimensions.
-          if (this.div) {
-            this.div.style.left = (point.x-this.dot_size/2) + "px";
-            this.div.style.top = (point.y-this.dot_size/2) + "px";
-            this.div.style.width = this.dot_size+"px";
-            this.div.style.height = this.dot_size+"px";
-          }
-        }
-      }
-
-      // let image = "/img/glider.png";
       let image = "/img/glider.png";
 
       redraw();
 
       function redraw() {
-        setInterval(setTimeout(redraw, 5000)); // 5 sec
+        // setInterval(setTimeout(redraw, 5000)); // 5 sec
         // init overlay list
-        console.log("overlayObjList.length:"+overlayObjList.length);
+        // console.log("overlayObjList.length:"+overlayObjList.length);
         overlayObjList.forEach(remove_ovrly);
         function remove_ovrly(value, index, array) {
           value.toggleDOM(map);
           // console.log("remove_ovrly:"+value.name+"//"+value.lat+"//"+value.lng+"//"+index+"//"+array);
         }
+        // to hold redrawing objects
         overlayObjList = [];
 
         //$.get("/getCurrGlider", { lat_s: curr_lat-1, lat_e: curr_lat+1, lng_s: curr_lng-1, lng_e: curr_lng+1 }).done(function(data){ // use loc data @ done func
         $.get("/getCurrGlider", { lat_s: 32, lat_e: 33, lng_s: -112, lng_e: -109 })
         .done(function(data){
           jQuery.each(data, function( index, value ) { // for each: index in data update glider position
-            // console.log("name:"+value.name);
-            // console.log("position:"+value.position);
-            const overlay = new GliderOverlay(value.position[0], value.position[1], image, value.name, value.position[2], value.position[3]);
-            overlay.setMap(map);
-            overlayObjList.push(overlay);
-
-
-
-            // function nextPosition(value_n) {
-            //   // Database
-            //   overlay.lat = value_n.lat;
-            //   overlay.lng = value_n.lng;
-            //   overlay.alt = value_n.alt;
-            //   overlay.vert_speed = value_n.vertical_speed;
-            //
-            //   // to refresh googlemap without manual events
-            //   map.setZoom(map.getZoom()+0.0000001);
-            //   map.setZoom(Math.round(map.getZoom()));
-            // }
-
-
+            var hist = [];
             $.get("/Database_History_Read", { name: value.name })
             .done(function(data_history){
               // data_history : sort later
@@ -283,12 +306,13 @@
                 } else {
                   // param : lat, lng, image, name, alt, vert_speed, seq
                   // model : Name: String, timestamp: Date, lat: Number, lng: Number, alt: Number, vertical_speed: Number,
-                   const overlayPath = new GliderPathOverlay(value_n.lat, value_n.lng, "", value.name, value_n.alt, value_n.vertical_speed, i);
-                   overlayPath.setMap(map);
-                   overlayObjList.push(overlayPath);
+                  hist.push(value_n);
                 }
                 i++;
               });
+              const overlay = new GliderOverlay(value.position, image, value.name, value.position[2], value.position[3], hist);
+              overlay.setMap(map);
+              overlayObjList.push(overlay);
             });
 
 

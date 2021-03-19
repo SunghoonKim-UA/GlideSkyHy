@@ -31,3 +31,7 @@ function checkLogin(data)  {
     // console.log("bye");
   }
 }
+
+function calGap(base, obj1) {
+  return Math.abs(obj1-base);
+}
