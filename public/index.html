@@ -325,19 +325,54 @@
               overlayObjList.push(overlay);
             });
 
-
-
-
             //setInterval(nextPosition, 15000); // 5 sec
-
-
 
           });
         });
       }
 
 
+
+      // MouseEvent = click
+      map.addListener("click", (e) => {
+        placeMarkerAndPanTo(e.latLng, map);
+      });
+
+
     }
+
+
+    function placeMarkerAndPanTo(latLng, map) {
+      new google.maps.Marker({ // create new marker for clicked location
+        position: latLng,
+        map: map,
+      });
+      map.panTo(latLng);
+
+      var userData = $("#currTitle4").html(); // {user_name : glider_user_name} // gives undefined????
+
+      $.get("/Location_Current_Read", { name: userData.user_name })
+            .done(function(data_Curr_location){
+              jQuery.each(data_Curr_location, function( index_cl, value_cl ) {
+                
+                  const flightPlanCoordinates = [
+                    { lat: value_cl.position[0], lng: value_cl.position[1] },
+                    { lat: latLng.lat(), lng: latLng.lng() },
+                  ];
+                  const flightPath = new google.maps.Polyline({
+                    path: flightPlanCoordinates,
+                    geodesic: true,
+                    strokeColor: "red",
+                    strokeOpacity: 0.3,
+                    strokeWeight: 10,
+                  });
+                  flightPath.setMap(map);
+
+              });
+      });
+
+    }
+
     </script>
 </head>
 

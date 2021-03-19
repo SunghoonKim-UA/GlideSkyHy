@@ -79,9 +79,25 @@ router.get('/Database_History_Read', (req, res) => {
 
     execObj.then(function (history) {
       console.log("Database_History_Read history:"+history);
-      res.status(200).send(history); // send json location data to client
+      res.status(200).send(history); // send json history data to client
     });
 });
+
+
+
+router.get('/Location_Current_Read', (req, res) => {
+    console.log("Location_Current_Read:"+req.query.name);
+
+    var execObj = location.find({ 'Name': req.query.name })
+                         .limit(1)
+                         .exec();
+
+    execObj.then(function (location) {
+      console.log("Location_Current_Read location:"+location);
+      res.status(200).send(location); // send json location data to client
+    });
+});
+
 
 router.get('/genData', (req, res) => {
     console.log("genData");
