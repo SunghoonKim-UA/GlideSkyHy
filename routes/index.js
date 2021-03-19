@@ -35,6 +35,7 @@ router.get('/getCurrGlider', (req, res) => {
     } else {
       var execObj = location.find({ 'position.0': { $gte: req.query.lat_s, $lte: req.query.lat_e }
                                   , 'position.1': { $gte: req.query.lng_s, $lte: req.query.lng_e } })
+                            .populate('fly_object')
                             .exec();
 
       execObj.then(function (location) {
@@ -92,7 +93,22 @@ router.get('/Database_History_Read', (req, res) => {
 
     execObj.then(function (history) {
       console.log("Database_History_Read history:"+history);
-      res.status(200).send(history); // send json location data to client
+      res.status(200).send(history); // send json history data to client
+    });
+});
+
+
+
+router.get('/Location_Current_Read', (req, res) => {
+    console.log("Location_Current_Read:"+req.query.name);
+
+    var execObj = location.find({ 'Name': req.query.name })
+                         .limit(1)
+                         .exec();
+
+    execObj.then(function (location) {
+      console.log("Location_Current_Read location:"+location);
+      res.status(200).send(location); // send json location data to client
     });
 });
 
