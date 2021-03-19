@@ -25,3 +25,15 @@ const historySchema = new mongoose.Schema({
 }, {collection:'flight_history'});
 
 module.exports = mongoose.model('flight_history', historySchema);
+
+
+const testSchema = new mongoose.Schema({
+  Name: String,
+  timestamp: Date,
+  lat: Number,
+  lng: Number,
+  alt: Number,
+  vertical_speed: Number,
+}, {collection:'test'});
+
+module.exports = mongoose.model('test', testSchema);

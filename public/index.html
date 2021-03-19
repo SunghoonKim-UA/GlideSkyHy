@@ -293,6 +293,7 @@
         $.get("/getCurrGlider", { lat_s: 32, lat_e: 33, lng_s: -112, lng_e: -109 })
         .done(function(data){
           jQuery.each(data, function( index, value ) { // for each: index in data update glider position
+
             var hist = [];
             $.get("/Database_History_Read", { name: value.name })
             .done(function(data_history){
