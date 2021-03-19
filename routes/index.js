@@ -34,6 +34,7 @@ router.get('/getCurrGlider', (req, res) => {
     } else {
       var execObj = location.find({ 'position.0': { $gte: req.query.lat_s, $lte: req.query.lat_e }
                                   , 'position.1': { $gte: req.query.lng_s, $lte: req.query.lng_e } })
+                            .populate('fly_object')
                             .exec();
       execObj.then(function (location) {
         console.log(req.path+":"+"location:"+location);

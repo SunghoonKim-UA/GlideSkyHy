@@ -96,7 +96,7 @@
        * the bounds of the image, and a reference to the map.
        */
       class GliderOverlay extends google.maps.OverlayView {
-        constructor(curr_location, image, name, alt, vert_speed, path) {
+        constructor(curr_location, image, name, alt, vert_speed, color, path) {
           super();
           this.lat = curr_location[0];
           this.lng = curr_location[1];
@@ -104,6 +104,7 @@
           this.name = name;
           this.alt = alt;
           this.vert_speed = vert_speed;
+          this.color = color;
           this.path = path;
           this.min_lat = this.lat;
           this.max_lat = this.lat;
@@ -175,7 +176,7 @@
           var stage = new createjs.Stage(this.canvas);
           // 1.1 location label : div element for name&alt and attach it to the div.
           var text_bg = new createjs.Shape();
-          text_bg.graphics.beginFill("#FFFFFF").drawRect(point_x, point_y, label_width, label_height);
+          text_bg.graphics.beginFill("#"+this.color).drawRect(point_x, point_y, label_width, label_height);
           stage.addChild(text_bg);
           var text = new createjs.Text(this.name+"\n"+this.alt+" ft"+"\n"+this.vert_speed+" knts", "15px Arial", "#000000");
           text.x = point_x;
@@ -189,13 +190,13 @@
           glider_icon.regY = 58;
           glider_icon.x = point_x;
           glider_icon.y = point_y+label_height;
-          stage.addChild(glider_icon);
 
           // 2. add glider's path and segments
           var seq = 0;
           // start path!
           var path_asis_x, path_asis_y;
           var path1 = new createjs.Shape();
+          const color1 = this.color;
 
           jQuery.each(this.path, function( index, value ) { // for each: index in data update glider position
             seq++;
@@ -207,7 +208,7 @@
             if(seq>1) {
               path1.graphics.setStrokeStyle(10).beginStroke("red")
                    .moveTo(path_asis_x, path_asis_y).lineTo(calGap(history_point.x, nw_point.x)+history_width, calGap(history_point.y, nw_point.y)+history_width);
-              path1.alpha = 0.3
+              path1.alpha = 0.3;
               stage.addChild(path1);
             }
             path_asis_x = calGap(history_point.x, nw_point.x)+history_width;
@@ -215,19 +216,28 @@
 
             // add circle
             var history_bg = new createjs.Shape();
-            history_bg.graphics.beginFill("#000000").drawCircle(calGap(history_point.x, nw_point.x)+history_width, calGap(history_point.y, nw_point.y)+history_width, history_width);
+            history_bg.graphics.beginFill("#FFFFFF").drawCircle(calGap(history_point.x, nw_point.x)+history_width, calGap(history_point.y, nw_point.y)+history_width, history_width);
             stage.addChild(history_bg);
 
             // add initial
-            var history_text = new createjs.Text(value.Name.substring(0,1)+seq, "10px Arial", "#FFFFFF");
+            var history_text = new createjs.Text(value.Name.substring(0,1)+seq, "10px Arial", "#"+color1);
             history_text.x = calGap(history_point.x, nw_point.x)+history_width/2;
             history_text.y = calGap(history_point.y, nw_point.y)+history_width/2;
             stage.addChild(history_text);
           });
+          // path connecting recent history and current location
           path1.graphics.setStrokeStyle(10).beginStroke("red")
-               .moveTo(path_asis_x, path_asis_y).lineTo(glider_icon.x+glider_icon.regX, glider_icon.y+glider_icon.regY-15);
-          path1.alpha = 0.3
+               .moveTo(path_asis_x, path_asis_y).lineTo(glider_icon.x, glider_icon.y);
+          path1.alpha = 0.3;
           stage.addChild(path1);
+
+          // tilt current location's glider_icon
+          var deltaX = glider_icon.x - path_asis_x;
+          var deltaY = glider_icon.y - path_asis_y;
+          var rad = Math.atan2(deltaY, deltaX);
+          var deg = rad * (180 / Math.PI);
+          glider_icon.rotation = deg;
+          stage.addChild(glider_icon);
 
           stage.update();
         }
@@ -310,7 +320,7 @@
                 }
                 i++;
               });
-              const overlay = new GliderOverlay(value.position, image, value.name, value.position[2], value.position[3], hist);
+              const overlay = new GliderOverlay(value.position, image, value.name, value.position[2], value.position[3], value.fly_object[0].color, hist);
               overlay.setMap(map);
               overlayObjList.push(overlay);
             });
