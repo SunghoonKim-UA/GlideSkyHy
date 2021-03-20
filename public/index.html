@@ -355,7 +355,22 @@
       $.get("/Location_Current_Read", { name: userData.user_name })
             .done(function(data_Curr_location){
               jQuery.each(data_Curr_location, function( index_cl, value_cl ) {
-                
+                  
+                  // Save current location to flight_history
+                  // Send the data using post
+                  var postingHistory = $.post( "/Flight_History_Write", { Name:value_cl.name, lat:value_cl.position[0], lng:value_cl.position[1], alt:value_cl.position[2], vertical_speed:value_cl.position[3] } );
+              
+                  //// Put the results in a div
+                  //postingHistory.done(function( data ) {
+                  //  //checkLogin(data);
+                  //});
+
+                  var newAlt = value_cl.position[2]-300;
+                  var postingLocation = $.post( "/Location_Update", { Name:value_cl.name, lat:latLng.lat(), lng:latLng.lng(), alt:newAlt, vertical_speed: newAlt - value_cl.position[2] } );
+
+
+
+                  // Add edge
                   const flightPlanCoordinates = [
                     { lat: value_cl.position[0], lng: value_cl.position[1] },
                     { lat: latLng.lat(), lng: latLng.lng() },

@@ -113,6 +113,46 @@ router.get('/Location_Current_Read', (req, res) => {
 });
 
 
+
+router.post('/Flight_History_Write', (req, res) => {
+    console.log("Flight_History_Write: "+req.body.Name + " " + req.body.lat+ " " + req.body.lng+ " " + req.body.alt+ " " + req.body.vertical_speed);
+    
+    const newHistoryEntry = new history();
+    newHistoryEntry.Name = req.body.Name;
+    newHistoryEntry.timestamp = new Date();
+    newHistoryEntry.lat = req.body.lat;
+    newHistoryEntry.lng = req.body.lng;
+    newHistoryEntry.alt = req.body.alt;
+    newHistoryEntry.vertical_speed = req.body.vertical_speed;
+    newHistoryEntry.save();
+
+});
+
+
+router.post('/Location_Update', (req, res) => {
+    console.log("Location_Update: "+req.body.Name + " " + req.body.lat+ " " + req.body.lng+ " " + req.body.alt+ " " + req.body.vertical_speed);
+    
+    //const newHistoryEntry = new history();
+    //newHistoryEntry.Name = req.body.Name;
+    //newHistoryEntry.timestamp = new Date();
+    //newHistoryEntry.lat = req.body.lat;
+    //newHistoryEntry.lng = req.body.lng;
+    //newHistoryEntry.alt = req.body.alt;
+    //newHistoryEntry.vertical_speed = req.body.vertical_speed;
+    //newHistoryEntry.save();
+
+    var execObj = location.findOneAndUpdate({name: req.body.Name}, {$set:{name:req.body.Name, position: [req.body.lat, req.body.lng, req.body.alt, req.body.vertical_speed] }}, {new: true}, (err, doc) => {
+    if (err) {
+        console.log("Something wrong when updating data!");
+    }
+
+    console.log(doc);
+});
+
+});
+
+
+
 router.get('/genData', (req, res) => {
     console.log("genData");
     location.deleteMany({ name: "Sunghoon" }).exec();
