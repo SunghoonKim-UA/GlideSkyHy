@@ -190,6 +190,8 @@
           glider_icon.regY = 58;
           glider_icon.x = point_x;
           glider_icon.y = point_y+label_height;
+          // add shadow by glider's height
+          glider_icon.shadow = new createjs.Shadow("#000000", this.alt/200, this.alt/200, 10);
 
           // 2. add glider's path and segments
           var seq = 0;
@@ -355,11 +357,11 @@
       $.get("/Location_Current_Read", { name: userData.user_name })
             .done(function(data_Curr_location){
               jQuery.each(data_Curr_location, function( index_cl, value_cl ) {
-                  
+
                   // Save current location to flight_history
                   // Send the data using post
                   var postingHistory = $.post( "/Flight_History_Write", { Name:value_cl.name, lat:value_cl.position[0], lng:value_cl.position[1], alt:value_cl.position[2], vertical_speed:value_cl.position[3] } );
-              
+
                   //// Put the results in a div
                   //postingHistory.done(function( data ) {
                   //  //checkLogin(data);
