@@ -17,6 +17,7 @@
   <!-- Custom fonts for this template -->
   <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
+  <link href="vendor/colorpicker/css/bootstrap-colorpicker.css" rel="stylesheet">
 
   <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 
@@ -26,6 +27,7 @@
   <!-- <script src="vendor/jquery/jquery.slim.min.js"></script> -->
   <script src="vendor/easeljs.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="vendor/colorpicker/js/bootstrap-colorpicker.min.js"></script>
   <script src="js/sk_common.js"></script>
   <!--<script  type="text/javascript"  src="../routes/index.js"></script>-->
 
@@ -176,7 +178,7 @@
           var stage = new createjs.Stage(this.canvas);
           // 1.1 location label : div element for name&alt and attach it to the div.
           var text_bg = new createjs.Shape();
-          text_bg.graphics.beginFill("#"+this.color).drawRect(point_x, point_y, label_width, label_height);
+          text_bg.graphics.beginFill(this.color).drawRect(point_x, point_y, label_width, label_height);
           stage.addChild(text_bg);
           var text = new createjs.Text(this.name+"\n"+this.alt+" ft"+"\n"+this.vert_speed+" knts", "15px Arial", "#000000");
           text.x = point_x;
@@ -222,7 +224,7 @@
             stage.addChild(history_bg);
 
             // add initial
-            var history_text = new createjs.Text(value.Name.substring(0,1)+seq, "10px Arial", "#"+color1);
+            var history_text = new createjs.Text(value.Name.substring(0,1)+seq, "10px Arial", color1);
             history_text.x = calGap(history_point.x, nw_point.x)+history_width/2;
             history_text.y = calGap(history_point.y, nw_point.y)+history_width/2;
             stage.addChild(history_text);
@@ -398,7 +400,7 @@
 
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
-    <div class="container">
+    <div class="container-fluid">
       <a class="navbar-brand" href="#">GlideSkyHy</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -414,16 +416,17 @@
             <a class="nav-link" href="#">GroundCrew View</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="javascript:genData()">Generate MockData</a>
+            <a id="signUpTitle" class="nav-link" href="#" data-toggle="modal" data-target="#modSignUp">Sign up</a>
+            <div class="modal fade" id="modSignUp" tabindex="-1" role="dialog" aria-labelledby="signUpTitle">
+              <form id="signup" class="user" action="/signup" method="POST">
+                <div id="dlg_signup" class="modal-dialog" role="document"></div>
+              </form>
+            </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Sign up</a>
-          </li>
-          <li class="nav-item">
-            <a id="currTitle4" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Log in</a>
+            <a id="currTitle4" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" data-target="#">Log in</a>
             <!-- Dropdown - Login-->
-            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                aria-labelledby="userDropdown">
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="currTitle4">
                 <form id="user" class="user" action="/login" method="POST">
                   <div id="dlg_login"></div>
                 </form>
@@ -453,15 +456,11 @@
   </div> -->
 
   <script>
-  function genData()  {
-    $.get("/genData").done(function(data){
-    });
-  }
-
   // 1. LOADING
   $.get("/getCurrSt").done(function(data){
     checkLogin(data);
   });
+  $( "#dlg_signup" ).load( "signup.html" );
 
   // 2. LOGIN FORM
   $( "#user" ).submit(function( event ) {
@@ -496,8 +495,35 @@
       setCurrTitle4("Log In");
       $("#dlg_logout").html(data);
       $("#dlg_login").html("");
+      $("#signUpTitle").show();
     });
   });
+
+    // 4. Signup FORM
+    $( "#signup" ).submit(function( event ) {
+      console.log("Signup start");
+      // Stop form from submitting normally
+      event.preventDefault();
+      var $form = $( this ),
+      v_new_name = $form.find( "input[id='new_name']" ).val(),
+      v_new_passwd = $form.find( "input[id='new_passwd']" ).val(),
+      v_new_color = $form.find( "input[id='new_color']" ).val(),
+      url = $form.attr( "action" );
+      // console.log("term:"+v_u_name);
+
+      // Send the data using post
+      $.post(url, { new_name:v_new_name, new_passwd:v_new_passwd, new_color:v_new_color } )
+       .done(function(data){
+         var obj = jQuery.parseJSON(data);
+         console.log(obj.msg);
+        if(obj.msg == "") {
+          $("#signupMsg").html("Signed up successfully.");
+          $("#signupBtn").hide();
+        } else {
+          $("#signupMsg").html(obj.msg);
+        }
+      });
+    });
   </script>
 </body>
 

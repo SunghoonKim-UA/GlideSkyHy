@@ -23,11 +23,13 @@ function checkLogin(data)  {
     setCurrTitle4("Info");
     $("#dlg_logout").html(data);
     $("#dlg_login").html("");
+    $("#signUpTitle").hide();
     // console.log("hi");
   } else {
     setCurrTitle4("Log in");
     $("#dlg_login").html(data);
     $("#dlg_logout").html("");
+    $("#signUpTitle").show();
     // console.log("bye");
   }
 }

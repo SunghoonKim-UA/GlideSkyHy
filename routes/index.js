@@ -50,7 +50,7 @@ router.get('/getCurrGlider', (req, res) => {
           newTestEntry.vertical_speed = locationDoc.position[3];
           newTestEntry.save();
         })
-               
+
         res.status(200).send(location); // send json location data to client
       });
 
@@ -76,6 +76,27 @@ router.post('/login', (req, res) => {
         res.cookie('_id',glider._id);
         res.render("success_login", {user_name : glider.user_name});
       }
+    });
+});
+
+router.post('/signup', (req, res) => {
+    console.log("signup :"+req.param("new_name"));
+    // check duplicate user_name
+    const new_glider = new glider();
+    var validat_msg = "";
+    var execObj = glider.findOne({ user_name: req.body.new_name })
+                        .exec();
+    execObj.then(function (glider) {
+      if(glider != null)  {
+        validat_msg = "Duplicate user";
+      } else {
+        new_glider.user_name = req.body.new_name;
+        new_glider.password  = req.body.new_passwd;
+        new_glider.color     = req.body.new_color;
+        new_glider.save();
+      }
+
+      res.status(200).send("{ \"msg\" : \""+validat_msg+"\" }"); // send json msg
     });
 });
 
@@ -116,7 +137,7 @@ router.get('/Location_Current_Read', (req, res) => {
 
 router.post('/Flight_History_Write', (req, res) => {
     console.log("Flight_History_Write: "+req.body.Name + " " + req.body.lat+ " " + req.body.lng+ " " + req.body.alt+ " " + req.body.vertical_speed);
-    
+
     const newHistoryEntry = new history();
     newHistoryEntry.Name = req.body.Name;
     newHistoryEntry.timestamp = new Date();
@@ -131,7 +152,7 @@ router.post('/Flight_History_Write', (req, res) => {
 
 router.post('/Location_Update', (req, res) => {
     console.log("Location_Update: "+req.body.Name + " " + req.body.lat+ " " + req.body.lng+ " " + req.body.alt+ " " + req.body.vertical_speed);
-    
+
     //const newHistoryEntry = new history();
     //newHistoryEntry.Name = req.body.Name;
     //newHistoryEntry.timestamp = new Date();
