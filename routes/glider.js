@@ -6,23 +6,6 @@ const location = mongoose.model('location');
 const history = mongoose.model('flight_history');
 const testWrite = mongoose.model('test');
 
-router.get('/getCurrSt', (req, res) => {
-    console.log(req.path+":"+req.cookies._id);
-    if(req.cookies._id == null || req.cookies._id == undefined)  {
-      res.render("login");
-    } else {
-      var execObj = glider.findById(req.cookies._id).exec();
-      execObj.then(function (glider) {
-        console.log(req.path+":"+"glider:"+glider)
-        if(glider == null)  {
-          res.render("login");
-        } else {
-          res.render("success_login", {user_name : glider.user_name});
-        }
-      });
-    }
-});
-
 // Fetch from location table in specific region with lat long conditions
 router.get('/getCurrGlider', (req, res) => {
     console.log("getCurrGlider:"+req.query.lat_s+":"+req.query.lat_e+":"+req.query.lng_s+":"+req.query.lng_e);
@@ -56,51 +39,6 @@ router.get('/getCurrGlider', (req, res) => {
 
     }
 });
-
-router.get('/logout', (req, res) => {
-    console.log(req.path+":"+req.cookies._id);
-    res.clearCookie('_id');
-    res.render("login");
-});
-
-router.post('/login', (req, res) => {
-    console.log(req.path+":"+req.body);
-    // console.log(glider.findOne({ user_name: req.body.u_name, password: req.body.pass_wd }));
-    var execObj = glider.findOne({ user_name: req.body.u_name, password: req.body.pass_wd })
-                        .exec();
-    execObj.then(function (glider) {
-      console.log(req.path+":"+"glider:"+glider)
-      if(glider == null)  {
-        res.render("login", {message : "Invalid Username and Password"});
-      } else {
-        res.cookie('_id',glider._id);
-        res.render("success_login", {user_name : glider.user_name});
-      }
-    });
-});
-
-router.post('/signup', (req, res) => {
-    console.log("signup :"+req.param("new_name"));
-    // check duplicate user_name
-    const new_glider = new glider();
-    var validat_msg = "";
-    var execObj = glider.findOne({ user_name: req.body.new_name })
-                        .exec();
-    execObj.then(function (glider) {
-      if(glider != null)  {
-        validat_msg = "Duplicate user";
-      } else {
-        new_glider.user_name = req.body.new_name;
-        new_glider.password  = req.body.new_passwd;
-        new_glider.color     = req.body.new_color;
-        new_glider.save();
-      }
-
-      res.status(200).send("{ \"msg\" : \""+validat_msg+"\" }"); // send json msg
-    });
-});
-
-module.exports = router;
 
 
 
@@ -198,3 +136,5 @@ router.get('/genData', (req, res) => {
 
     res.status(200).send("Generate mockdata successfully"); // send json location data to client
 });
+
+module.exports = router;

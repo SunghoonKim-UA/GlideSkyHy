@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
-const routes = require('./routes/index');
+const routes_user = require('./routes/user');
+const routes_glider = require('./routes/glider');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
@@ -11,7 +12,8 @@ app.set('view engine', 'pug');
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use('/', routes);
+app.use('/user/',   routes_user);
+app.use('/glider/', routes_glider);
 app.use(express.static(path.join(__dirname, './public')));
 
 module.exports = app;
