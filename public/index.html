@@ -392,6 +392,27 @@
 
     }
 
+
+    //function getlocationRealTime()
+    //{
+    //  if (navigator.geolocation) {
+    //    navigator.geolocation.getCurrentPosition(
+    //      (position) => {
+    //        // console.log("position.coords.latitude:"+position.coords.latitude);
+    //        curr_lat = position.coords.latitude;
+    //        curr_lng = position.coords.longitude;
+    //        // console.log("current:"+curr_lat+"//"+curr_lng);
+    //        var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { "xyz", curr_lat, curr_lng, 1000, 1000 } );
+    //      }
+    //    );
+    //  }
+    //}
+//
+    //function locationRealTime()
+    //{
+    //  setInterval(getlocationRealTime(), 10000); // 10sec
+    //}
+
     </script>
 </head>
 
@@ -413,6 +434,9 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">GroundCrew View</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" onclick='locationRealTime()'>RealTime View</a>
           </li>
           <li class="nav-item">
             <a id="signUpTitle" class="nav-link" href="#" data-toggle="modal" data-target="#modSignUp">Sign up</a>

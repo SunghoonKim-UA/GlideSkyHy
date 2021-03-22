@@ -39,3 +39,16 @@ const testSchema = new mongoose.Schema({
 }, {collection:'test'});
 
 module.exports = mongoose.model('test', testSchema);
+
+
+const realtimeSchema = new mongoose.Schema({
+  Name: String,
+  timestamp: Date,
+  lat: Number,
+  lng: Number,
+  alt: Number,
+  vertical_speed: Number,
+}, {collection:'realtime_tracking_db'});
+
+module.exports = mongoose.model('realtime_tracking_db', realtimeSchema);
+

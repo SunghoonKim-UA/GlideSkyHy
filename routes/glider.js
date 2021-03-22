@@ -5,6 +5,7 @@ const glider = mongoose.model('glider');
 const location = mongoose.model('location');
 const history = mongoose.model('flight_history');
 const testWrite = mongoose.model('test');
+const realtime_tracking = mongoose.model('realtime_tracking_db');
 
 // Fetch from location table in specific region with lat long conditions
 router.get('/getCurrGlider', (req, res) => {
@@ -91,15 +92,6 @@ router.post('/Flight_History_Write', (req, res) => {
 router.post('/Location_Update', (req, res) => {
     console.log("Location_Update: "+req.body.Name + " " + req.body.lat+ " " + req.body.lng+ " " + req.body.alt+ " " + req.body.vertical_speed);
 
-    //const newHistoryEntry = new history();
-    //newHistoryEntry.Name = req.body.Name;
-    //newHistoryEntry.timestamp = new Date();
-    //newHistoryEntry.lat = req.body.lat;
-    //newHistoryEntry.lng = req.body.lng;
-    //newHistoryEntry.alt = req.body.alt;
-    //newHistoryEntry.vertical_speed = req.body.vertical_speed;
-    //newHistoryEntry.save();
-
     var execObj = location.findOneAndUpdate({name: req.body.Name}, {$set:{name:req.body.Name, position: [req.body.lat, req.body.lng, req.body.alt, req.body.vertical_speed] }}, {new: true}, (err, doc) => {
     if (err) {
         console.log("Something wrong when updating data!");
@@ -109,6 +101,23 @@ router.post('/Location_Update', (req, res) => {
 });
 
 });
+
+
+
+router.post('/Realtime_Tracking_Write', (req, res) => {
+    console.log("Realtime_Tracking_Write: "+req.body.Name + " " + req.body.lat+ " " + req.body.lng+ " " + req.body.alt+ " " + req.body.vertical_speed);
+
+    const newRealtimeEntry = new realtime_tracking();
+    newRealtimeEntry.Name = req.body.Name;
+    newRealtimeEntry.timestamp = new Date();
+    newRealtimeEntry.lat = req.body.lat;
+    newRealtimeEntry.lng = req.body.lng;
+    newRealtimeEntry.alt = req.body.alt;
+    newRealtimeEntry.vertical_speed = req.body.vertical_speed;
+    newRealtimeEntry.save();
+
+});
+
 
 
 
