@@ -1,8 +1,8 @@
 {
-  "name": "node-docker",
+  "name": "glideskyhy",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,6 +17,9 @@
     "express": "^4.17.1",
     "mongoose": "^5.11.17",
     "pug": "^3.0.0"
+  },
+  "scripts": {
+    "start": "node start.js"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
