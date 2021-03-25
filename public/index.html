@@ -142,7 +142,7 @@
           panes.overlayLayer.appendChild(this.div);
         }
         draw() {
-          const label_width = 80, label_height = 45, history_width = 14;
+          const label_width = 70, label_height = 65, history_width = 6;
           const overlayProjection = this.getProjection();
           // 0. fix the size&location of div&canvas
           const nw_point = overlayProjection.fromLatLngToDivPixel(
@@ -177,11 +177,11 @@
           var stage = new createjs.Stage(this.canvas);
           // 1.1 location label : div element for name&alt and attach it to the div.
           var text_bg = new createjs.Shape();
-          text_bg.graphics.beginFill(this.color).drawRect(point_x, point_y, label_width, label_height);
+          text_bg.graphics.beginFill(this.color).drawRect(point_x-1.2*label_width, point_y+1/4*label_width, label_width, label_height);
           stage.addChild(text_bg);
-          var text = new createjs.Text(this.name+"\n"+this.alt+" ft"+"\n"+this.vert_speed+" knts", "15px Times", "#000000");
-          text.x = point_x;
-          text.y = point_y;
+          var text = new createjs.Text(this.name+"\n"+this.alt+" ft"+"\n"+this.vert_speed+" knts", "20px Times", "#000000");
+          text.x = point_x+history_width-1.2*label_width;
+          text.y = point_y+1/2*history_width+1/4*label_width;
           stage.addChild(text);
 
           // 1.2 image : div element for name&alt and attach it to the div.
@@ -223,10 +223,10 @@
             stage.addChild(history_bg);
 
             // add initial
-            var history_text = new createjs.Text(value.Name.substring(0,1)+seq, "10px Times", color1);
-            history_text.x = calGap(history_point.x, nw_point.x)+history_width/2;
-            history_text.y = calGap(history_point.y, nw_point.y)+history_width/2;
-            stage.addChild(history_text);
+            //var history_text = new createjs.Text(value.Name.substring(0,1)+seq, "10px Times", color1);
+            //history_text.x = calGap(history_point.x, nw_point.x)+history_width/2;
+           // history_text.y = calGap(history_point.y, nw_point.y)+history_width/2;
+            //stage.addChild(history_text);
           });
           // path connecting recent history and current location
           //path1.graphics.setStrokeStyle(10).beginStroke("red")
