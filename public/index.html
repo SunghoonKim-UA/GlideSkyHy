@@ -179,7 +179,7 @@
           var text_bg = new createjs.Shape();
           text_bg.graphics.beginFill(this.color).drawRect(point_x, point_y, label_width, label_height);
           stage.addChild(text_bg);
-          var text = new createjs.Text(this.name+"\n"+this.alt+" ft"+"\n"+this.vert_speed+" knts", "15px Arial", "#000000");
+          var text = new createjs.Text(this.name+"\n"+this.alt+" ft"+"\n"+this.vert_speed+" knts", "15px Times", "#000000");
           text.x = point_x;
           text.y = point_y;
           stage.addChild(text);
@@ -223,16 +223,16 @@
             stage.addChild(history_bg);
 
             // add initial
-            var history_text = new createjs.Text(value.Name.substring(0,1)+seq, "10px Arial", color1);
+            var history_text = new createjs.Text(value.Name.substring(0,1)+seq, "10px Times", color1);
             history_text.x = calGap(history_point.x, nw_point.x)+history_width/2;
             history_text.y = calGap(history_point.y, nw_point.y)+history_width/2;
             stage.addChild(history_text);
           });
           // path connecting recent history and current location
-          path1.graphics.setStrokeStyle(10).beginStroke("red")
-               .moveTo(path_asis_x, path_asis_y).lineTo(glider_icon.x, glider_icon.y);
-          path1.alpha = 0.3;
-          stage.addChild(path1);
+          //path1.graphics.setStrokeStyle(10).beginStroke("red")
+          //     .moveTo(path_asis_x, path_asis_y).lineTo(glider_icon.x, glider_icon.y);
+         // path1.alpha = 0.3;
+          //stage.addChild(path1);
 
           // tilt current location's glider_icon
           var deltaX = glider_icon.x - path_asis_x;
