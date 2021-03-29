@@ -24,16 +24,16 @@ const server = app.listen(PORT, () => {
 
 var https = require('https');
 const fs = require('fs');
-// var key = fs.readFileSync('./selfsigned.key');
-// var cert = fs.readFileSync('./selfsigned.crt');
-//
-// var credentials = {
-//   key: key,
-//   cert: cert
-// };
-//
-// var httpsPort = 8443;
-// const httpsServer = https.createServer(credentials, app)
-//                          .listen(httpsPort, () => {
-//   console.log("Https server listing on port : " + httpsPort)
-// });
+var key = fs.readFileSync('./selfsigned.key');
+var cert = fs.readFileSync('./selfsigned.crt');
+
+var credentials = {
+  key: key,
+  cert: cert
+};
+
+var httpsPort = 8443;
+const httpsServer = https.createServer(credentials, app)
+                         .listen(httpsPort, () => {
+  console.log("Https server listing on port : " + httpsPort)
+});
