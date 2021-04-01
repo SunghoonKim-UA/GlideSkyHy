@@ -393,25 +393,27 @@
     }
 
 
-    //function getlocationRealTime()
-    //{
-    //  if (navigator.geolocation) {
-    //    navigator.geolocation.getCurrentPosition(
-    //      (position) => {
-    //        // console.log("position.coords.latitude:"+position.coords.latitude);
-    //        curr_lat = position.coords.latitude;
-    //        curr_lng = position.coords.longitude;
-    //        // console.log("current:"+curr_lat+"//"+curr_lng);
-    //        var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { "xyz", curr_lat, curr_lng, 1000, 1000 } );
-    //      }
-    //    );
-    //  }
-    //}
-//
-    //function locationRealTime()
-    //{
-    //  setInterval(getlocationRealTime(), 10000); // 10sec
-    //}
+    function getlocationRealTime()
+    {
+     if (navigator.geolocation) {
+       navigator.geolocation.getCurrentPosition(
+         (position) => {
+           // console.log("position.coords.latitude:"+position.coords.latitude);
+           curr_lat = position.coords.latitude;
+           curr_lng = position.coords.longitude;
+           // console.log("current:"+curr_lat+"//"+curr_lng);
+           var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { Name:"xyz", lat:curr_lat, lng:curr_lng, alt:1000, vertical_speed:1000 } );
+         }
+       );
+       setInterval(setTimeout(getlocationRealTime, 10000)); // 10sec
+     }
+    }
+
+    function locationRealTime()
+    {
+      console.log("locationRealTime()::");
+      getlocationRealTime();
+    }
 
     </script>
 </head>
@@ -436,7 +438,7 @@
             <a class="nav-link" href="#">GroundCrew View</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" onclick='locationRealTime()'>RealTime View</a>
+            <a class="nav-link" href="#" onclick='javascript:locationRealTime()'>RealTime View</a>
           </li>
           <li class="nav-item">
             <a id="signUpTitle" class="nav-link" href="#" data-toggle="modal" data-target="#modSignUp">Sign up</a>
