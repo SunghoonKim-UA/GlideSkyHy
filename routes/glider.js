@@ -116,6 +116,7 @@ router.post('/Realtime_Tracking_Write', (req, res) => {
     newRealtimeEntry.vertical_speed = req.body.vertical_speed;
     newRealtimeEntry.save();
 
+    res.status(200).send("Write successfully"); // send response
 });
 
 
@@ -143,7 +144,7 @@ router.get('/genData', (req, res) => {
     hist_mock2.Name = "Aishr"; hist_mock2.lat = 32.451; hist_mock2.lng = -111.424; hist_mock2.alt = 830; hist_mock2.vertical_speed = 10; hist_mock1.timestamp = new Date((new Date()).getTime()-(15*60*1000));
     hist_mock2.save();
 
-    res.status(200).send("Generate mockdata successfully"); // send json location data to client
+    res.status(200).send("Generate mockdata successfully"); // send response
 });
 
 module.exports = router;
