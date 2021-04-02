@@ -4,12 +4,15 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node start.js",
+    "test": "mocha --exit test/*.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.13.14",
+    "@babel/polyfill": "^7.12.1",
     "body-parser": "^1.19.0",
     "bootstrap-colorpicker": "^3.2.0",
     "cookie-parser": "^1.4.5",
@@ -18,10 +21,14 @@
     "mongoose": "^5.11.17",
     "pug": "^3.0.0"
   },
-  "scripts": {
-    "start": "node start.js"
-  },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "@babel/preset-env": "^7.13.12",
+    "@babel/register": "^7.13.14",
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "chromedriver": "^89.0.0",
+    "mocha": "^8.3.2",
+    "nodemon": "^2.0.7",
+    "selenium-webdriver": "^4.0.0-beta.2"
   }
 }

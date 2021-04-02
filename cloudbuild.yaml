@@ -18,9 +18,9 @@ steps:
   entrypoint: npm
   args: ['install']
 # Run tests
-# - name: node
-#   entrypoint: npm
-#   args: ['test']
+- name: node
+  entrypoint: npm
+  args: ['test']
 # Run custom commands
 # - name: node
 #   entrypoint: npm

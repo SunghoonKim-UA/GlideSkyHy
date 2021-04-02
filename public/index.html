@@ -392,9 +392,10 @@
 
     }
 
-    var realtime_counter = 10;
+    var realtime_counter = 0;
     function getlocationRealTime()
     {
+      $("#titleFlight").html("End Flight");
      if (navigator.geolocation) {
        navigator.geolocation.getCurrentPosition(
          (position) => {
@@ -407,16 +408,24 @@
        );
        console.log("realtime_counter:"+realtime_counter);
        realtime_counter = realtime_counter-1;
-       if(realtime_counter>0)
+       if(realtime_counter>0) {
         setInterval(setTimeout(getlocationRealTime, 10000)); // 10sec
+       } else {
+         $("#titleFlight").html("Start Flight");
+       }
      }
     }
 
     function locationRealTime()
     {
       // console.log("locationRealTime()::");
-      realtime_counter = 10;
-      getlocationRealTime();
+      if(realtime_counter == 0) {
+        realtime_counter = 2;
+        getlocationRealTime();
+      } else {
+        $("#titleFlight").html("Start Flight");
+        realtime_counter = 0;
+      }
     }
 
     </script>
@@ -434,19 +443,25 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="#">Pilot View
+            <a id="titlePLV" class="nav-link" href="#">Pilot View
               <span class="sr-only">(current)</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">GroundCrew View</a>
+            <a id="titleGCV" class="nav-link" href="#">GroundCrew View</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" onclick='javascript:locationRealTime()'>RealTime View</a>
+            <a id="titleFlight" class="nav-link" href="#" onclick='javascript:locationRealTime()'>Start flight</a>
           </li>
           <li class="nav-item">
-            <a id="signUpTitle" class="nav-link" href="#" data-toggle="modal" data-target="#modSignUp">Sign up</a>
-            <div class="modal fade" id="modSignUp" tabindex="-1" role="dialog" aria-labelledby="signUpTitle">
+            <a id="titleViewHist" class="nav-link" href="#" data-toggle="modal" data-target="#modViewHist">View History</a>
+            <div class="modal fade" id="modViewHist" tabindex="-1" role="dialog" aria-labelledby="titleViewHist">
+              <div id="dlg_viewhistory" class="modal-dialog" role="document"></div>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a id="titleSignUp" class="nav-link" href="#" data-toggle="modal" data-target="#modSignUp">Sign up</a>
+            <div class="modal fade" id="modSignUp" tabindex="-1" role="dialog" aria-labelledby="titleSignUp">
               <form id="signup" class="user" action="/user/signup" method="POST">
                 <div id="dlg_signup" class="modal-dialog" role="document"></div>
               </form>
@@ -490,6 +505,8 @@
     checkLogin(data);
   });
   $( "#dlg_signup" ).load( "signup.html" );
+  $( "#dlg_viewhistory" ).load( "viewhistory.html" );
+
 
   // 2. LOGIN FORM
   $( "#user" ).submit(function( event ) {
@@ -521,10 +538,7 @@
 
     // Send the data using post
     $.get(url).done(function(data){
-      setCurrTitle4("Log In");
-      $("#dlg_logout").html(data);
-      $("#dlg_login").html("");
-      $("#signUpTitle").show();
+      afterLogout(data);
     });
   });
 

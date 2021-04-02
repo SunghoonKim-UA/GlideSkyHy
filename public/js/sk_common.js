@@ -17,20 +17,33 @@ function setCurrTitle4(data) {
   $("#currTitle4").html(data);
 }
 
+function afterLogin(data) {
+  setCurrTitle4("Info");
+  $("#dlg_logout").html(data);
+  $("#dlg_login").html("");
+  $("#titleGCV").hide();
+  $("#titleSignUp").hide();
+  $("#titleFlight").show();
+  $("#titleViewHist").show();
+  console.log("hi");
+}
+function afterLogout(data) {
+  setCurrTitle4("Log in");
+  $("#dlg_login").html(data);
+  $("#dlg_logout").html("");
+  $("#titleGCV").show();
+  $("#titleSignUp").show();
+  $("#titleFlight").hide();
+  $("#titleViewHist").hide();
+  console.log("bye");
+}
+
 function checkLogin(data)  {
   var id = getCookie("_id");
   if (id != "") {
-    setCurrTitle4("Info");
-    $("#dlg_logout").html(data);
-    $("#dlg_login").html("");
-    $("#signUpTitle").hide();
-    // console.log("hi");
+    afterLogin(data);
   } else {
-    setCurrTitle4("Log in");
-    $("#dlg_login").html(data);
-    $("#dlg_logout").html("");
-    $("#signUpTitle").show();
-    // console.log("bye");
+    afterLogout(data);
   }
 }
 

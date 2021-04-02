@@ -1,3 +1,21 @@
+require('dotenv').config();
+const mongoose = require('mongoose');
+
+mongoose.connect(process.env.DATABASE, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
+mongoose.connection
+  .on('open', () => {
+    console.log('Mongoose connection open');
+  })
+  .on('error', (err) => {
+    console.log(`Connection error: ${err.message}`);
+  });
+
+require('./models/glider');
+
 const express = require('express');
 const path = require('path');
 const routes_user = require('./routes/user');
