@@ -4,8 +4,8 @@ import { Builder, By, Key, Capabilities } from "selenium-webdriver";
 import assert from "assert";
 import { path } from "chromedriver";
 let driver = null;
-const chromeOptions = new chrome.Options().headless();
-// const chromeOptions = new chrome.Options();
+// const chromeOptions = new chrome.Options().headless();
+const chromeOptions = new chrome.Options();
 const URL = "https://glideskyhy.appspot.com";
 const webdriver = require('selenium-webdriver');
 
