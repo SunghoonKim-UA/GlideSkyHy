@@ -72,6 +72,8 @@
         mapTypeId: "satellite",
       });
 
+      // comment out for now
+      //elevator = new google.maps.ElevationService();
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -354,14 +356,27 @@
       map.panTo(latLng);
 
       var userData = $("#currTitle4").html(); // {user_name : glider_user_name} // gives undefined????
-
+      console.log("name: " + userData.user_name);
       $.get("/glider/Location_Current_Read", { name: userData.user_name })
             .done(function(data_Curr_location){
               jQuery.each(data_Curr_location, function( index_cl, value_cl ) {
 
+                /* 
+                elevator.getElevationForLocations(
+                {
+                  locations: [latLng],
+                },
+                (results, status) => {
+                  console.log("status: " + status);
+                  console.log(results);
+                  var elevation = "NULL";
+                  if(status === "OK" && results[0])
+                    elevation = results[0].elevation;
+                 });
+                 */
                   // Save current location to flight_history
                   // Send the data using post
-                  var postingHistory = $.post( "/glider/Flight_History_Write", { Name:value_cl.name, lat:value_cl.position[0], lng:value_cl.position[1], alt:value_cl.position[2], vertical_speed:value_cl.position[3] } );
+                  var postingHistory = $.post( "/glider/Flight_History_Write", { Name:value_cl.name, lat:value_cl.position[0], lng:value_cl.position[1], alt:0, vertical_speed:value_cl.position[3] } );  
 
                   //// Put the results in a div
                   //postingHistory.done(function( data ) {
@@ -395,15 +410,23 @@
     var realtime_counter = 0;
     function getlocationRealTime()
     {
-      $("#titleFlight").html("End Flight");
+    $("#titleFlight").html("End Flight");
      if (navigator.geolocation) {
        navigator.geolocation.getCurrentPosition(
          (position) => {
            // console.log("position.coords.latitude:"+position.coords.latitude);
            curr_lat = position.coords.latitude;
            curr_lng = position.coords.longitude;
+           curr_alt = position.coords.altitude;
            // console.log("current:"+curr_lat+"//"+curr_lng);
-           var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { Name:"xyz", lat:curr_lat, lng:curr_lng, alt:1000, vertical_speed:1000 } );
+            $.get("/user/getMyInfo").done(function(glider){
+                if(glider){
+                  console.log(glider);
+                  var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { Name:glider.name, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:1000 } );
+                } else {
+                  console.log("can't find glider in location db, not updating the position");
+                }
+            });
          }
        );
        console.log("realtime_counter:"+realtime_counter);
@@ -451,7 +474,7 @@
             <a id="titleGCV" class="nav-link" href="#">GroundCrew View</a>
           </li>
           <li class="nav-item">
-            <a id="titleFlight" class="nav-link" href="#" onclick='javascript:locationRealTime()'>Start flight</a>
+            <a id="titleFlight" class="nav-link" href="#" onclick='javascript:locationRealTime()'>Start Flight</a>
           </li>
           <li class="nav-item">
             <a id="titleViewHist" class="nav-link" href="#" data-toggle="modal" data-target="#modViewHist">View History</a>

@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const glider = mongoose.model('glider');
 const testWrite = mongoose.model('test');
+const location = mongoose.model('location');
 
 router.get('/getCurrSt', (req, res) => {
     console.log(req.path+":"+req.cookies._id);
@@ -19,6 +20,19 @@ router.get('/getCurrSt', (req, res) => {
         }
       });
     }
+});
+
+router.get('/getMyInfo', (req, res) => {
+    console.log(req.path+":"+req.cookies._id);
+      var execObj = location.findOne({fly_object: req.cookies._id}).exec();
+      execObj.then(function (glider) {
+        console.log(req.path+":"+"glider:"+glider)
+        if(glider == null)  {
+          console.log("glider not found in location db");
+        }
+        res.status(200).send(glider);
+        
+      });
 });
 
 router.get('/logout', (req, res) => {
