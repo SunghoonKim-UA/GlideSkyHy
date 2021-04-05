@@ -222,7 +222,7 @@ function initMap() {
     }
   }
 
-  let image = "/img/glider.png";
+  let image = "../img/glider.png";
 
   redraw();
 

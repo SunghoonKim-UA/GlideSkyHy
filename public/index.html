@@ -67,16 +67,22 @@
     }
 
     var realtime_counter = 0;
-    function getlocationRealTime()
+    var old_lat, old_lng, inc = 2;
+
+    function getlocationRealTime(glider_icon)
     {
     $("#titleFlight").html("End Flight");
      if (navigator.geolocation) {
        navigator.geolocation.getCurrentPosition(
          (position) => {
            // console.log("position.coords.latitude:"+position.coords.latitude);
-           curr_lat = position.coords.latitude;
-           curr_lng = position.coords.longitude;
+           old_lat = curr_lat;
+           old_lng = curr_lng
+           curr_lat = position.coords.latitude+inc;
+           curr_lng = position.coords.longitude+inc;
            curr_alt = position.coords.altitude;
+           var google_lat_lng = new google.maps.LatLng(curr_lat, curr_lng);
+           inc += 1;
            // console.log("current:"+curr_lat+"//"+curr_lng);
             $.get("/user/getMyInfo").done(function(glider){
                 if(glider){
@@ -86,12 +92,99 @@
                   console.log("can't find glider in location db, not updating the position");
                 }
             });
+
+          map.setCenter({lat:curr_lat, lng:curr_lng});
+          //glider_icon.x = curr_lat;
+          //glider_icon.y = curr_lng;
+          glider_icon.setPosition(google_lat_lng);
+
+          // Add edge
+
+          
+          //console.log("first " + first);
+          //if (first == 0){
+          const flightPlanCoordinates = [
+            { lat: old_lat, lng: old_lng },
+            { lat: curr_lat, lng: curr_lng },
+          ];
+          const flightPath = new google.maps.Polyline({
+            path: flightPlanCoordinates,
+            geodesic: true,
+            strokeColor: "red",
+            strokeOpacity: 0.3,
+            strokeWeight: 10,
+          });
+
+          var marker = new google.maps.Marker({
+            position: google_lat_lng,
+            //icon: icons[feature.type].icon,
+            icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 5,
+                  },
+            map: map
+          });
+
+          flightPath.setMap(map);
+          //}
+          //first = 0;
+    
+
          }
        );
        console.log("realtime_counter:"+realtime_counter);
        realtime_counter = realtime_counter-1;
        if(realtime_counter>0) {
-        setInterval(setTimeout(getlocationRealTime, 10000)); // 10sec
+        
+        let image = "/img/glider.png";
+        //const label_width = 70, label_height = 65;
+        //var glider_icon = new createjs.Bitmap(this.image);
+        //glider_icon.scaleX = 1/3; glider_icon.scaleY = 1/3;
+        //glider_icon.regX = 44;
+        //glider_icon.regY = 58;
+        //glider_icon.x = -900;
+        //glider_icon.y = -900;
+        //// add shadow by glider's height
+        //glider_icon.shadow = new createjs.Shadow("#000000", this.alt/200, this.alt/200, 10);
+        //var stage = new createjs.Stage(this.canvas);
+        //stage.addChild(glider_icon);
+
+        var iconBase = '/img/';
+        //var icons = {
+        //  pilot: {
+        //    icon: {
+        //              url: iconBase + 'glider.png', // url
+        //              scaledSize: new google.maps.Size(50, 50) // size
+        //          };
+        //  }
+        //};
+
+        var icon = {
+                  url: iconBase + 'glider.png', // url
+                  scaledSize: new google.maps.Size(100, 100) // size
+              };
+
+        const feature =  {
+                           position: new google.maps.LatLng(0, 0),
+                           type: "pilot",
+                         };
+        function addMarker(feature) {
+          var marker = new google.maps.Marker({
+            position: feature.position,
+            //icon: icons[feature.type].icon,
+            icon: icon,
+            map: map
+          });
+          return marker;
+        }
+        var glider_icon = addMarker(feature);
+
+        //function updateMarker(marker) {
+        //  marker.setPosition(results[0].geometry.location);
+        //}
+        //first = 1;
+        setInterval(setTimeout(getlocationRealTime, 10000, glider_icon)); // 10sec
+       
        } else {
          $("#titleFlight").html("Start Flight");
        }
