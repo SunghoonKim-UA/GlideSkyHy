@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const glider = mongoose.model('glider');
 const testWrite = mongoose.model('test');
 const location = mongoose.model('location');
+const realtime_tracking = mongoose.model('realtime_tracking_db');
 
 router.get('/getCurrSt', (req, res) => {
     console.log(req.path+":"+req.cookies._id);
@@ -36,9 +37,11 @@ router.get('/getMyInfo', (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-    console.log(req.path+":"+req.cookies._id);
+    console.log(req.path+":"+req.cookies._id)
+    location.findOneAndDelete({fly_object: req.cookies._id}).exec();
     res.clearCookie('_id');
     res.render("login");
+   
 });
 
 router.post('/login', (req, res) => {
@@ -51,10 +54,22 @@ router.post('/login', (req, res) => {
       if(glider == null)  {
         res.render("login", {message : "Invalid Username and Password"});
       } else {
-        res.cookie('_id',glider._id);
-        res.render("success_login", {user_name : glider.user_name});
+          res.cookie('_id',glider._id);
+          res.render("success_login", {user_name : glider.user_name});
+        
+          const newTestEntry = new location();
+          newTestEntry.name = req.body.u_name;
+          newTestEntry.position[0] = 32.429316;
+          newTestEntry.position[1]= -111.388436;
+          newTestEntry.position[2] = 2100;
+          newTestEntry.position[3] = 0;
+          newTestEntry.fly_object = glider._id;
+          //newTestEntry.type = "pilot"
+          newTestEntry.save();
+          res.status(200).send(location); // send json location data to client
       }
-    });
+  });
+
 });
 
 router.post('/signup', (req, res) => {
