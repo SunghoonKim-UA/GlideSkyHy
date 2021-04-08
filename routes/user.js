@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const glider = mongoose.model('glider');
-const testWrite = mongoose.model('test');
+// const testWrite = mongoose.model('test');
 const location = mongoose.model('location');
-const realtime_tracking = mongoose.model('realtime_tracking_db');
+// const realtime_tracking = mongoose.model('realtime_tracking_db');
 
 router.get('/getCurrSt', (req, res) => {
     console.log(req.path+":"+req.cookies._id);
@@ -13,7 +13,7 @@ router.get('/getCurrSt', (req, res) => {
     } else {
       var execObj = glider.findById(req.cookies._id).exec();
       execObj.then(function (glider) {
-        console.log(req.path+":"+"glider:"+glider)
+        console.log(req.path+":"+"glider:"+glider);
         if(glider == null)  {
           res.render("login");
         } else {
@@ -27,21 +27,21 @@ router.get('/getMyInfo', (req, res) => {
     console.log(req.path+":"+req.cookies._id);
       var execObj = location.findOne({fly_object: req.cookies._id}).exec();
       execObj.then(function (glider) {
-        console.log(req.path+":"+"glider:"+glider)
+        console.log(req.path+":"+"glider:"+glider);
         if(glider == null)  {
           console.log("glider not found in location db");
         }
         res.status(200).send(glider);
-        
+
       });
 });
 
 router.get('/logout', (req, res) => {
-    console.log(req.path+":"+req.cookies._id)
+    console.log(req.path+":"+req.cookies._id);
     location.findOneAndDelete({fly_object: req.cookies._id}).exec();
     res.clearCookie('_id');
     res.render("login");
-   
+
 });
 
 router.post('/login', (req, res) => {
@@ -50,13 +50,13 @@ router.post('/login', (req, res) => {
     var execObj = glider.findOne({ user_name: req.body.u_name, password: req.body.pass_wd })
                         .exec();
     execObj.then(function (glider) {
-      console.log(req.path+":"+"glider:"+glider)
+      console.log(req.path+":"+"glider:"+glider);
       if(glider == null)  {
         res.render("login", {message : "Invalid Username and Password"});
       } else {
           res.cookie('_id',glider._id);
           res.render("success_login", {user_name : glider.user_name});
-        
+
           const newTestEntry = new location();
           newTestEntry.name = req.body.u_name;
           newTestEntry.position[0] = 32.429316;
@@ -73,7 +73,7 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/signup', (req, res) => {
-    console.log("signup :"+req.param("new_name"));
+    console.log("signup :"+req.body.new_name);
     // check duplicate user_name
     const new_glider = new glider();
     var validat_msg = "";
@@ -89,7 +89,7 @@ router.post('/signup', (req, res) => {
         new_glider.save();
       }
 
-      res.status(200).send("{ \"msg\" : \""+validat_msg+"\" }"); // send json msg
+      res.status(200).json({ "msg" : validat_msg }); // send json msg
     });
 });
 

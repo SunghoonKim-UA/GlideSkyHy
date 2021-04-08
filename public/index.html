@@ -122,15 +122,15 @@
           flightPath.setMap(map);
 
           // Todo: rotation changes
-    
-    
+
+
 
          }
        );
        console.log("realtime_counter:"+realtime_counter);
        realtime_counter = realtime_counter-1;
        if(realtime_counter>0) {
-        
+
         let image = "/img/glider.png";
 
         var iconBase = '/img/';
@@ -156,7 +156,7 @@
 
 
         setInterval(setTimeout(getlocationRealTime, 10000, glider_icon)); // 10sec
-       
+
        } else {
          $("#titleFlight").html("Start Flight");
        }
@@ -304,13 +304,11 @@
       // Send the data using post
       $.post(url, { new_name:v_new_name, new_passwd:v_new_passwd, new_color:v_new_color } )
        .done(function(data){
-         var obj = jQuery.parseJSON(data);
-         // console.log(obj.msg);
-        if(obj.msg == "") {
+        if(data.msg == "") {
           $("#signupMsg").html("Signed up successfully.");
           $("#signupBtn").hide();
         } else {
-          $("#signupMsg").html(obj.msg);
+          $("#signupMsg").html(data.msg);
         }
       });
     });

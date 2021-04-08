@@ -18,5 +18,5 @@ var credentials = {
 var httpsPort = 8443;
 const httpsServer = https.createServer(credentials, app)
                          .listen(httpsPort, () => {
-  console.log("Https server listing on port : " + httpsPort)
+  console.log("Https server listing on port : " + httpsServer.address().port);
 });
