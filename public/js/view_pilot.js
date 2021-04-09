@@ -1,3 +1,4 @@
+
 function initMap() {
   var overlayObjList = [];
   map = new google.maps.Map(document.getElementById("map"), {
@@ -273,70 +274,46 @@ function initMap() {
 
 
 
+
+
+
   // MouseEvent = click
   map.addListener("click", (e) => {
     placeMarkerAndPanTo(e.latLng, map);
   });
 
+  
 
 }
 
 
+
 function placeMarkerAndPanTo(latLng, map) {
-  new google.maps.Marker({ // create new marker for clicked location
+  const marker = new google.maps.Marker({ // create new marker for clicked location
     position: latLng,
     map: map,
   });
   map.panTo(latLng);
 
-  var userData = $("#currTitle4").html(); // {user_name : glider_user_name} // gives undefined????
-  console.log("name: " + userData.user_name);
-  $.get("/glider/Location_Current_Read", { name: userData.user_name })
-        .done(function(data_Curr_location){
-          jQuery.each(data_Curr_location, function( index_cl, value_cl ) {
-
-            /*
-            elevator.getElevationForLocations(
-            {
-              locations: [latLng],
-            },
-            (results, status) => {
-              console.log("status: " + status);
-              console.log(results);
-              var elevation = "NULL";
-              if(status === "OK" && results[0])
-                elevation = results[0].elevation;
-             });
-             */
-              // Save current location to flight_history
-              // Send the data using post
-              var postingHistory = $.post( "/glider/Flight_History_Write", { Name:value_cl.name, lat:value_cl.position[0], lng:value_cl.position[1], alt:0, vertical_speed:value_cl.position[3] } );
-
-              //// Put the results in a div
-              //postingHistory.done(function( data ) {
-              //  //checkLogin(data);
-              //});
-
-              var newAlt = value_cl.position[2]-300;
-              var postingLocation = $.post( "/glider/Location_Update", { Name:value_cl.name, lat:latLng.lat(), lng:latLng.lng(), alt:newAlt, vertical_speed: newAlt - value_cl.position[2] } );
-
-
-
-              // Add edge
-              const flightPlanCoordinates = [
-                { lat: value_cl.position[0], lng: value_cl.position[1] },
-                { lat: latLng.lat(), lng: latLng.lng() },
-              ];
-              const flightPath = new google.maps.Polyline({
-                path: flightPlanCoordinates,
-                geodesic: true,
-                strokeColor: "red",
-                strokeOpacity: 0.3,
-                strokeWeight: 10,
-              });
-              flightPath.setMap(map);
-
-          });
-  });
+  click_markers.push(marker);
 
 }
+  
+
+// Sets the map on all markers in the array.
+function setMapOnAll(map) {
+  for (let i = 0; i < click_markers.length; i++) {
+    click_markers[i].setMap(map);
+  }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+  setMapOnAll(null);
+}
+//
+//// Shows any markers currently in the array.
+//function showMarkers() {
+//  setMapOnAll(map);
+//}
+

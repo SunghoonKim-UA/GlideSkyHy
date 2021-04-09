@@ -52,6 +52,8 @@
   <script>
 
     let map;
+    let click_markers = [];
+
     var curr_lat = 0;
     var curr_lng = 0;
     // get current location
@@ -174,6 +176,16 @@
       }
     }
 
+
+
+
+  // Deletes all markers in the array by removing references to them.
+  function deleteMarkers() {
+    clearMarkers();
+    click_markers = [];
+  }
+
+
     </script>
 </head>
 
@@ -198,6 +210,9 @@
           </li>
           <li class="nav-item">
             <a id="titleFlight" class="nav-link" href="#" onclick='javascript:locationRealTime()'>Start Flight</a>
+          </li>
+          <li class="nav-item">
+            <a id="titleFlight" class="nav-link" href="#" onclick='javascript:deleteMarkers()'>Clear Clicks</a>
           </li>
           <li class="nav-item">
             <a id="titleViewHist" class="nav-link" href="#" data-toggle="modal" data-target="#modViewHist">View History</a>
