@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 // const glider = mongoose.model('glider');
+const flight = mongoose.model('flight');
 const location = mongoose.model('location');
 const history = mongoose.model('flight_history');
 const testWrite = mongoose.model('test');
@@ -122,6 +123,22 @@ router.post('/Realtime_Tracking_Write', (req, res) => {
     res.status(200).send("Write successfully"); // send response
 });
 
+
+
+
+
+router.post('/Flight_Write', (req, res) => {
+    console.log("Flight_Write: "+req.body.flight_id + " " + req.body.start+ " " + req.body.end+ " " + req.body.duration);
+
+    const newflight = new flight();
+    newflight.flight_id = req.body.flight_id;
+    newflight.start = req.body.start;
+    newflight.end = req.body.end;
+    newflight.duration = req.body.duration;
+    newflight.save();
+
+    res.status(200).send("Write successfully"); // send response
+});
 
 
 

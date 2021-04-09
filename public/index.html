@@ -87,6 +87,7 @@
 
     
     var old_lat, old_lng, inc = 0;
+    var startFlightTime;
 
     function getlocationRealTime(glider_icon)
     {
@@ -118,7 +119,7 @@
 
           glider_icon.setPosition(google_lat_lng);
 
-          glider_icon.icon.rotation = 45;
+          //glider_icon.icon.setRotation(45);
 
           // Add edge
           const flightPlanCoordinates = [
@@ -167,12 +168,22 @@
          
          //deleteRealTimeMarkers(); 
          //marker.setMap(null);
+
+          var d = new Date();
+          var t2 = d.getUTCSeconds();
+          var t1 = startFlightTime.getUTCSeconds();
+          var postingFlight_Write = $.post( "/glider/Flight_Write", { flight_id: getCookie("_id"), start: startFlightTime.toLocaleString(), end: d.toLocaleString(), duration:t2-t1} );
+
        }
+
+
      }
     }
 
     function locationRealTime()
     {
+
+
       // console.log("locationRealTime()::");
       if(realtime_counter == 0) {
         realtime_counter = 10000; // Can record 27.78 hrs realtime flight  data
@@ -185,7 +196,7 @@
         var icon = {
                   url: iconBase + 'glider.png', // url
                   scaledSize: new google.maps.Size(100, 100), // size
-                  rotation: 45
+                  rotation: [45]
               };
 
         const feature =  {
@@ -238,7 +249,7 @@
             <a id="titleGCV" class="nav-link" href="#" onclick='javascript:initMapHistory()'>History View</a>
           </li>
           <li class="nav-item">
-            <a id="titleFlight" class="nav-link" href="#" onclick='javascript:locationRealTime()'>Start Flight</a>
+            <a id="titleFlight" class="nav-link" href="#" onclick='javascript: startFlightTime = new Date(); locationRealTime()'>Start Flight</a>
           </li>
           <li class="nav-item">
             <a id="titleFlight" class="nav-link" href="#" onclick='javascript:deleteMarkers()'>Clear Clicks</a>

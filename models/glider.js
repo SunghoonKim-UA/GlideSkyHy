@@ -1,5 +1,16 @@
 const mongoose = require('mongoose');
 
+
+const flightSchema = new mongoose.Schema({
+  flight_id: String,
+  start: String,
+  end: String,
+  duration: Number,
+}, {collection:'flight'});
+
+module.exports = mongoose.model('flight', flightSchema);
+
+
 const gliderSchema = new mongoose.Schema({
   user_name: String,
   password: String,
