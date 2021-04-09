@@ -36,11 +36,11 @@ function initMapHistory() {
       if (this.div) {
         this.div.style.left = "0px";
         this.div.style.top = "0px";
-        this.div.style.width  = "500px";
+        this.div.style.width  = "700px";
         this.div.style.height = "100px";
         this.canvas.style.left = "0px";
         this.canvas.style.top = "0px";
-        this.canvas.width  = "500";
+        this.canvas.width  = "700";
         this.canvas.height = "100";
       }
 

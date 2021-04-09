@@ -388,7 +388,7 @@
 
 
     $( "#flightHistory" ).submit(function( event ) {
-      console.log("View flight history start");
+      console.log("View flight history start" + event.target.response);
 
       event.preventDefault();
 
@@ -397,6 +397,9 @@
         //v_u_name = $form.find( "input[id='u_name']" ).val(),
         //v_pass_wd = $form.find( "input[id='pass_wd']" ).val(),
         url = $form.attr( "action" );
+
+
+
         // console.log("term:"+v_u_name);
   
       // Send the data using post

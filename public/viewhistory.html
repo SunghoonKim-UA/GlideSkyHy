@@ -19,7 +19,10 @@
               jQuery.each(glider_all, function( index, glider ) { 
                 if(glider){
                   console.log(glider);
-                    $(".table_flight_history").append("<tr><td>"+"  "+"</td><td>"+glider.start+"</td><td>"+glider.end+"</td><td>"+glider.duration+"  </td></tr>");
+                    //$(".table_flight_history").append("<tr><td>"+"  "+"</td><td>"+glider.start+"</td><td>"+glider.end+"</td><td>"+glider.duration+"  </td></tr>");
+                    // checkbox
+                    $(".table_flight_history").append("<tr><td><input type=\"checkbox\" value="+glider.flight_id+"> "+"</td><td>"+glider.start+"</td><td>"+glider.end+"</td><td>"+glider.duration+"  </td></tr>");
+
                     //$(".table_flight_history").append("<tr><input type="checkbox" id="flight_hist_box"+glider.flight_id name="flight_hist_box1"+glider.flight_id value=glider.flight_id><label for="flight_hist_box1"+glider.flight_id>  </label><td>"+"</td><td>"+glider.start+"</td><td>"+glider.end+"</td><td>"+glider.duration+"  </td></tr>");
                 } else {
                   console.log("can't find glider in flight db");
@@ -27,13 +30,22 @@
             });
           });
 
+
+          function getCheckbox() {
+            // loop through each input element and output the value of any checkbox elements
+            for(x=0;x<document.getElementsByTagName('input').length;x++){
+              if(document.getElementsByTagName('input').item(x).type=='checkbox' && document.getElementsByTagName('input').item(x).checked==true){
+                return document.getElementsByTagName('input').item(x).value;
+              }
+            };
+          }
           
         </script>  
       </table>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      <button type="submit" id="signupBtn2" class="btn btn-primary">Share Tweet</button>
-      <button type="submit" id="ViewHistBtn" class="btn btn-primary">View</button>
+      <button type="button" id="signupBtn2" class="btn btn-primary">Share Tweet</button>
+      <button type="submit" id="ViewHistBtn" class="btn btn-primary"  onsubmit="return getCheckbox()">View</button>
     </div>
   </div>
