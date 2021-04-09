@@ -75,6 +75,23 @@ router.get('/Location_Current_Read', (req, res) => {
 
 
 
+
+router.get('/Flight_Read', (req, res) => {
+    console.log(req.path+":"+req.cookies._id);
+      var execObj = location.find({user_id: req.cookies._id}).exec();
+      execObj.then(function (glider) {
+        console.log(req.path+":"+"glider:"+glider);
+        if(glider == null)  {
+          console.log("glider not found in location db");
+        }
+        console.log("Flight_Read: "+glider);
+        res.status(200).send(glider);
+
+      });
+});
+
+
+
 router.post('/Flight_History_Write', (req, res) => {
     console.log("Flight_History_Write: "+req.body.Name + " " + req.body.lat+ " " + req.body.lng+ " " + req.body.alt+ " " + req.body.vertical_speed);
 
@@ -140,6 +157,8 @@ router.post('/Flight_Write', (req, res) => {
 
     res.status(200).send("Write successfully"); // send response
 });
+
+
 
 
 

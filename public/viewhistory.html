@@ -1,10 +1,32 @@
-  <div class="modal-content">
+  <div class="modal-content"  onload="loadTableContents();">
     <div class="modal-header">
       <h4 class="modal-title" id="myModalLabel">View History</h4>
     </div>
     <div class="modal-body">
-      <table class="table table-striped">
-        <tr><td>Select</td><td>Start</td><td>End</td><td>Length</td></tr>
+      <table class="table_flight_history">
+        <tr><td>Select</td><td>Flight Id</td><td>Start</td><td>End</td><td>Duration</td></tr>
+        
+
+        <script>
+          //for(var i = 0; i < customers.length; i++) {
+          //   $(".table_flight_history").append("<tr><td>"+'id'+"</td><td>"+'Start'+"</td><td>"+'customers[i].rentCost'+"</td><td>"+'Duration'+"</td></tr>");
+          //}
+/*
+          $.get("./routes/glider/Flight_Read").done(function(glider_all){
+            console.log("rest  ./routes/glider/Flight_Read  "+glider_all);
+              jQuery.each(glider_all, function( index, glider ) { 
+                if(glider){
+                  console.log(glider);
+                    $(".table_flight_history").append("<tr><td>"+"  "+"</td><td>"+glider.flight_id+"</td><td>"+glider.start+"</td><td>"+glider.end+"</td><td>"+glider.duration+"  </td></tr>");
+                } else {
+                  console.log("can't find glider in flight db");
+                }
+            });
+          });
+
+          */
+        </script>  
+
       </table>
     </div>
     <div class="modal-footer">
