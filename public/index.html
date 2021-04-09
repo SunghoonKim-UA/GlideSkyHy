@@ -166,7 +166,7 @@
     {
       // console.log("locationRealTime()::");
       if(realtime_counter == 0) {
-        realtime_counter = 2;
+        realtime_counter = 10000; // Can record 27.78 hrs realtime flight  data
         getlocationRealTime();
       } else {
         $("#titleFlight").html("Start Flight");
