@@ -80,7 +80,7 @@ router.get('/Location_Current_Read', (req, res) => {
 
 router.get('/Flight_Read', (req, res) => {
     console.log(req.path+":"+req.cookies._id);
-      var execObj = location.find({user_id: req.cookies._id}).exec();
+      var execObj = flight.find({user_id: req.cookies._id}).exec();
       execObj.then(function (glider) {
         console.log(req.path+":"+"glider:"+glider);
         if(glider == null)  {
@@ -95,11 +95,11 @@ router.get('/Flight_Read', (req, res) => {
 
 
 
-router.get('/Flight_Read_flightid', (req, res) => {
+router.get('/Realtime_Tracking_Read_FlightId', (req, res) => {
     console.log(req.path+": "+req.query.flight_id);
-      var execObj = location.find({flight_id: req.query.flight_id}).exec();
+      var execObj = realtime_tracking.find({flight_id: req.query.flight_id}).exec();
       execObj.then(function (glider) {
-        console.log(req.path+":"+"glider:"+glider);
+        console.log(req.path+":"+"glider: "+glider);
         if(glider == null)  {
           console.log("glider not found in location db");
         }

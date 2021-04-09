@@ -86,11 +86,6 @@
     }
 
 
-    function showFlightHistoryMarkers() {
-      clearRealTimeMarkers();
-      realtime_markers = [];
-    }
-
 
     function deleteFlightHistoryMarkers() {
       clearFlightHistoryMarkers();
@@ -263,7 +258,7 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
-            <a id="titlePLV" class="nav-link" href="#" onclick='javascript:initMap(); realtime_counter=0; deleteRealTimeMarkers(); '>Pilot New View
+            <a id="titlePLV" class="nav-link" href="#" onclick='javascript:initMap(); realtime_counter=0; deleteRealTimeMarkers(); deleteFlightHistoryMarkers();'>Pilot New View
               <span class="sr-only">(current)</span>
             </a>
           </li>
@@ -420,10 +415,55 @@
             });
 
             
-            for (let item of hist) {
-              console.log("hist : "+item);
+            for (let fl_id of hist) {
+              console.log("hist : "+fl_id);
+                $.get("/glider/Realtime_Tracking_Read_FlightId", { flight_id: fl_id})
+                    .done(function(data){
+                      jQuery.each(data, function( index, value ) { // for each: index in data update glider position
+                        //console.log("loop 2: "+index);
+                        console.log("loop 2: "+value.flight_id);
 
-              
+
+
+                        // Add edge
+                        if(index > 0){
+
+                            const flighthistoryPlanCoordinates = [
+                              { lat: data[index-1].lat, lng: data[index-1].lng },
+                              { lat: data[index].lat, lng: data[index].lng },
+                            ];
+                            const flighthistoryPath = new google.maps.Polyline({
+                              path: flighthistoryPlanCoordinates,
+                              geodesic: true,
+                              strokeColor: "red",
+                              strokeOpacity: 0.3,
+                              strokeWeight: 10,
+                            });
+                  
+                    
+                  
+                            flighthistoryPath.setMap(map);
+
+                        }
+                        
+
+
+                        var google_lat_lng = new google.maps.LatLng(value.lat, value.lng);
+                        var marker_fh = new google.maps.Marker({
+                          position: google_lat_lng,
+                          icon: {
+                                  path: google.maps.SymbolPath.CIRCLE,
+                                  scale: 5,
+                                },
+                          map: map
+                        });
+
+                        flighthistory_markers.push(marker_fh);
+                      
+                      });
+          
+                });
+
 
             }
 

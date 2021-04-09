@@ -326,3 +326,18 @@ function clearRealTimeMarkers() {
   setMapOnAll_RealTime(null);
 }
 
+
+
+// Sets the map on all markers in the array.
+function setMapOnAll_FlightHistory(map) {
+  for (let i = 0; i < flighthistory_markers.length; i++) {
+    flighthistory_markers[i].setMap(map);
+  }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearFlightHistoryMarkers() {
+  setMapOnAll_FlightHistory(null);
+}
+
+
