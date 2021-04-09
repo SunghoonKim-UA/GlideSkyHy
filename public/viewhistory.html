@@ -1,13 +1,15 @@
-  <div class="modal-content"  onload="loadTableContents();">
+  <div class="modal-content" >
     <div class="modal-header">
       <h4 class="modal-title" id="myModalLabel">View History</h4>
     </div>
     <div class="modal-body">
-      <table class="table_flight_history">
-        <tr><td>Select</td><td>Flight Id</td><td>Start</td><td>End</td><td>Duration</td></tr>
-        
+      <table class="table_flight_history" id="table_flight_history_id">
+        <tr><th> &nbsp;&nbsp;&nbsp;  Select &nbsp;&nbsp;&nbsp;  </th><th> &nbsp;&nbsp;&nbsp;  Flight Id &nbsp;&nbsp;&nbsp;  </th><th>&nbsp;&nbsp;&nbsp;   Start &nbsp;&nbsp;&nbsp;  </th><th> &nbsp;&nbsp;&nbsp;  End &nbsp;&nbsp;&nbsp;  </th><th>  &nbsp;&nbsp;&nbsp; Duration &nbsp;&nbsp;&nbsp;  </th></tr>
 
-        <script>
+
+        <tbody id="table_flight_history_id_tbody"></tbody> 
+
+       <!-- <script>
           //for(var i = 0; i < customers.length; i++) {
           //   $(".table_flight_history").append("<tr><td>"+'id'+"</td><td>"+'Start'+"</td><td>"+'customers[i].rentCost'+"</td><td>"+'Duration'+"</td></tr>");
           //}
@@ -25,12 +27,11 @@
           });
 
           */
-        </script>  
-
+        </script>  -->
       </table>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      <button type="submit" id="signupBtn" class="btn btn-primary">Share SNS</button>
+      <button type="submit" id="signupBtn" class="btn btn-primary">Share Tweet</button>
     </div>
   </div>
