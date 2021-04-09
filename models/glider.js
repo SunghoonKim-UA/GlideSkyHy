@@ -55,6 +55,7 @@ module.exports = mongoose.model('test', testSchema);
 
 const realtimeSchema = new mongoose.Schema({
   Name: String,
+  flight_id: String,
   timestamp: Date,
   lat: Number,
   lng: Number,

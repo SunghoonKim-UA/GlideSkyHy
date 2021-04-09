@@ -122,7 +122,7 @@
             $.get("/user/getMyInfo").done(function(glider){
                 if(glider){
                   console.log(glider);
-                  var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { Name:glider.name, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:1000 } );
+                  var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { Name:glider.name, flight_id: glider._id, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:1000 } );
                 } else {
                   console.log("can't find glider in location db, not updating the position");
                 }
@@ -279,7 +279,9 @@
           <li class="nav-item">
             <a id="titleViewHist" class="nav-link" href="#" data-toggle="modal" data-target="#modViewHist">View History</a>
             <div class="modal fade" id="modViewHist" tabindex="-1" role="dialog" aria-labelledby="titleViewHist">
-              <div id="dlg_viewhistory" class="modal-dialog" role="document"></div>
+              <form id="flightHistory" class="user" action="/user/flightHistory" method="GET">
+                <div id="dlg_viewhistory" class="modal-dialog" role="document"></div>
+              </form>
             </div>
           </li>
           <li class="nav-item">
@@ -389,6 +391,50 @@
       });
     });
 
+
+    $( "#flightHistory" ).submit(function( event ) {
+      console.log("View flight history start");
+
+      event.preventDefault();
+
+      // Get some values from elements on the page:
+      var $form = $( this ),
+        //v_u_name = $form.find( "input[id='u_name']" ).val(),
+        //v_pass_wd = $form.find( "input[id='pass_wd']" ).val(),
+        url = $form.attr( "action" );
+        // console.log("term:"+v_u_name);
+  
+      // Send the data using post
+      //var posting = $.get( url, { u_name:v_u_name, pass_wd:v_pass_wd } );
+
+          const hist = new Set()
+
+          $.get(url, { user_id: "6038278a0bd3bb3156166381"})
+          .done(function(data){
+            jQuery.each(data, function( index, value ) { // for each: index in data update glider position
+              //console.log("loop : "+index);
+              console.log("loop : "+value.flight_id);
+
+              hist.add(value.flight_id);
+            
+            });
+
+            
+            for (let item of hist) {
+              console.log("hist : "+item);
+
+              
+
+            }
+
+
+
+          });
+
+
+
+
+    });
 
   
 

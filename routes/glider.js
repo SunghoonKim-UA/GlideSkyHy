@@ -76,6 +76,8 @@ router.get('/Location_Current_Read', (req, res) => {
 
 
 
+
+
 router.get('/Flight_Read', (req, res) => {
     console.log(req.path+":"+req.cookies._id);
       var execObj = location.find({user_id: req.cookies._id}).exec();
@@ -85,6 +87,23 @@ router.get('/Flight_Read', (req, res) => {
           console.log("glider not found in location db");
         }
         console.log("Flight_Read: "+glider);
+        res.status(200).send(glider);
+
+      });
+});
+
+
+
+
+router.get('/Flight_Read_flightid', (req, res) => {
+    console.log(req.path+": "+req.query.flight_id);
+      var execObj = location.find({flight_id: req.query.flight_id}).exec();
+      execObj.then(function (glider) {
+        console.log(req.path+":"+"glider:"+glider);
+        if(glider == null)  {
+          console.log("glider not found in location db");
+        }
+        console.log(req.path+": "+glider);
         res.status(200).send(glider);
 
       });
@@ -130,6 +149,7 @@ router.post('/Realtime_Tracking_Write', (req, res) => {
 
     const newRealtimeEntry = new realtime_tracking();
     newRealtimeEntry.Name = req.body.Name;
+    newRealtimeEntry.flight_id = req.body.flight_id;
     newRealtimeEntry.timestamp = new Date();
     newRealtimeEntry.lat = req.body.lat;
     newRealtimeEntry.lng = req.body.lng;

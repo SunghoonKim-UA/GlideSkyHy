@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const glider = mongoose.model('glider');
+const flight = mongoose.model('flight');
 // const testWrite = mongoose.model('test');
 const location = mongoose.model('location');
 // const realtime_tracking = mongoose.model('realtime_tracking_db');
@@ -35,6 +36,19 @@ router.get('/getMyInfo', (req, res) => {
 
       });
 });
+
+router.get('/flightHistory', (req, res) => {
+    console.log(req.path+": "+req.query.user_id);
+    var execObj = flight.find({user_id: req.query.user_id}).exec();
+    execObj.then(function (glider) {
+      console.log(req.path+":"+"glider:  "+glider);
+      if(glider == null)  {
+        console.log("glider not found in location db");
+      }
+      res.status(200).send(glider);
+    }); 
+});
+
 
 router.get('/logout', (req, res) => {
     console.log(req.path+":"+req.cookies._id);
