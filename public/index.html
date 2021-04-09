@@ -52,7 +52,10 @@
   <script>
 
     let map;
+    var realtime_counter = 0;
     let click_markers = [];
+    let realtime_markers = [];
+    var glider_icon;
 
     var curr_lat = 0;
     var curr_lng = 0;
@@ -68,8 +71,22 @@
       );
     }
 
-    var realtime_counter = 0;
-    var old_lat, old_lng;
+
+
+    // Deletes all markers in the array by removing references to them.
+    function deleteMarkers() {
+      clearMarkers();
+      click_markers = [];
+    }
+  
+    function deleteRealTimeMarkers() {
+      clearRealTimeMarkers();
+      realtime_markers = [];
+    }
+
+
+    
+    var old_lat, old_lng, inc = 0;
 
     function getlocationRealTime(glider_icon)
     {
@@ -78,11 +95,14 @@
        navigator.geolocation.getCurrentPosition(
          (position) => {
            // console.log("position.coords.latitude:"+position.coords.latitude);
+       
+
            old_lat = curr_lat;
            old_lng = curr_lng
-           curr_lat = position.coords.latitude;
-           curr_lng = position.coords.longitude;
+           curr_lat = position.coords.latitude+inc;
+           curr_lng = position.coords.longitude+inc;
            curr_alt = position.coords.altitude;
+           inc+=1;
            var google_lat_lng = new google.maps.LatLng(curr_lat, curr_lng);
            // console.log("current:"+curr_lat+"//"+curr_lng);
             $.get("/user/getMyInfo").done(function(glider){
@@ -97,6 +117,8 @@
           map.setCenter({lat:curr_lat, lng:curr_lng});
 
           glider_icon.setPosition(google_lat_lng);
+
+          glider_icon.icon.rotation = 45;
 
           // Add edge
           const flightPlanCoordinates = [
@@ -122,15 +144,39 @@
 
           flightPath.setMap(map);
 
-          // Todo: rotation changes
-
-
-
-         }
-       );
+          if(realtime_counter>0) {
+            console.log("realtime_counter inside  getCurrentPosition: "+realtime_counter);
+            console.log("realtime_markers inside  getCurrentPosition: "+realtime_markers);
+            realtime_markers.push(marker);
+            //realtime_markers.push(flightPath);
+          }
+         } 
+       ); // getCurrentPosition end 
        console.log("realtime_counter:"+realtime_counter);
-       realtime_counter = realtime_counter-1;
+       
+        realtime_counter = realtime_counter-1;
        if(realtime_counter>0) {
+
+        setInterval(setTimeout(getlocationRealTime, 10000, glider_icon)); // 10sec
+
+       } else {
+         $("#titleFlight").html("Start Flight");
+
+         console.log("realtime_counter outside  getCurrentPosition: "+realtime_counter);
+         console.log("realtime_markers outside  getCurrentPosition: "+realtime_markers);
+         
+         //deleteRealTimeMarkers(); 
+         //marker.setMap(null);
+       }
+     }
+    }
+
+    function locationRealTime()
+    {
+      // console.log("locationRealTime()::");
+      if(realtime_counter == 0) {
+        realtime_counter = 10000; // Can record 27.78 hrs realtime flight  data
+
 
         let image = "/img/glider.png";
 
@@ -138,7 +184,8 @@
 
         var icon = {
                   url: iconBase + 'glider.png', // url
-                  scaledSize: new google.maps.Size(100, 100) // size
+                  scaledSize: new google.maps.Size(100, 100), // size
+                  rotation: 45
               };
 
         const feature =  {
@@ -153,23 +200,12 @@
           });
           return marker;
         }
-        var glider_icon = addMarker(feature);
+        
+        glider_icon = addMarker(feature);
+        realtime_markers.push(glider_icon);
 
 
-        setInterval(setTimeout(getlocationRealTime, 10000, glider_icon)); // 10sec
-
-       } else {
-         $("#titleFlight").html("Start Flight");
-       }
-     }
-    }
-
-    function locationRealTime()
-    {
-      // console.log("locationRealTime()::");
-      if(realtime_counter == 0) {
-        realtime_counter = 10000; // Can record 27.78 hrs realtime flight  data
-        getlocationRealTime();
+        getlocationRealTime(glider_icon);
       } else {
         $("#titleFlight").html("Start Flight");
         realtime_counter = 0;
@@ -177,13 +213,6 @@
     }
 
 
-
-
-  // Deletes all markers in the array by removing references to them.
-  function deleteMarkers() {
-    clearMarkers();
-    click_markers = [];
-  }
 
 
     </script>
@@ -201,7 +230,7 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
-            <a id="titlePLV" class="nav-link" href="#" onclick='javascript:initMap()'>Pilot View
+            <a id="titlePLV" class="nav-link" href="#" onclick='javascript:initMap(); realtime_counter=0; deleteRealTimeMarkers(); '>Pilot New View
               <span class="sr-only">(current)</span>
             </a>
           </li>

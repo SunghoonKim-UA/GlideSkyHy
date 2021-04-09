@@ -311,9 +311,18 @@ function setMapOnAll(map) {
 function clearMarkers() {
   setMapOnAll(null);
 }
-//
-//// Shows any markers currently in the array.
-//function showMarkers() {
-//  setMapOnAll(map);
-//}
+
+
+
+// Sets the map on all markers in the array.
+function setMapOnAll_RealTime(map) {
+  for (let i = 0; i < realtime_markers.length; i++) {
+    realtime_markers[i].setMap(map);
+  }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearRealTimeMarkers() {
+  setMapOnAll_RealTime(null);
+}
 
