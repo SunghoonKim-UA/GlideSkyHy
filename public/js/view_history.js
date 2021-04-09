@@ -60,36 +60,7 @@ function initMapHistory() {
   			if (circle.x > stage.canvas.width) { circle.x = 0; }
   			stage.update(event); // important!!
   		}
-    
-     var table_flight_history = document.getElementById('table_flight_history_id_tbody');
-     console.log(table_flight_history);
-
-/*
-     var table_flight_history = document.getElementById('table_flight_history_id_tbody');
-     table_flight_history.append("<tr><td>"+"  "+"</td><td>"+'id'+"</td><td>"+'Start'+"</td><td>"+'customers[i].rentCost'+"</td><td>"+'Duration'+"</td></tr>");
-
-      function loadTableContents(){
-      
-      
-          $("#table_flight_history_id_tBody").append("<tr><td>"+"  "+"</td><td>"+'id'+"</td><td>"+'Start'+"</td><td>"+'customers[i].rentCost'+"</td><td>"+'Duration'+"</td></tr>");
-
-               $.get("./routes/glider/Flight_Read").done(function(glider_all){
-                       console.log("rest  ./routes/glider/Flight_Read  "+glider_all);
-                         jQuery.each(glider_all, function( index, glider ) { 
-                           if(glider){
-                             console.log(glider);
-                               $(".table_flight_history").append("<tr><td>"+"  "+"</td><td>"+glider.flight_id+"</td><td>"+glider.start+"</td><td>"+glider.end+"</td><td>"+glider.duration+"  </td></tr>");
-                           } else {
-                             console.log("can't find glider in flight db");
-                           }
-                       });
-                     });
-      }
-
-      
-      loadTableContents();
-
-*/
+  
     }
 
 
