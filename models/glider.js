@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 
 const flightSchema = new mongoose.Schema({
+  user_id: String,
   flight_id: String,
   start: String,
   end: String,

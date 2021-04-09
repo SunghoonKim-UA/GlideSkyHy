@@ -128,9 +128,10 @@ router.post('/Realtime_Tracking_Write', (req, res) => {
 
 
 router.post('/Flight_Write', (req, res) => {
-    console.log("Flight_Write: "+req.body.flight_id + " " + req.body.start+ " " + req.body.end+ " " + req.body.duration);
+    console.log("Flight_Write: "+req.body.user_id + " " +req.body.flight_id + " " + req.body.start+ " " + req.body.end+ " " + req.body.duration);
 
     const newflight = new flight();
+    newflight.user_id = req.body.user_id;
     newflight.flight_id = req.body.flight_id;
     newflight.start = req.body.start;
     newflight.end = req.body.end;

@@ -170,9 +170,18 @@
          //marker.setMap(null);
 
           var d = new Date();
-          var t2 = d.getUTCSeconds();
-          var t1 = startFlightTime.getUTCSeconds();
-          var postingFlight_Write = $.post( "/glider/Flight_Write", { flight_id: getCookie("_id"), start: startFlightTime.toLocaleString(), end: d.toLocaleString(), duration:t2-t1} );
+          var t2 = d.getTime();
+          var t1 = startFlightTime.getTime();
+          
+
+          $.get("/user/getMyInfo").done(function(glider){
+              if(glider){
+                console.log(glider);
+                var postingFlight_Write = $.post( "/glider/Flight_Write", { user_id: glider.fly_object[0], flight_id: glider._id, start: startFlightTime.toLocaleString(), end: d.toLocaleString(), duration:(t2-t1)/1000} );
+              } else {
+                console.log("can't find glider in location db, not updating the position");
+              }
+          });
 
        }
 
