@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-// const glider = mongoose.model('glider');
+const glider = mongoose.model('glider');
 const flight = mongoose.model('flight');
 const location = mongoose.model('location');
-const history = mongoose.model('flight_history');
+// const history = mongoose.model('flight_history');
 const testWrite = mongoose.model('test');
 const realtime_tracking = mongoose.model('realtime_tracking_db');
 
@@ -20,7 +20,8 @@ router.get('/getCurrGlider', (req, res) => {
     } else {
       var execObj = location.find({ 'position.0': { $gte: req.query.lat_s, $lte: req.query.lat_e }
                                   , 'position.1': { $gte: req.query.lng_s, $lte: req.query.lng_e } })
-                            .populate('fly_object')
+                            .populate('fly_object')   // join to "glider"
+                            // .populate('fly_object')
                             .exec();
 
       execObj.then(function (location) {
@@ -40,22 +41,6 @@ router.get('/getCurrGlider', (req, res) => {
       });
 
     }
-});
-
-
-
-router.get('/Database_History_Read', (req, res) => {
-    console.log("Database_History_Read:"+req.query.name);
-
-    var execObj = history.find({ 'Name': req.query.name })
-                         // .limit(10)
-                         .sort({ timestamp: 1 })
-                         .exec();
-
-    execObj.then(function (history) {
-      console.log("Database_History_Read history:"+history);
-      res.status(200).send(history); // send json history data to client
-    });
 });
 
 
@@ -111,22 +96,6 @@ router.get('/Realtime_Tracking_Read_FlightId', (req, res) => {
 
 
 
-router.post('/Flight_History_Write', (req, res) => {
-    console.log("Flight_History_Write: "+req.body.Name + " " + req.body.lat+ " " + req.body.lng+ " " + req.body.alt+ " " + req.body.vertical_speed);
-
-    const newHistoryEntry = new history();
-    newHistoryEntry.Name = req.body.Name;
-    newHistoryEntry.timestamp = new Date();
-    newHistoryEntry.lat = req.body.lat;
-    newHistoryEntry.lng = req.body.lng;
-    newHistoryEntry.alt = req.body.alt;
-    newHistoryEntry.vertical_speed = req.body.vertical_speed;
-    newHistoryEntry.save();
-
-    res.status(200).send("Write successfully"); // send response
-});
-
-
 router.post('/Location_Update', (req, res) => {
     console.log("Location_Update: "+req.body.Name + " " + req.body.lat+ " " + req.body.lng+ " " + req.body.alt+ " " + req.body.vertical_speed);
 
@@ -145,10 +114,10 @@ router.post('/Location_Update', (req, res) => {
 
 
 router.post('/Realtime_Tracking_Write', (req, res) => {
-    console.log("Realtime_Tracking_Write: "+req.body.Name + " " + req.body.lat+ " " + req.body.lng+ " " + req.body.alt+ " " + req.body.vertical_speed);
+    console.log("Realtime_Tracking_Write: "+req.body.lat+ " " + req.body.lng+ " " + req.body.alt+ " " + req.body.vertical_speed);
 
     const newRealtimeEntry = new realtime_tracking();
-    newRealtimeEntry.Name = req.body.Name;
+    newRealtimeEntry.Name = req.cookies.user_name;
     newRealtimeEntry.flight_id = req.body.flight_id;
     newRealtimeEntry.timestamp = new Date();
     newRealtimeEntry.lat = req.body.lat;
@@ -165,15 +134,39 @@ router.post('/Realtime_Tracking_Write', (req, res) => {
 
 
 router.post('/Flight_Write', (req, res) => {
-    console.log("Flight_Write: "+req.body.user_id + " " +req.body.flight_id + " " + req.body.start+ " " + req.body.end+ " " + req.body.duration);
+    console.log("Flight_Write: "+req.cookies._id + " " +req.body.flight_id + " " + req.body.start+ " " + req.body.end+ " " + req.body.duration);
 
     const newflight = new flight();
-    newflight.user_id = req.body.user_id;
+    newflight.user_id = req.cookies._id;
     newflight.flight_id = req.body.flight_id;
     newflight.start = req.body.start;
-    newflight.end = req.body.end;
-    newflight.duration = req.body.duration;
+    // newflight.end = req.body.end;
+    // newflight.duration = req.body.duration;
     newflight.save();
+
+    // update recent_flight_id to glider
+    glider.findOneAndUpdate({_id: newflight.user_id}, {$set:{recent_flight_id:newflight._id}}, {new: true}, (err, doc) => {
+        if (err) {
+            console.log("Something wrong when updating data! in Flight_Write");
+        }
+
+        console.log(doc);
+    });
+
+    res.status(200).json({ "flight_id" : newflight._id }); // send response
+});
+
+router.post('/Flight_End', (req, res) => {
+    console.log("Flight_End: "+req.body.flight_id + " " + req.body.end+ " " + req.body.duration);
+
+    flight.findOneAndUpdate({_id: req.body.flight_id}, {$set:{end:req.body.end, duration:req.body.duration}}, {new: true}, (err, doc) => {
+        if (err) {
+            console.log("Something wrong when updating data! in Flight_End");
+        }
+
+        console.log(doc);
+    });
+
 
     res.status(200).send("Write successfully"); // send response
 });

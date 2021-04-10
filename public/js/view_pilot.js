@@ -245,7 +245,8 @@ function initMap() {
       jQuery.each(data, function( index, value ) { // for each: index in data update glider position
 
         var hist = [];
-        $.get("/glider/Database_History_Read", { name: value.name })
+        // console.log(".recent_flight_id:"+value.fly_object[0].recent_flight_id);
+        $.get("/glider/Realtime_Tracking_Read_FlightId", { flight_id: value.fly_object[0].recent_flight_id })
         .done(function(data_history){
           // data_history : sort later
           //document.write(data_history);
@@ -282,7 +283,7 @@ function initMap() {
     placeMarkerAndPanTo(e.latLng, map);
   });
 
-  
+
 
 }
 
@@ -298,7 +299,7 @@ function placeMarkerAndPanTo(latLng, map) {
   click_markers.push(marker);
 
 }
-  
+
 
 // Sets the map on all markers in the array.
 function setMapOnAll(map) {
@@ -339,5 +340,3 @@ function setMapOnAll_FlightHistory(map) {
 function clearFlightHistoryMarkers() {
   setMapOnAll_FlightHistory(null);
 }
-
-

@@ -46,7 +46,7 @@ router.get('/flightHistory', (req, res) => {
         console.log("glider not found in location db");
       }
       res.status(200).send(glider);
-    }); 
+    });
 });
 
 
@@ -69,6 +69,7 @@ router.post('/login', (req, res) => {
         res.render("login", {message : "Invalid Username and Password"});
       } else {
           res.cookie('_id',glider._id);
+          res.cookie('user_name',glider.user_name);
           res.render("success_login", {user_name : glider.user_name});
 
           const newTestEntry = new location();
