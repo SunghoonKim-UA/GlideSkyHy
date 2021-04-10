@@ -398,26 +398,10 @@
 
       // Get some values from elements on the page:
       var $form = $( this ),
-        //v_u_name = $form.find( "input[id='u_name']" ).val(),
-        //v_pass_wd = $form.find( "input[id='pass_wd']" ).val(),
-        url = $form.attr( "action" );
+            url = $form.attr( "action" );
 
-        // console.log("term:"+v_u_name);
-  
-          const hist = new Set()
-
-          //$.get(url, { user_id: "6038278a0bd3bb3156166381"})
-          //.done(function(data){
-          //  jQuery.each(data, function( index, value ) { // for each: index in data update glider position
-          //    //console.log("loop : "+index);
-          //    console.log("loop : "+value.flight_id);
-//
-          //    hist.add(value.flight_id);
-          //  
-          //  });
-
+            const hist = new Set()
             all_checks = all_checks.split(",");
-
             for(var i=0;i<all_checks.length;i++) {
               hist.add(all_checks[i]);
             };
@@ -426,7 +410,7 @@
               console.log("hist : "+fl_id);
                 $.get("/glider/Realtime_Tracking_Read_FlightId", { flight_id: fl_id})
                     .done(function(data){
-                      jQuery.each(data, function( index, value ) { // for each: index in data update glider position
+                      jQuery.each(data, function( index, value ) { 
                         //console.log("loop 2: "+index);
                         console.log("loop 2: "+value.flight_id);
 
