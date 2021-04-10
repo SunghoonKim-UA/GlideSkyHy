@@ -265,15 +265,18 @@
             <a id="titleFlight" class="nav-link" href="#" onclick='javascript: startFlightTime = new Date(); locationRealTime()'>Start Flight</a>
           </li>
           <li class="nav-item">
-            <a id="titleFlight" class="nav-link" href="#" onclick='javascript:deleteMarkers()'>Clear Clicks</a>
-          </li>
-          <li class="nav-item">
             <a id="titleViewHist" class="nav-link" href="#" data-toggle="modal" data-target="#modViewHist">View History</a>
             <div class="modal fade" id="modViewHist" tabindex="-1" role="dialog" aria-labelledby="titleViewHist" >
               <form id="flightHistory" class="user" action="/user/flightHistory" method="GET" >
                 <div id="dlg_viewhistory" class="modal-dialog" role="document" style="min-width:600px;text-align: left;" ></div>
               </form>
             </div>
+          </li>
+          <li class="nav-item">
+            <a id="titleFlight" class="nav-link" href="#" onclick=''>Tweet Map</a>
+          </li>
+          <li class="nav-item">
+            <a id="titleFlight" class="nav-link" href="#" onclick='javascript:deleteMarkers()'>Clear Clicks</a>
           </li>
           <li class="nav-item">
             <a id="titleSignUp" class="nav-link" href="#" data-toggle="modal" data-target="#modSignUp">Sign up</a>
