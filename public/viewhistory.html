@@ -3,6 +3,7 @@
       <h4 class="modal-title" id="myModalLabel">View History</h4>
     </div>
     <div class="modal-body">
+      <input type="hidden" id="returnJson" />
       <table class="table_flight_history" id="table_flight_history_id">
         <tr><th> &nbsp;&nbsp;&nbsp;  Select &nbsp;&nbsp;&nbsp;  </th><th>&nbsp;&nbsp;&nbsp;   Start &nbsp;&nbsp;&nbsp;  </th><th> &nbsp;&nbsp;&nbsp;  End &nbsp;&nbsp;&nbsp;  </th><th>  &nbsp;&nbsp;&nbsp; Duration &nbsp;&nbsp;&nbsp;  </th></tr>
 
@@ -33,11 +34,15 @@
 
           function getCheckbox() {
             // loop through each input element and output the value of any checkbox elements
+            var all_checks = "";
             for(x=0;x<document.getElementsByTagName('input').length;x++){
               if(document.getElementsByTagName('input').item(x).type=='checkbox' && document.getElementsByTagName('input').item(x).checked==true){
-                return document.getElementsByTagName('input').item(x).value;
+                  all_checks += (all_checks?",":"")+document.getElementsByTagName('input').item(x).value;
               }
+
             };
+            document.getElementById("returnJson").value = all_checks;
+            return all_checks;
           }
           
         </script>  
@@ -46,6 +51,6 @@
     <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       <button type="button" id="signupBtn2" class="btn btn-primary">Share Tweet</button>
-      <button type="submit" id="ViewHistBtn" class="btn btn-primary"  onsubmit="return getCheckbox()">View</button>
+      <button type="submit" id="ViewHistBtn" class="btn btn-primary"  onclick="return getCheckbox()">View</button>
     </div>
   </div>

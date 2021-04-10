@@ -389,6 +389,10 @@
 
     $( "#flightHistory" ).submit(function( event ) {
       console.log("View flight history start" + event);
+      console.log("View flight history start" + event);
+
+      var all_checks = document.getElementById("returnJson").value;
+      console.log("View flight history start >>>  " +all_checks);
 
       event.preventDefault();
 
@@ -398,26 +402,26 @@
         //v_pass_wd = $form.find( "input[id='pass_wd']" ).val(),
         url = $form.attr( "action" );
 
-
-
         // console.log("term:"+v_u_name);
   
-      // Send the data using post
-      //var posting = $.get( url, { u_name:v_u_name, pass_wd:v_pass_wd } );
-
           const hist = new Set()
 
-          $.get(url, { user_id: "6038278a0bd3bb3156166381"})
-          .done(function(data){
-            jQuery.each(data, function( index, value ) { // for each: index in data update glider position
-              //console.log("loop : "+index);
-              console.log("loop : "+value.flight_id);
+          //$.get(url, { user_id: "6038278a0bd3bb3156166381"})
+          //.done(function(data){
+          //  jQuery.each(data, function( index, value ) { // for each: index in data update glider position
+          //    //console.log("loop : "+index);
+          //    console.log("loop : "+value.flight_id);
+//
+          //    hist.add(value.flight_id);
+          //  
+          //  });
 
-              hist.add(value.flight_id);
-            
-            });
+            all_checks = all_checks.split(",");
 
-            
+            for(var i=0;i<all_checks.length;i++) {
+              hist.add(all_checks[i]);
+            };
+
             for (let fl_id of hist) {
               console.log("hist : "+fl_id);
                 $.get("/glider/Realtime_Tracking_Read_FlightId", { flight_id: fl_id})
@@ -425,8 +429,6 @@
                       jQuery.each(data, function( index, value ) { // for each: index in data update glider position
                         //console.log("loop 2: "+index);
                         console.log("loop 2: "+value.flight_id);
-
-
 
                         // Add edge
                         if(index > 0){
@@ -443,14 +445,10 @@
                               strokeWeight: 10,
                             });
                   
-                    
-                  
                             flighthistoryPath.setMap(map);
 
                         }
                         
-
-
                         var google_lat_lng = new google.maps.LatLng(value.lat, value.lng);
                         var marker_fh = new google.maps.Marker({
                           position: google_lat_lng,
@@ -467,19 +465,9 @@
           
                 });
 
-
             }
 
-
-
-          });
-
-
-
-
     });
-
-  
 
   </script>
 </body>
