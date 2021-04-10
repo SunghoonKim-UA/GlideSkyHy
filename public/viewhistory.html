@@ -2,29 +2,24 @@
     <div class="modal-header">
       <h4 class="modal-title" id="myModalLabel">View History</h4>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" style="width: 300%;">
       <input type="hidden" id="returnJson" />
       <table class="table_flight_history" id="table_flight_history_id">
-        <tr><th> &nbsp;&nbsp;&nbsp;  Select &nbsp;&nbsp;&nbsp;  </th><th>&nbsp;&nbsp;&nbsp;   Start &nbsp;&nbsp;&nbsp;  </th><th> &nbsp;&nbsp;&nbsp;  End &nbsp;&nbsp;&nbsp;  </th><th>  &nbsp;&nbsp;&nbsp; Duration &nbsp;&nbsp;&nbsp;  </th></tr>
+        <tr><th> &nbsp;&nbsp;&nbsp;  Select &nbsp;&nbsp;&nbsp;  </th><th>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;    Start &nbsp;&nbsp;&nbsp;  </th><th> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;   End &nbsp;&nbsp;&nbsp;  </th><th>  &nbsp;&nbsp;&nbsp; Duration &nbsp;&nbsp;&nbsp;  </th></tr>
 
 
         <tbody id="table_flight_history_id_tbody"></tbody> 
 
         <script>
-          //for(var i = 0; i < customers.length; i++) {
-            // $(".table_flight_history").append("<tr><td>"+'id'+"</td><td>"+'Start'+"</td><td>"+'customers[i].rentCost'+"</td><td>"+'Duration'+"</td></tr>");
-          //}
 
           $.get("/glider/Flight_Read").done(function(glider_all){
             console.log("rest  ./routes/glider/Flight_Read  "+glider_all);
               jQuery.each(glider_all, function( index, glider ) { 
                 if(glider){
                   console.log(glider);
-                    //$(".table_flight_history").append("<tr><td>"+"  "+"</td><td>"+glider.start+"</td><td>"+glider.end+"</td><td>"+glider.duration+"  </td></tr>");
                     // checkbox
-                    $(".table_flight_history").append("<tr><td><input type=\"checkbox\" value="+glider.flight_id+"> "+"</td><td>"+glider.start+"</td><td>"+glider.end+"</td><td>"+glider.duration+"  </td></tr>");
+                    $(".table_flight_history").append("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"checkbox\" value="+glider.flight_id+"> "+"</td><td>"+glider.start+"&nbsp;&nbsp;</td><td>&nbsp;&nbsp;"+glider.end+"&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+glider.duration+"  </td></tr>");
 
-                    //$(".table_flight_history").append("<tr><input type="checkbox" id="flight_hist_box"+glider.flight_id name="flight_hist_box1"+glider.flight_id value=glider.flight_id><label for="flight_hist_box1"+glider.flight_id>  </label><td>"+"</td><td>"+glider.start+"</td><td>"+glider.end+"</td><td>"+glider.duration+"  </td></tr>");
                 } else {
                   console.log("can't find glider in flight db");
                 }

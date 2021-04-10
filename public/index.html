@@ -157,7 +157,6 @@
             console.log("realtime_counter inside  getCurrentPosition: "+realtime_counter);
             console.log("realtime_markers inside  getCurrentPosition: "+realtime_markers);
             realtime_markers.push(marker);
-            //realtime_markers.push(flightPath);
           }
          } 
        ); // getCurrentPosition end 
@@ -173,9 +172,6 @@
 
          console.log("realtime_counter outside  getCurrentPosition: "+realtime_counter);
          console.log("realtime_markers outside  getCurrentPosition: "+realtime_markers);
-         
-         //deleteRealTimeMarkers(); 
-         //marker.setMap(null);
 
           var d = new Date();
           var t2 = d.getTime();
@@ -273,9 +269,9 @@
           </li>
           <li class="nav-item">
             <a id="titleViewHist" class="nav-link" href="#" data-toggle="modal" data-target="#modViewHist">View History</a>
-            <div class="modal fade" id="modViewHist" tabindex="-1" role="dialog" aria-labelledby="titleViewHist">
-              <form id="flightHistory" class="user" action="/user/flightHistory" method="GET">
-                <div id="dlg_viewhistory" class="modal-dialog" role="document"></div>
+            <div class="modal fade" id="modViewHist" tabindex="-1" role="dialog" aria-labelledby="titleViewHist" >
+              <form id="flightHistory" class="user" action="/user/flightHistory" method="GET" >
+                <div id="dlg_viewhistory" class="modal-dialog" role="document" style="min-width:600px;text-align: left;" ></div>
               </form>
             </div>
           </li>
