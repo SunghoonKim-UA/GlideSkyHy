@@ -79,7 +79,7 @@
       clearMarkers();
       click_markers = [];
     }
-  
+
     function deleteRealTimeMarkers() {
       clearRealTimeMarkers();
       realtime_markers = [];
@@ -93,35 +93,29 @@
     }
 
 
-    
+
     var old_lat, old_lng, inc = 0;
     var startFlightTime;
+    var v_flight_id;
 
     function getlocationRealTime(glider_icon)
     {
     $("#titleFlight").html("End Flight");
+
      if (navigator.geolocation) {
        navigator.geolocation.getCurrentPosition(
          (position) => {
            // console.log("position.coords.latitude:"+position.coords.latitude);
-       
+
 
            old_lat = curr_lat;
            old_lng = curr_lng
            curr_lat = position.coords.latitude+inc;
            curr_lng = position.coords.longitude+inc;
            curr_alt = position.coords.altitude;
-           inc+=1;
+           // inc+=1;
            var google_lat_lng = new google.maps.LatLng(curr_lat, curr_lng);
-           // console.log("current:"+curr_lat+"//"+curr_lng);
-            $.get("/user/getMyInfo").done(function(glider){
-                if(glider){
-                  console.log(glider);
-                  var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { Name:glider.name, flight_id: glider._id, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:1000 } );
-                } else {
-                  console.log("can't find glider in location db, not updating the position");
-                }
-            });
+           var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { flight_id: v_flight_id, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:1000 } );
 
           map.setCenter({lat:curr_lat, lng:curr_lng});
 
@@ -158,10 +152,10 @@
             console.log("realtime_markers inside  getCurrentPosition: "+realtime_markers);
             realtime_markers.push(marker);
           }
-         } 
-       ); // getCurrentPosition end 
+         }
+       ); // getCurrentPosition end
        console.log("realtime_counter:"+realtime_counter);
-       
+
         realtime_counter = realtime_counter-1;
        if(realtime_counter>0) {
 
@@ -176,17 +170,8 @@
           var d = new Date();
           var t2 = d.getTime();
           var t1 = startFlightTime.getTime();
-          
 
-          $.get("/user/getMyInfo").done(function(glider){
-              if(glider){
-                console.log(glider);
-                var postingFlight_Write = $.post( "/glider/Flight_Write", { user_id: glider.fly_object[0], flight_id: glider._id, start: startFlightTime.toLocaleString(), end: d.toLocaleString(), duration:(t2-t1)/1000} );
-              } else {
-                console.log("can't find glider in location db, not updating the position");
-              }
-          });
-
+          $.post( "/glider/Flight_End", { flight_id: v_flight_id, end: d.toLocaleString(), duration:(t2-t1)/1000} );
        }
 
 
@@ -200,7 +185,6 @@
       // console.log("locationRealTime()::");
       if(realtime_counter == 0) {
         realtime_counter = 10000; // Can record 27.78 hrs realtime flight  data
-
 
         let image = "/img/glider.png";
 
@@ -224,12 +208,18 @@
           });
           return marker;
         }
-        
+
         glider_icon = addMarker(feature);
         realtime_markers.push(glider_icon);
 
+        // initiate new flight record
+        $.post( "/glider/Flight_Write", { start: startFlightTime.toLocaleString()} )
+         .done(function(data){
+          console.log("postingFlight_Write.flight_id:"+data.flight_id);
+          v_flight_id = data.flight_id;
 
-        getlocationRealTime(glider_icon);
+          getlocationRealTime(glider_icon);
+        });
       } else {
         $("#titleFlight").html("Start Flight");
         realtime_counter = 0;
@@ -410,7 +400,7 @@
               console.log("hist : "+fl_id);
                 $.get("/glider/Realtime_Tracking_Read_FlightId", { flight_id: fl_id})
                     .done(function(data){
-                      jQuery.each(data, function( index, value ) { 
+                      jQuery.each(data, function( index, value ) {
                         //console.log("loop 2: "+index);
                         console.log("loop 2: "+value.flight_id);
 
@@ -428,11 +418,11 @@
                               strokeOpacity: 0.3,
                               strokeWeight: 10,
                             });
-                  
+
                             flighthistoryPath.setMap(map);
 
                         }
-                        
+
                         var google_lat_lng = new google.maps.LatLng(value.lat, value.lng);
                         var marker_fh = new google.maps.Marker({
                           position: google_lat_lng,
@@ -444,9 +434,9 @@
                         });
 
                         flighthistory_markers.push(marker_fh);
-                      
+
                       });
-          
+
                 });
 
             }
