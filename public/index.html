@@ -367,6 +367,7 @@
       // Stop form from submitting normally
       event.preventDefault();
       var $form = $( this ),
+      v_new_type = $form.find( "input[id='new_type']" ).val(),
       v_new_name = $form.find( "input[id='new_name']" ).val(),
       v_new_passwd = $form.find( "input[id='new_passwd']" ).val(),
       v_new_color = $form.find( "input[id='new_color']" ).val(),
@@ -374,7 +375,7 @@
       // console.log("term:"+v_u_name);
 
       // Send the data using post
-      $.post(url, { new_name:v_new_name, new_passwd:v_new_passwd, new_color:v_new_color } )
+      $.post(url, { new_type:v_new_type, new_name:v_new_name, new_passwd:v_new_passwd, new_color:v_new_color } )
        .done(function(data){
         if(data.msg == "") {
           $("#signupMsg").html("Signed up successfully.");

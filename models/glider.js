@@ -15,6 +15,7 @@ module.exports = mongoose.model('flight', flightSchema);
 const gliderSchema = new mongoose.Schema({
   user_name: String,
   password: String,
+  type: String,
   color: String
 }, {collection:'glider'});
 
@@ -23,6 +24,7 @@ module.exports = mongoose.model('glider', gliderSchema);
 const locationSchema = new mongoose.Schema({
   name: String,
   position: [Number],
+  type: String,
   fly_object: [{ type: mongoose.Schema.Types.ObjectId, ref: 'glider' }]
 }, {collection:'location'});
 

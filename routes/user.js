@@ -78,7 +78,7 @@ router.post('/login', (req, res) => {
           newTestEntry.position[2] = 2100;
           newTestEntry.position[3] = 0;
           newTestEntry.fly_object = glider._id;
-          //newTestEntry.type = "pilot"
+          newTestEntry.type = glider.type;
           newTestEntry.save();
           res.status(200).send(location); // send json location data to client
       }
@@ -97,6 +97,7 @@ router.post('/signup', (req, res) => {
       if(glider != null)  {
         validat_msg = "Choose another username";
       } else {
+        new_glider.type      = req.body.new_type;
         new_glider.user_name = req.body.new_name;
         new_glider.password  = req.body.new_passwd;
         new_glider.color     = req.body.new_color;
