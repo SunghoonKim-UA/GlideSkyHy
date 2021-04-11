@@ -54,6 +54,7 @@ router.get('/logout', (req, res) => {
     console.log(req.path+":"+req.cookies._id);
     location.findOneAndDelete({fly_object: req.cookies._id}).exec();
     res.clearCookie('_id');
+    res.clearCookie('user_name');
     res.render("login");
 
 });
@@ -70,7 +71,6 @@ router.post('/login', (req, res) => {
       } else {
           res.cookie('_id',glider._id);
           res.cookie('user_name',glider.user_name);
-          res.render("success_login", {user_name : glider.user_name});
 
           const newTestEntry = new location();
           newTestEntry.name = req.body.u_name;
@@ -81,7 +81,8 @@ router.post('/login', (req, res) => {
           newTestEntry.fly_object = glider._id;
           newTestEntry.type = glider.type;
           newTestEntry.save();
-          res.status(200).send(location); // send json location data to client
+          res.render("success_login", {user_name : glider.user_name});
+          // res.status(200).send(location); // send json location data to client
       }
   });
 
