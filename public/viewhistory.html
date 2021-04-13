@@ -8,24 +8,26 @@
         <tr><th> &nbsp;&nbsp;&nbsp;  Select &nbsp;&nbsp;&nbsp;  </th><th>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;    Start &nbsp;&nbsp;&nbsp;  </th><th> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;   End &nbsp;&nbsp;&nbsp;  </th><th>  &nbsp;&nbsp;&nbsp; Duration &nbsp;&nbsp;&nbsp;  </th></tr>
 
 
-        <tbody id="table_flight_history_id_tbody"></tbody> 
+        <tbody id="table_flight_history_id_tbody"></tbody>
 
         <script>
+          var history_page_no = 1;
+          function getHistory() {
+            $(".table_flight_history").empty();
+            $.get("/glider/Flight_Read?page_no="+history_page_no).done(function(glider_all){
+              // console.log("rest  ./routes/glider/Flight_Read  "+glider_all);
+                jQuery.each(glider_all, function( index, glider ) {
+                  if(glider){
+                    // console.log(glider);
+                      // checkbox
+                      $(".table_flight_history").append("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"checkbox\" value="+glider.flight_id+"> "+"</td><td>"+glider.start+"&nbsp;&nbsp;</td><td>&nbsp;&nbsp;"+glider.end+"&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+glider.duration+"  </td></tr>");
 
-          $.get("/glider/Flight_Read").done(function(glider_all){
-            console.log("rest  ./routes/glider/Flight_Read  "+glider_all);
-              jQuery.each(glider_all, function( index, glider ) { 
-                if(glider){
-                  console.log(glider);
-                    // checkbox
-                    $(".table_flight_history").append("<tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"checkbox\" value="+glider.flight_id+"> "+"</td><td>"+glider.start+"&nbsp;&nbsp;</td><td>&nbsp;&nbsp;"+glider.end+"&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+glider.duration+"  </td></tr>");
-
-                } else {
-                  console.log("can't find glider in flight db");
-                }
+                  } else {
+                    // console.log("can't find glider in flight db");
+                  }
+              });
             });
-          });
-
+          }
 
           function getCheckbox() {
             // loop through each input element and output the value of any checkbox elements
@@ -39,8 +41,8 @@
             document.getElementById("returnJson").value = all_checks;
             return all_checks;
           }
-          
-        </script>  
+
+        </script>
       </table>
     </div>
     <div class="modal-footer">

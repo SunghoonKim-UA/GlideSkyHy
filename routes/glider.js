@@ -64,8 +64,17 @@ router.get('/Location_Current_Read', (req, res) => {
 
 
 router.get('/Flight_Read', (req, res) => {
-    console.log(req.path+":"+req.cookies._id);
-      var execObj = flight.find({user_id: req.cookies._id}).exec();
+    console.log(req.path+":"+req.cookies._id, req.query.page_no);
+      var page_no = 0;
+      if(req.query.page_no != null && req.query.page_no != 'undefined') {
+        page_no = req.query.page_no-1;
+      }
+      // applied paging for less burden in client
+      var execObj = flight.find({user_id: req.cookies._id})
+                          .limit(7)
+                          .skip(page_no*7)
+                          .sort({start: -1})
+                          .exec();
       execObj.then(function (glider) {
         console.log(req.path+":"+"glider:"+glider);
         if(glider == null)  {
