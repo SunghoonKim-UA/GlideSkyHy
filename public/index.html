@@ -48,6 +48,7 @@
       margin: 0;
       padding: 0;
     }
+
   </style>
   <script>
 
@@ -67,6 +68,7 @@
           // console.log("position.coords.latitude:"+position.coords.latitude);
           curr_lat = position.coords.latitude;
           curr_lng = position.coords.longitude;
+          curr_alt = position.coords.altitude;
           // console.log("current:"+curr_lat+"//"+curr_lng);
         }
       );
@@ -109,14 +111,15 @@
 
 
            old_lat = curr_lat;
-           old_lng = curr_lng
+           old_lng = curr_lng;
+           vertical_speed = 0;
            curr_lat = position.coords.latitude+inc;
            curr_lng = position.coords.longitude+inc;
            curr_alt = position.coords.altitude;
            // inc+=1;
            var google_lat_lng = new google.maps.LatLng(curr_lat, curr_lng);
-           var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { flight_id: v_flight_id, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:1000 } );
-
+           var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { flight_id: v_flight_id, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:0 } );
+          // var username = $.get( "/user/getMyInfo", { name : u_name} );
           map.setCenter({lat:curr_lat, lng:curr_lng});
 
           glider_icon.setPosition(google_lat_lng);
@@ -141,11 +144,21 @@
             icon: {
                     path: google.maps.SymbolPath.CIRCLE,
                     scale: 5,
-                  },
-            map: map
+                  },              
+            map: map,
           });
 
           flightPath.setMap(map);
+
+          var contentString =
+            curr_alt + ' ft ' +  "<br>" + vertical_speed + ' knts '
+          ;
+
+          var infowindow = new google.maps.InfoWindow({
+               content: contentString
+            });
+				
+            infowindow.open(map,glider_icon);
 
           if(realtime_counter>0) {
             console.log("realtime_counter inside  getCurrentPosition: "+realtime_counter);
@@ -204,7 +217,7 @@
           var marker = new google.maps.Marker({
             position: feature.position,
             icon: icon,
-            map: map
+            map: map,
           });
           return marker;
         }

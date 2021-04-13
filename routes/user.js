@@ -74,8 +74,13 @@ router.post('/login', (req, res) => {
 
           const newTestEntry = new location();
           newTestEntry.name = req.body.u_name;
+<<<<<<< HEAD
           newTestEntry.position[0] = req.body.lat;
           newTestEntry.position[1] = req.body.lng;
+=======
+          newTestEntry.position[0] = 33.429316;
+          newTestEntry.position[1]= -111.388436;
+>>>>>>> 69dfb878070baad20246363796c6b1ccbe163776
           newTestEntry.position[2] = 2100;
           newTestEntry.position[3] = 0;
           newTestEntry.fly_object = glider._id;
