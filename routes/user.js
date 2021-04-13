@@ -74,7 +74,7 @@ router.post('/login', (req, res) => {
 
           const newTestEntry = new location();
           newTestEntry.name = req.body.u_name;
-          newTestEntry.position[0] = 32.429316;
+          newTestEntry.position[0] = 33.429316;
           newTestEntry.position[1]= -111.388436;
           newTestEntry.position[2] = 2100;
           newTestEntry.position[3] = 0;
