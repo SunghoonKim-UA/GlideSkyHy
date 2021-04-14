@@ -35,10 +35,10 @@ router.get('/getCurrGlider', (req, res) => {
       //     newTestEntry.alt = locationDoc.position[2];
       //     newTestEntry.vertical_speed = locationDoc.position[3];
       //     newTestEntry.save();
-      });
-
-      res.status(200).send(location); // send json location data to client
       // });
+
+        res.status(200).send(location); // send json location data to client
+      });
 
     }
 });
