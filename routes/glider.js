@@ -5,7 +5,7 @@ const glider = mongoose.model('glider');
 const flight = mongoose.model('flight');
 const location = mongoose.model('location');
 // const history = mongoose.model('flight_history');
-const testWrite = mongoose.model('test');
+//const testWrite = mongoose.model('test');
 const realtime_tracking = mongoose.model('realtime_tracking_db');
 
 // Fetch from location table in specific region with lat long conditions
