@@ -20,21 +20,21 @@ describe('express_request_example', () => {
     });
   });
 });
-describe('express_request_example2', () => {
-  // lat_s: 32, lat_e: 33, lng_s: -112, lng_e: -109
-  it('should get current glider list', function(done) {
-    chai.request(app)
-      .get('/glider/getCurrGlider?lat_s=32&lat_e=33&lng_s=-112&lng_e=-109')
-      .end(function (err, res) {
-          expect(err).to.be.null;
-          expect(res).to.have.status(200);
-          expect(res).to.not.be.null;
-          expect(res).to.be.an('object'); // output type is a object
-          // expect(res.body).to.have.include('location'); // output's root node is location
-          done();
-    });
-  });
-});
+// describe('express_request_example2', () => {
+//   // lat_s: 32, lat_e: 33, lng_s: -112, lng_e: -109
+//   it('should get current glider list', function(done) {
+//     chai.request(app)
+//       .get('/glider/getCurrGlider?lat_s=32&lat_e=33&lng_s=-112&lng_e=-109')
+//       .end(function (err, res) {
+//           expect(err).to.be.null;
+//           expect(res).to.have.status(200);
+//           expect(res).to.not.be.null;
+//           expect(res).to.be.an('object'); // output type is a object
+//           // expect(res.body).to.have.include('location'); // output's root node is location
+//           done();
+//     });
+//   });
+// });
 
 describe('signup test', () => {
   it('duplicated id', function(done) {
