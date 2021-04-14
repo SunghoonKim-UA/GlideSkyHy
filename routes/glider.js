@@ -18,27 +18,27 @@ router.get('/getCurrGlider', (req, res) => {
       console.log("Invalid lat and lng");
       res.status(500).send({ error: 'Invalid lat and lng' });
     } else {
-      var execObj = location.find({ 'position.0': { $gte: req.query.lat_s, $lte: req.query.lat_e }
-                                  , 'position.1': { $gte: req.query.lng_s, $lte: req.query.lng_e } })
-                            .populate('fly_object')   // join to "glider"
-                            // .populate('fly_object')
-                            .exec();
+      // var execObj = location.find({ 'position.0': { $gte: req.query.lat_s, $lte: req.query.lat_e }
+      //                             , 'position.1': { $gte: req.query.lng_s, $lte: req.query.lng_e } })
+      //                       .populate('fly_object')   // join to "glider"
+      //                       // .populate('fly_object')
+      //                       .exec();
 
-      execObj.then(function (location) {
-        console.log(req.path+":"+"location:"+location);
-        location.forEach(function (locationDoc){
-          const newTestEntry = new testWrite();
-          newTestEntry.Name = locationDoc.name;
-          newTestEntry.timestamp = new Date();
-          newTestEntry.lat = locationDoc.position[0];
-          newTestEntry.lng = locationDoc.position[1];
-          newTestEntry.alt = locationDoc.position[2];
-          newTestEntry.vertical_speed = locationDoc.position[3];
-          newTestEntry.save();
-        });
+      // execObj.then(function (location) {
+      //   console.log(req.path+":"+"location:"+location);
+      //   location.forEach(function (locationDoc){
+      //     const newTestEntry = new testWrite();
+      //     newTestEntry.Name = locationDoc.name;
+      //     newTestEntry.timestamp = new Date();
+      //     newTestEntry.lat = locationDoc.position[0];
+      //     newTestEntry.lng = locationDoc.position[1];
+      //     newTestEntry.alt = locationDoc.position[2];
+      //     newTestEntry.vertical_speed = locationDoc.position[3];
+      //     newTestEntry.save();
+      //   });
 
-        res.status(200).send(location); // send json location data to client
-      });
+      //   res.status(200).send(location); // send json location data to client
+      // });
 
     }
 });
