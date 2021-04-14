@@ -14,3 +14,5 @@
 # [START gae_quickstart_yaml]
 runtime: nodejs14
 # [END gae_quickstart_yaml]
+manual_scaling:
+  instances: 1
