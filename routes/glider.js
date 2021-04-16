@@ -5,7 +5,7 @@ const glider = mongoose.model('glider');
 const flight = mongoose.model('flight');
 const location = mongoose.model('location');
 // const history = mongoose.model('flight_history');
-const testWrite = mongoose.model('test');
+//const testWrite = mongoose.model('test');
 const realtime_tracking = mongoose.model('realtime_tracking_db');
 
 // Fetch from location table in specific region with lat long conditions
@@ -25,17 +25,17 @@ router.get('/getCurrGlider', (req, res) => {
                             .exec();
 
       execObj.then(function (location) {
-        console.log(req.path+":"+"location:"+location);
-        location.forEach(function (locationDoc){
-          const newTestEntry = new testWrite();
-          newTestEntry.Name = locationDoc.name;
-          newTestEntry.timestamp = new Date();
-          newTestEntry.lat = locationDoc.position[0];
-          newTestEntry.lng = locationDoc.position[1];
-          newTestEntry.alt = locationDoc.position[2];
-          newTestEntry.vertical_speed = locationDoc.position[3];
-          newTestEntry.save();
-        });
+         console.log(req.path+":"+"location:"+location);
+      //   location.forEach(function (locationDoc){
+      //     const newTestEntry = new testWrite();
+      //     newTestEntry.Name = locationDoc.name;
+      //     newTestEntry.timestamp = new Date();
+      //     newTestEntry.lat = locationDoc.position[0];
+      //     newTestEntry.lng = locationDoc.position[1];
+      //     newTestEntry.alt = locationDoc.position[2];
+      //     newTestEntry.vertical_speed = locationDoc.position[3];
+      //     newTestEntry.save();
+      // });
 
         res.status(200).send(location); // send json location data to client
       });

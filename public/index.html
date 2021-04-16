@@ -25,7 +25,7 @@
   <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
   <!-- Bootstrap core JavaScript -->
   <!-- <script src="vendor/jquery/jquery.slim.min.js"></script> -->
-  <script src="vendor/easeljs.min.js"></script>
+  <!-- <script src="vendor/easeljs.min.js"></script>-->
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/colorpicker/js/bootstrap-colorpicker.min.js"></script>
   <script src="js/sk_common.js"></script>
@@ -96,7 +96,8 @@
 
 
 
-    var old_lat, old_lng, inc = 0;
+    var old_lat, old_lng, old_alt = 0, inc = 0;
+    curr_alt = 0;
     var startFlightTime;
     var v_flight_id;
 
@@ -113,6 +114,7 @@
            old_lat = curr_lat;
            old_lng = curr_lng;
            vertical_speed = 0;
+           old_alt = curr_alt;
            curr_lat = position.coords.latitude+inc;
            curr_lng = position.coords.longitude+inc;
            curr_alt = position.coords.altitude;
@@ -150,8 +152,10 @@
 
           flightPath.setMap(map);
 
+          vertical_speed = (old_alt - curr_alt) / 5;
+
           var contentString =
-            curr_alt + ' ft ' +  "<br>" + vertical_speed + ' knts '
+            curr_alt.toFixed(1) + ' ft ' +  "<br>" + vertical_speed.toFixed(1) + ' knts '
           ;
 
           var infowindow = new google.maps.InfoWindow({
@@ -172,7 +176,7 @@
         realtime_counter = realtime_counter-1;
        if(realtime_counter>0) {
 
-        setInterval(setTimeout(getlocationRealTime, 10000, glider_icon)); // 10sec
+        setInterval(setTimeout(getlocationRealTime, 5000, glider_icon)); // 5sec
 
        } else {
          $("#titleFlight").html("Start Flight");
@@ -197,7 +201,8 @@
 
       // console.log("locationRealTime()::");
       if(realtime_counter == 0) {
-        realtime_counter = 10000; // Can record 27.78 hrs realtime flight  data
+        //realtime_counter = 10000; // Can record 27.78 hrs realtime flight  data
+        realtime_counter = 100000; // Can record 27.78 hrs realtime flight  data
 
         let image = "/img/glider.png";
 

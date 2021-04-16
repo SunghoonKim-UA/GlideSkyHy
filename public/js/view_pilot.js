@@ -111,7 +111,7 @@ function initMap() {
       const point_y = calGap(point.y, nw_point.y+history_width);
       // console.log("point:"+this.lat+"//"+this.lng+"//"+point.x+"//"+(point.y));
 
-      var stage = new createjs.Stage(this.canvas);
+      /*var stage = new createjs.Stage(this.canvas);
       // 1.1 location label : div element for name&alt and attach it to the div.
       var text_bg = new createjs.Shape();
       text_bg.graphics.beginFill(this.color).drawRect(point_x-1.2*label_width, point_y+1/4*label_width, label_width, label_height);
@@ -179,7 +179,7 @@ function initMap() {
       glider_icon.rotation = deg;
       stage.addChild(glider_icon);
 
-      stage.update();
+      stage.update();*/
     }
 
     /**
@@ -231,6 +231,9 @@ function initMap() {
     // setInterval(setTimeout(redraw, 5000)); // 5 sec
     // init overlay list
     // console.log("overlayObjList.length:"+overlayObjList.length);
+    
+    /*
+
     overlayObjList.forEach(remove_ovrly);
     function remove_ovrly(value, index, array) {
       value.toggleDOM(map);
@@ -270,7 +273,7 @@ function initMap() {
         //setInterval(nextPosition, 15000); // 5 sec
 
       });
-    });
+    });*/
   }
 
 
