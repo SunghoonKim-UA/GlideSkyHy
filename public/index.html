@@ -115,8 +115,8 @@
            old_lng = curr_lng;
            vertical_speed = 0;
            old_alt = curr_alt;
-           curr_lat = position.coords.latitude+inc;
-           curr_lng = position.coords.longitude+inc;
+           curr_lat = position.coords.latitude;
+           curr_lng = position.coords.longitude;
            curr_alt = position.coords.altitude;
           // inc+=1;
            console.log("curr_lat : "+curr_lat+"  curr_lng: "+curr_lng);
