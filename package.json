@@ -7,7 +7,6 @@
     "start": "node start.js",
     "test": "mocha --exit test/*.js",
     "peerStart" : "peerjs  --port 3001",
-    "devStart" : "nodemon start.js"
   },
   "keywords": [],
   "author": "",
