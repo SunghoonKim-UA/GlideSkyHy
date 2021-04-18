@@ -8,6 +8,8 @@ const location = mongoose.model('location');
 //const testWrite = mongoose.model('test');
 const realtime_tracking = mongoose.model('realtime_tracking_db');
 
+const {v4: uuidV4} = require('uuid');
+
 // Fetch from location table in specific region with lat long conditions
 router.get('/getCurrGlider', (req, res) => {
     console.log("getCurrGlider:"+req.query.lat_s+":"+req.query.lat_e+":"+req.query.lng_s+":"+req.query.lng_e);
@@ -165,6 +167,8 @@ router.post('/Flight_Write', (req, res) => {
     res.status(200).json({ "flight_id" : newflight._id }); // send response
 });
 
+
+
 router.post('/Flight_End', (req, res) => {
     console.log("Flight_End: "+req.body.flight_id + " " + req.body.end+ " " + req.body.duration);
 
@@ -178,6 +182,26 @@ router.post('/Flight_End', (req, res) => {
 
 
     res.status(200).send("Write successfully"); // send response
+});
+
+
+
+
+router.post('/screenshot', (req, res) => {
+    console.log("/screenshot: "+req.body.box + " " + req.body.screenshot);
+
+
+
+    res.status(200).send("Write successfully"); // send response
+});
+
+
+
+router.get('/videocall', (req, res) => {
+    console.log(req.path+"  :");
+
+    res.redirect(`/videocall/${uuidV4()}`);
+
 });
 
 

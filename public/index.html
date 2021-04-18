@@ -95,6 +95,10 @@
     }
 
 
+ 
+    
+
+
 
     var old_lat, old_lng, old_alt = 0, inc = 1;
     curr_alt = 0;
@@ -160,12 +164,6 @@
           ;
 
           param["infowindow"].setContent(contentString);
-
-         // var infowindow = new google.maps.InfoWindow({
-         //      content: contentString
-         //   });
-				//
-         //   infowindow.open(map,param["glider_icon"]);
 
           if(realtime_counter>0) {
             console.log("realtime_counter inside  getCurrentPosition: "+realtime_counter);
@@ -252,6 +250,8 @@
 
 
           getlocationRealTime(param);
+
+
         });
       } else {
         $("#titleFlight").html("Start Flight");
@@ -270,7 +270,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">GlideSkyHy</a>
+      <a class="navbar-brand" href="index.html">GlideSkyHy</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -296,10 +296,16 @@
             </div>
           </li>
           <li class="nav-item">
-            <a id="titleFlight" class="nav-link" href="#" onclick=''>Tweet Map</a>
+            <a id="titleFlight" class="nav-link" href="#" onclick='javascript:deleteMarkers()'>Clear Clicks</a>
           </li>
           <li class="nav-item">
-            <a id="titleFlight" class="nav-link" href="#" onclick='javascript:deleteMarkers()'>Clear Clicks</a>
+            <a id="titleFlight" class="nav-link" href="/glider/videocall" onclick=''>Video Call</a>
+          </li>
+          <li class="nav-item">
+            <a id="titleFlight" class="nav-link" href="#" >Save</a>
+          </li>
+          <li class="nav-item">
+            <a id="titleFlight" class="nav-link" href="profile.html" onclick=''>Profile</a>
           </li>
           <li class="nav-item">
             <a id="titleSignUp" class="nav-link" href="#" data-toggle="modal" data-target="#modSignUp">Sign up</a>
