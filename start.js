@@ -26,7 +26,7 @@ io.on('connection', socket => {
 
 const PORT = process.env.PORT || 3000;
 const server = serverhttp.listen(PORT, () => {
-  console.log(`Express is running on port ${serverhttp.address().port}`);
+  console.log(`Express is running on port ${server.address().port}`);
 });
 
 var https = require('https');
