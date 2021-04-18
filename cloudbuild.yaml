@@ -23,7 +23,7 @@ steps:
   args: ['test']
 # Run tests
 - name: node
-  entrypoint: npm run
+  entrypoint: npm
   args: ['devStart']
 # Run custom commands
 # - name: node
