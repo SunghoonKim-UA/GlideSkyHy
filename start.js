@@ -15,18 +15,18 @@ io.on('connection', socket => {
 		socket.to(roomId).emit('user-connected', userId); // send it to everyone else in the same room but dont send it back to be
 
 		socket.on('disconnect', () => { // handle lagged video removal eg clicking X button or gng to different URL handled by socket
-			socket.to(roomId).emit('user-disconnected', userId)
-		})
+			socket.to(roomId).emit('user-disconnected', userId);
+		});
 
-	})
+	});
 
-})
+});
 
 
 
 const PORT = process.env.PORT || 3000;
 const server = serverhttp.listen(PORT, () => {
-  console.log(`Express is running on port ${serverhttp.address().port}`);
+  console.log(`Express is running on port ${server.address().port}`);
 });
 
 var https = require('https');
@@ -57,8 +57,3 @@ app.get('/videocall/:room', (req, res) => {
     res.render('room', {roomId: req.params.room});
 
 });
-
-
-
-
-
