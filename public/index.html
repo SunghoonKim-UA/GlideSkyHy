@@ -119,10 +119,10 @@
            old_lng = curr_lng;
            vertical_speed = 0;
            old_alt = curr_alt;
-           curr_lat = position.coords.latitude+inc;
-           curr_lng = position.coords.longitude+inc;
+           curr_lat = position.coords.latitude;
+           curr_lng = position.coords.longitude;
            curr_alt = position.coords.altitude;
-           inc+=1;
+          // inc+=1;
            console.log("curr_lat : "+curr_lat+"  curr_lng: "+curr_lng);
            var google_lat_lng = new google.maps.LatLng(curr_lat, curr_lng);
            var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { flight_id: v_flight_id, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:0 } );
@@ -159,8 +159,11 @@
 
           vertical_speed = (old_alt - curr_alt) / 5;
 
+          var curr_alt_ft = curr_alt*3.28084;
+          var vertical_speed_knts = vertical_speed*1.94384;
+
           var contentString =
-            curr_alt.toFixed(1) + ' ft ' +  "<br>" + vertical_speed.toFixed(1) + ' knts '
+          curr_alt_ft.toFixed(1) + ' ft ' + "<br>" + vertical_speed_knts.toFixed(1) + ' knts '
           ;
 
           param["infowindow"].setContent(contentString);
