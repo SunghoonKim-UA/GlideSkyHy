@@ -125,8 +125,6 @@
           // inc+=1;
            console.log("curr_lat : "+curr_lat+"  curr_lng: "+curr_lng);
            var google_lat_lng = new google.maps.LatLng(curr_lat, curr_lng);
-           var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { flight_id: v_flight_id, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:0 } );
-          // var username = $.get( "/user/getMyInfo", { name : u_name} );
           map.setCenter({lat:curr_lat, lng:curr_lng});
 
           param["glider_icon"].setPosition(google_lat_lng);
@@ -161,7 +159,8 @@
 
           var curr_alt_ft = curr_alt*3.28084;
           var vertical_speed_knts = vertical_speed*1.94384;
-
+          var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { flight_id: v_flight_id, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:vertical_speed_knts } );
+          //var locationUpdateRealTime = $.post( "/glider/Location_Update", { name: name_user, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:vertical_speed_knts } );
           var contentString =
           curr_alt_ft.toFixed(1) + ' ft ' + "<br>" + vertical_speed_knts.toFixed(1) + ' knts '
           ;
@@ -244,18 +243,31 @@
 
         var param = {"glider_icon": glider_icon, "infowindow": infowindow}
 
-        // initiate new flight record
-        $.post( "/glider/Flight_Write", { start: startFlightTime.toLocaleString()} )
-         .done(function(data){
-          console.log("postingFlight_Write.flight_id:"+data.flight_id);
-          v_flight_id = data.flight_id;
+        // Before calling getlocationRealTime,
+        // Get my user info and write to the databse only if
+        // I am a pilot
+        $.get( "/user/getMyInfo").done(function(glider){
+              if(glider){
 
+                console.log("Glider info:" + glider);
+                var myGlider = glider;
 
-
-          getlocationRealTime(param);
-
-
-        });
+                // only writing to the db when i'm a pilot
+                if(myGlider.type == 'pilot'){
+  
+                  // initiate new flight record
+                  $.post( "/glider/Flight_Write", { start: startFlightTime.toLocaleString()} )
+                    .done(function(data){
+                    console.log("postingFlight_Write.flight_id:"+data.flight_id);
+                    v_flight_id = data.flight_id;
+                    getlocationRealTime(param);
+                  });
+                
+                }
+              } else {
+                console.log("index.html: glider is null");
+              }
+          }); 
       } else {
         $("#titleFlight").html("Start Flight");
         realtime_counter = 0;
@@ -372,7 +384,7 @@
       // console.log("term:"+v_u_name);
 
     // Send the data using post
-    var posting = $.post( url, { u_name:v_u_name, pass_wd:v_pass_wd, lat:curr_lat, lng:curr_lng } );
+    var posting = $.post( url, { u_name:v_u_name, pass_wd:v_pass_wd, lat:curr_lat, lng:curr_lng, alt:curr_alt } );
 
     // Put the results in a div
     posting.done(function( data ) {
@@ -399,12 +411,20 @@
       // Stop form from submitting normally
       event.preventDefault();
       var $form = $( this ),
-      v_new_type = $form.find( "input[id='new_type']" ).val(),
+
+      pilotRadioButton = $form.find( "input[id='new_type_pilot']" );
+      groundcrewRadioButton = $form.find( "input[id='new_type_groundcrew'] ");
+      if(pilotRadioButton.is(':checked')){
+          v_new_type = pilotRadioButton.val();
+      } else {
+          v_new_type = groundcrewRadioButton.val();
+      }
+
       v_new_name = $form.find( "input[id='new_name']" ).val(),
       v_new_passwd = $form.find( "input[id='new_passwd']" ).val(),
       v_new_color = $form.find( "input[id='new_color']" ).val(),
       url = $form.attr( "action" );
-      // console.log("term:"+v_u_name);
+      console.log("type:"+v_new_type);
 
       // Send the data using post
       $.post(url, { new_type:v_new_type, new_name:v_new_name, new_passwd:v_new_passwd, new_color:v_new_color } )

@@ -72,15 +72,17 @@ router.post('/login', (req, res) => {
           res.cookie('_id',glider._id);
           res.cookie('user_name',glider.user_name);
 
-          const newTestEntry = new location();
-          newTestEntry.name = req.body.u_name;
-          newTestEntry.position[0] = req.body.lat;
-          newTestEntry.position[1] = req.body.lng;
-          newTestEntry.position[2] = 2100;
-          newTestEntry.position[3] = 0;
-          newTestEntry.fly_object = glider._id;
-          newTestEntry.type = glider.type;
-          newTestEntry.save();
+          if(glider.type == "pilot"){
+            const newTestEntry = new location();
+            newTestEntry.name = req.body.u_name;
+            newTestEntry.position[0] = req.body.lat;
+            newTestEntry.position[1] = req.body.lng;
+            newTestEntry.position[2] = req.body.alt;
+            newTestEntry.position[3] = 0;
+            newTestEntry.fly_object = glider._id;
+            newTestEntry.type = glider.type;
+            newTestEntry.save();
+          }
           res.render("success_login", {user_name : glider.user_name});
           // res.status(200).send(location); // send json location data to client
       }

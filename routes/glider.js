@@ -108,17 +108,18 @@ router.get('/Realtime_Tracking_Read_FlightId', (req, res) => {
 
 
 router.post('/Location_Update', (req, res) => {
-    console.log("Location_Update: "+req.body.Name + " " + req.body.lat+ " " + req.body.lng+ " " + req.body.alt+ " " + req.body.vertical_speed);
+    console.log("Location_Update: "+req.body.name + " " + req.body.lat+ " " + req.body.lng+ " " + req.body.alt+ " " + req.body.vertical_speed);
 
     // var execObj = location.findOneAndUpdate({name: req.body.Name}, {$set:{name:req.body.Name, position: [req.body.lat, req.body.lng, req.body.alt, req.body.vertical_speed] }}, {new: true}, (err, doc) => {
-    location.findOneAndUpdate({name: req.body.Name}, {$set:{name:req.body.Name, position: [req.body.lat, req.body.lng, req.body.alt, req.body.vertical_speed] }}, {new: true}, (err, doc) => {
+    location.findOneAndUpdate({name: req.body.name}, {$set:{position: [req.body.lat, req.body.lng, req.body.alt, req.body.vertical_speed] }}, {new: true}, (err, doc) => {
         if (err) {
+            console.log("You might be a groundcrew, so no updating!");
             console.log("Something wrong when updating data!");
+        } else {
+          console.log("Location_Update: " + doc);
         }
-
-        console.log(doc);
     });
-    res.status(200).send("Write successfully"); // send response
+    res.status(200).send("Location update successfully"); // send response
 
 });
 
@@ -136,6 +137,17 @@ router.post('/Realtime_Tracking_Write', (req, res) => {
     newRealtimeEntry.alt = req.body.alt;
     newRealtimeEntry.vertical_speed = req.body.vertical_speed;
     newRealtimeEntry.save();
+
+
+    // piggyback and update our info in location as well
+    location.findOneAndUpdate({name: req.cookies.user_name}, {$set:{position: [req.body.lat, req.body.lng, req.body.alt, req.body.vertical_speed] }}, {new: true}, (err, doc) => {
+    if (err) {
+        console.log("You might be a groundcrew, so no updating!");
+        console.log("Something wrong when updating data!");
+    } else {
+      console.log("Location_Update: " + doc);
+    }
+    });
 
     res.status(200).send("Write successfully"); // send response
 });
