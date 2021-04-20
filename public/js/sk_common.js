@@ -23,7 +23,6 @@ function afterLogin(data) {
   $("#dlg_login").html("");
   if( getCookie("user_type") == 'pilot' ) {
     $("#titlePLV").show();
-    $("#titleGCV").show();
     $("#titleFlight").show();
     $("#titleViewHist").show();
     $("#titleClearClicks").show();
@@ -31,7 +30,6 @@ function afterLogin(data) {
     $("#titleSave").show();
   } else {
     $("#titlePLV").hide();
-    $("#titleGCV").hide();
     $("#titleFlight").hide();
     $("#titleViewHist").hide();
     $("#titleClearClicks").hide();
@@ -48,7 +46,6 @@ function afterLogout(data) {
   $("#dlg_logout").html("");
   $("#titleSignUp").show();
   $("#titlePLV").hide();
-  $("#titleGCV").hide();
   $("#titleFlight").hide();
   $("#titleViewHist").hide();
   $("#titleClearClicks").hide();

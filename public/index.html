@@ -29,7 +29,7 @@
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vendor/colorpicker/js/bootstrap-colorpicker.min.js"></script>
   <script src="js/sk_common.js"></script>
-  <script src="js/view_pilot.js"></script>
+  <script src="js/view_ground_crew.js"></script>
   <script src="js/view_history.js"></script>
   <!--<script  type="text/javascript"  src="../routes/index.js"></script>-->
 
@@ -213,6 +213,7 @@
 
       // console.log("locationRealTime()::");
       if(realtime_counter == 0) {
+        initGroundCrew();
         //realtime_counter = 10000; // Can record 27.78 hrs realtime flight  data
         realtime_counter = 100000; // Can record 27.78 hrs realtime flight  data
 
@@ -306,9 +307,6 @@
             <a id="titlePLV" class="nav-link" href="#" onclick='javascript:initMap(); realtime_counter=0; deleteRealTimeMarkers(); deleteFlightHistoryMarkers();'>Pilot New View
               <span class="sr-only">(current)</span>
             </a>
-          </li>
-          <li class="nav-item">
-            <a id="titleGCV" class="nav-link" href="#" onclick='javascript:initMapHistory()'>History View</a>
           </li>
           <li class="nav-item">
             <a id="titleFlight" class="nav-link" href="#" onclick='javascript: startFlightTime = new Date(); locationRealTime()'>Start Flight</a>
