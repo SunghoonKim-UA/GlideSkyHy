@@ -8,8 +8,8 @@ const videoGrid = document.getElementById('video-grid')
 
 
 var myPeer = new Peer(undefined, {
-	host: '/',
-	port: '3001'
+	//host: '/',
+	//port: '3001'
 }); 
 
 const myVideo = document.createElement('video')
