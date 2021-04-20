@@ -21,10 +21,10 @@ steps:
 - name: node
   entrypoint: npm
   args: ['test']
-# Run tests
+# Run peer
 - name: node
-  entrypoint: npm
-  args: ['devStart']
+  entrypoint: npm run
+  args: ['peerStart']
 # Run custom commands
 # - name: node
 #   entrypoint: npm
