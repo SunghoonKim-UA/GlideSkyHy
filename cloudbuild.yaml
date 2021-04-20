@@ -23,8 +23,8 @@ steps:
   args: ['test']
 # Run peer
 - name: node
-  entrypoint: npm run
-  args: ['peerStart']
+  entrypoint: npm 
+  args: ['run', peerStart']
 # Run custom commands
 # - name: node
 #   entrypoint: npm
