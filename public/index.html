@@ -95,15 +95,32 @@
     }
 
 
- 
-    
+
+
 
 
 
     var old_lat, old_lng, old_alt = 0, inc = 1;
     curr_alt = 0;
+    var cleaning_criteria = 0.1;
     var startFlightTime;
     var v_flight_id;
+    var tmr_pilot;
+
+    function endFlight()  {
+      $("#titleFlight").html("Start Flight");
+      realtime_counter = 0;
+
+      console.log("realtime_counter outside  getCurrentPosition: "+realtime_counter);
+      console.log("realtime_markers outside  getCurrentPosition: "+realtime_markers);
+
+       var d = new Date();
+       var t2 = d.getTime();
+       var t1 = startFlightTime.getTime();
+
+       $.post( "/glider/Flight_End", { flight_id: v_flight_id, end: d.toLocaleString(), duration:(t2-t1)/1000} );
+       clearInterval(tmr_pilot);
+    }
 
     function getlocationRealTime(param)
     {
@@ -124,48 +141,51 @@
            curr_alt = position.coords.altitude;
           // inc+=1;
            console.log("curr_lat : "+curr_lat+"  curr_lng: "+curr_lng);
-           var google_lat_lng = new google.maps.LatLng(curr_lat, curr_lng);
-          map.setCenter({lat:curr_lat, lng:curr_lng});
+           if( calGap(curr_lat, old_lat) > cleaning_criteria || calGap(curr_lng, old_lng) > cleaning_criteria ) {
+              console.log("invalid difference range. lat: "+calGap(curr_lat, old_lat)+", lng: "+calGap(curr_lng, old_lng));
+           } else {
+               var google_lat_lng = new google.maps.LatLng(curr_lat, curr_lng);
+              map.setCenter({lat:curr_lat, lng:curr_lng});
 
-          param["glider_icon"].setPosition(google_lat_lng);
+              param["glider_icon"].setPosition(google_lat_lng);
 
-          //glider_icon.icon.setRotation(45);
+              //glider_icon.icon.setRotation(45);
 
-          // Add edge
-          const flightPlanCoordinates = [
-            { lat: old_lat, lng: old_lng },
-            { lat: curr_lat, lng: curr_lng },
-          ];
-          const flightPath = new google.maps.Polyline({
-            path: flightPlanCoordinates,
-            geodesic: true,
-            strokeColor: "red",
-            strokeOpacity: 0.3,
-            strokeWeight: 10,
-          });
+              // Add edge
+              const flightPlanCoordinates = [
+                { lat: old_lat, lng: old_lng },
+                { lat: curr_lat, lng: curr_lng },
+              ];
+              const flightPath = new google.maps.Polyline({
+                path: flightPlanCoordinates,
+                geodesic: true,
+                strokeColor: "red",
+                strokeOpacity: 0.3,
+                strokeWeight: 10,
+              });
 
-          var marker = new google.maps.Marker({
-            position: google_lat_lng,
-            icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    scale: 5,
-                  },              
-            map: map,
-          });
+              var marker = new google.maps.Marker({
+                position: google_lat_lng,
+                icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 5,
+                      },
+                map: map,
+              });
 
-          flightPath.setMap(map);
+              flightPath.setMap(map);
 
-          vertical_speed = (old_alt - curr_alt) / 5;
+              vertical_speed = (old_alt - curr_alt) / 5;
 
-          var curr_alt_ft = curr_alt*3.28084;
-          var vertical_speed_knts = vertical_speed*1.94384;
-          var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { flight_id: v_flight_id, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:vertical_speed_knts } );
-          //var locationUpdateRealTime = $.post( "/glider/Location_Update", { name: name_user, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:vertical_speed_knts } );
-          var contentString =
-          curr_alt_ft.toFixed(1) + ' ft ' + "<br>" + vertical_speed_knts.toFixed(1) + ' knts '
-          ;
+              var curr_alt_ft = curr_alt*3.28084;
+              var vertical_speed_knts = vertical_speed*1.94384;
+              var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { flight_id: v_flight_id, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:vertical_speed_knts } );
+              //var locationUpdateRealTime = $.post( "/glider/Location_Update", { name: name_user, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:vertical_speed_knts } );
+              var contentString =
+              curr_alt_ft.toFixed(1) + ' ft ' + "<br>" + vertical_speed_knts.toFixed(1) + ' knts ';
 
-          param["infowindow"].setContent(contentString);
+              param["infowindow"].setContent(contentString);
+            }
 
           if(realtime_counter>0) {
             console.log("realtime_counter inside  getCurrentPosition: "+realtime_counter);
@@ -179,19 +199,8 @@
        realtime_counter = realtime_counter-1;
        if(realtime_counter>0) {
 
-        setInterval(setTimeout(getlocationRealTime, 5000, param)); // 5sec
-
        } else {
-         $("#titleFlight").html("Start Flight");
-
-         console.log("realtime_counter outside  getCurrentPosition: "+realtime_counter);
-         console.log("realtime_markers outside  getCurrentPosition: "+realtime_markers);
-
-          var d = new Date();
-          var t2 = d.getTime();
-          var t1 = startFlightTime.getTime();
-
-          $.post( "/glider/Flight_End", { flight_id: v_flight_id, end: d.toLocaleString(), duration:(t2-t1)/1000} );
+         endFlight();
        }
 
 
@@ -238,7 +247,7 @@
         var infowindow = new google.maps.InfoWindow({
              content: contentString
         });
-      
+
         infowindow.open(map,glider_icon);
 
         var param = {"glider_icon": glider_icon, "infowindow": infowindow}
@@ -246,15 +255,16 @@
         // Before calling getlocationRealTime,
         // Get my user info and write to the databse only if
         // I am a pilot
-        $.get( "/user/getMyInfo").done(function(glider){
-              if(glider){
+        // $.get( "/user/getMyInfo").done(function(glider){
+        //       if(glider){
+        //
+        //         console.log("Glider info:" + glider);
+        //         var myGlider = glider;
+        //
+        //         // only writing to the db when i'm a pilot
+        //         if(myGlider.type == 'pilot'){
+                if(getCookie("user_type") == 'pilot'){
 
-                console.log("Glider info:" + glider);
-                var myGlider = glider;
-
-                // only writing to the db when i'm a pilot
-                if(myGlider.type == 'pilot'){
-  
                   // initiate new flight record
                   $.post( "/glider/Flight_Write", { start: startFlightTime.toLocaleString()} )
                     .done(function(data){
@@ -262,15 +272,16 @@
                     v_flight_id = data.flight_id;
                     getlocationRealTime(param);
                   });
-                
+
                 }
-              } else {
-                console.log("index.html: glider is null");
-              }
-          }); 
+              // } else {
+              //   console.log("index.html: glider is null");
+              // }
+          // });
+
+        tmr_pilot = setInterval(getlocationRealTime, 5000, param); // 5sec
       } else {
-        $("#titleFlight").html("Start Flight");
-        realtime_counter = 0;
+        endFlight();
       }
     }
 
@@ -311,16 +322,16 @@
             </div>
           </li>
           <li class="nav-item">
-            <a id="titleFlight" class="nav-link" href="#" onclick='javascript:deleteMarkers()'>Clear Clicks</a>
+            <a id="titleClearClicks" class="nav-link" href="#" onclick='javascript:deleteMarkers()'>Clear Clicks</a>
           </li>
           <li class="nav-item">
-            <a id="titleFlight" class="nav-link" href="/glider/videocall" onclick=''>Video Call</a>
+            <a id="titleVidCall" class="nav-link" href="/glider/videocall" onclick=''>Video Call</a>
           </li>
           <li class="nav-item">
-            <a id="titleFlight" class="nav-link" href="#" >Save</a>
+            <a id="titleSave" class="nav-link" href="#" >Save</a>
           </li>
           <li class="nav-item">
-            <a id="titleFlight" class="nav-link" href="profile.html" onclick=''>Profile</a>
+            <a id="titleProf" class="nav-link" href="profile.html" onclick=''>Profile</a>
           </li>
           <li class="nav-item">
             <a id="titleSignUp" class="nav-link" href="#" data-toggle="modal" data-target="#modSignUp">Sign up</a>

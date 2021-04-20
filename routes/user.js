@@ -55,6 +55,7 @@ router.get('/logout', (req, res) => {
     location.findOneAndDelete({fly_object: req.cookies._id}).exec();
     res.clearCookie('_id');
     res.clearCookie('user_name');
+    res.clearCookie('user_type');
     res.render("login");
 
 });
@@ -71,6 +72,7 @@ router.post('/login', (req, res) => {
       } else {
           res.cookie('_id',glider._id);
           res.cookie('user_name',glider.user_name);
+          res.cookie('user_type',glider.type);
 
           if(glider.type == "pilot"){
             const newTestEntry = new location();

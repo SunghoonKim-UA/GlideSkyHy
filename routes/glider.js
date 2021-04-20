@@ -149,7 +149,8 @@ router.post('/Realtime_Tracking_Write', (req, res) => {
     }
     });
 
-    res.status(200).send("Write successfully"); // send response
+    res.status(200)
+       .send("Write successfully"); // send response
 });
 
 

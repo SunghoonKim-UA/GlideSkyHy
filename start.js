@@ -46,7 +46,8 @@ const httpsServer = https.createServer(credentials, app)
 });
 
 
-
+server.keepAliveTimeout = 3 * 1000;
+httpsServer.keepAliveTimeout = 3 * 1000;
 
 
 

@@ -21,20 +21,40 @@ function afterLogin(data) {
   setCurrTitle4("Info");
   $("#dlg_logout").html(data);
   $("#dlg_login").html("");
-  $("#titleGCV").hide();
+  if( getCookie("user_type") == 'pilot' ) {
+    $("#titlePLV").show();
+    $("#titleGCV").show();
+    $("#titleFlight").show();
+    $("#titleViewHist").show();
+    $("#titleClearClicks").show();
+    $("#titleVidCall").show();
+    $("#titleSave").show();
+  } else {
+    $("#titlePLV").hide();
+    $("#titleGCV").hide();
+    $("#titleFlight").hide();
+    $("#titleViewHist").hide();
+    $("#titleClearClicks").hide();
+    $("#titleVidCall").hide();
+    $("#titleSave").hide();
+  }
+  $("#titleProf").show();
   $("#titleSignUp").hide();
-  $("#titleFlight").show();
-  $("#titleViewHist").show();
   console.log("hi");
 }
 function afterLogout(data) {
   setCurrTitle4("Log in");
   $("#dlg_login").html(data);
   $("#dlg_logout").html("");
-  $("#titleGCV").show();
   $("#titleSignUp").show();
+  $("#titlePLV").hide();
+  $("#titleGCV").hide();
   $("#titleFlight").hide();
   $("#titleViewHist").hide();
+  $("#titleClearClicks").hide();
+  $("#titleVidCall").hide();
+  $("#titleSave").hide();
+  $("#titleProf").hide();
   console.log("bye");
 }
 
