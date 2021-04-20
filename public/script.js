@@ -8,7 +8,7 @@ const videoGrid = document.getElementById('video-grid')
 
 
 var myPeer = new Peer(undefined, {
-	//host: '/',
+	//host: '/',     // DON'T specify 'host' and 'key' options, you will automatically connect to PeerServer Cloud service
 	//port: '3001'
 }); 
 

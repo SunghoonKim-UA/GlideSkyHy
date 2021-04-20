@@ -13,8 +13,6 @@
 
 # [START gae_quickstart_yaml]
 runtime: nodejs14
-# Flex environment required for WebSocket support, which is required for PeerJS.
-#env: flex
 # [END gae_quickstart_yaml]
 manual_scaling:
   instances: 1
