@@ -4,9 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node start.js",
-    "test": "mocha --exit test/*.js",
-    "peerStart": "peerjs  --port 3001"
+    "start": "peerjs  --port 3001 & && node start.js",
+    "test": "mocha --exit test/*.js"
   },
   "keywords": [],
   "author": "",
