@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const glider = mongoose.model('glider');
 const flight = mongoose.model('flight');
 const location = mongoose.model('location');
+const images = mongoose.model('images');
+
 // const history = mongoose.model('flight_history');
 //const testWrite = mongoose.model('test');
 const realtime_tracking = mongoose.model('realtime_tracking_db');
@@ -217,6 +219,37 @@ router.get('/videocall', (req, res) => {
 
 });
 
+
+
+
+
+router.get('/Images_Read', (req, res) => {
+    console.log(req.path+"  : "+req.cookies.user_name);
+
+    var execObj = images.find({ 'name': req.cookies.user_name }).exec();
+
+    execObj.then(function (images) {
+      //console.log("Location_Current_Read location:"+location);
+      res.status(200).send(images); // send json images data to client
+    });
+});
+
+
+
+
+
+router.post('/Images_Write', (req, res) => {
+    console.log(req.path+"  :   "+ req.body.image_url);
+    //console.log(req.path+"  : ");
+
+    const newImages = new images();
+    newImages.name = req.cookies.user_name;
+    newImages.image_url = req.body.image_url;
+    newImages.save();
+
+    res.status(200)
+       .send("Write successfully"); // send response
+});
 
 
 

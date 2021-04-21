@@ -32,28 +32,13 @@ const locationSchema = new mongoose.Schema({
 module.exports = mongoose.model('location', locationSchema);
 
 
-// const historySchema = new mongoose.Schema({
-//   Name: String,
-//   timestamp: Date,
-//   lat: Number,
-//   lng: Number,
-//   alt: Number,
-//   vertical_speed: Number,
-// }, {collection:'flight_history'});
-//
-// module.exports = mongoose.model('flight_history', historySchema);
 
+const imagesSchema = new mongoose.Schema({
+  name: String,
+  image_url: String
+}, {collection:'images'});
 
-const testSchema = new mongoose.Schema({
-  Name: String,
-  timestamp: Date,
-  lat: Number,
-  lng: Number,
-  alt: Number,
-  vertical_speed: Number,
-}, {collection:'test'});
-
-module.exports = mongoose.model('test', testSchema);
+module.exports = mongoose.model('images', imagesSchema);
 
 
 const realtimeSchema = new mongoose.Schema({

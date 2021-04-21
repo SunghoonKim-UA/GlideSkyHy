@@ -31,6 +31,8 @@
   <script src="js/sk_common.js"></script>
   <script src="js/view_ground_crew.js"></script>
   <script src="js/view_history.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
   <!--<script  type="text/javascript"  src="../routes/index.js"></script>-->
 
 
@@ -50,6 +52,8 @@
     }
 
   </style>
+
+
   <script>
 
     let map;
@@ -95,6 +99,21 @@
     }
 
 
+
+    function screenshot(){
+      html2canvas(document.querySelector("#map")).then(canvas => {
+        
+        //var context = canvas.getContext("2d");
+        //var imageData = context.getImageData(55, 50, 200, 100);
+//
+//context.putImageData(imageData, 55, 170);
+
+        const dataURI = canvas.toDataURL();
+
+        $.post( "/glider/Images_Write", { image_url: dataURI} );
+
+      });
+    }
 
 
 
@@ -326,7 +345,7 @@
             <a id="titleVidCall" class="nav-link" href="/glider/videocall" onclick=''>Video Call</a>
           </li>
           <li class="nav-item">
-            <a id="titleSave" class="nav-link" href="#" >Screenshot</a>
+            <a id="titleSave" class="nav-link" href="#" onclick='javascript:screenshot()'>Screenshot</a>
           </li>
           <li class="nav-item">
             <a id="titleProf" class="nav-link" href="profile.html" onclick=''>Profile</a>

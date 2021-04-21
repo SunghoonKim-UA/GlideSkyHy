@@ -57,12 +57,65 @@
 
   <script type="text/javascript">
 
-  	function screenshot(){
-  		html2canvas(document.querySelector("#capture")).then(canvas => {
-		    document.body.appendChild(canvas)
-		});
+  
+    function screenshot(){
+      html2canvas(document.querySelector("#capture")).then(canvas => {
+        
 
-  	}
+        //var context = canvas.getContext("2d");
+        //var imageData = context.getImageData(55, 50, 200, 100);
+//
+        //const image = document.getElementById('imgCaptured');
+//
+//
+        //context.drawImage(image, 10, 10);
+
+        // ------
+
+        //image.addEventListener('load', e => {
+		//  //context.drawImage(imageData, 33, 71, 104, 124, 21, 20, 87, 104);
+		//  context.putImageData(imageData, 55, 170);
+		//});
+
+		//-----
+
+       //const dataURI = canvas.toDataURL();
+//
+       //console.log(dataURI);
+
+       //const imgCaptured = document.querySelector("imgCaptured");
+
+//
+       //imgCaptured.src = dataURI;
+
+      });
+    }
+
+
+
+
+
+    	$(".body").empty();
+        $.get("/glider/Images_Read").done(function(image_all){
+              // console.log("rest  ./routes/glider/Flight_Read  "+glider_all);
+                jQuery.each(image_all, function( index, image ) {
+                  if(image){
+                    // console.log(glider);
+                      // image
+
+                      var img = document.createElement("IMG");
+                      img.src = image.image_url;
+                      img.style.width = "600px";
+                      img.style.height = "400px";
+
+                      document.getElementById('container').appendChild(img);
+
+                  } else {
+                    console.log("can't find image data");
+                  }
+              });
+        });
+
 
 
   </script>
@@ -90,6 +143,11 @@
 	    <h4 style="color: #000; ">Hello world!</h4>
 	</div>
 	<button onclick="screenshot()">Take Screenshot</button>
+
+	<img src="" id="imgCaptured">
+
+	<div id="container">
+	</div>
 
 
 </body>
