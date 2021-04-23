@@ -114,4 +114,35 @@ router.post('/signup', (req, res) => {
     });
 });
 
+router.post('/profile_write', (req, res) => {
+    console.log("profile_write :"+req.body.prof_passwd);
+    // check duplicate user_name
+    // update recent_flight_id to glider
+    var validat_msg = "";
+    glider.findOneAndUpdate({_id: req.cookies._id}, {$set:{password:req.body.prof_passwd, color:req.body.prof_color}}, {new: true}, (err) => {
+        if (err) {
+            validat_msg = "Something wrong when updating data! in profile_write";
+        }
+
+        // console.log(doc);
+    });
+
+    res.status(200).json({ "msg" : validat_msg }); // send json msg
+});
+
+router.get('/profile_read', (req, res) => {
+    console.log(req.path+":"+req.cookies._id);
+      var execObj = glider.findOne({_id: req.cookies._id}).exec();
+      execObj.then(function (glider) {
+        console.log(req.path+":"+"glider:"+glider);
+        if(glider == null)  {
+          console.log("glider not found in location db");
+        }
+        res.status(200).send(glider);
+
+      });
+});
+
+
+
 module.exports = router;

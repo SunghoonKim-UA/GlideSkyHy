@@ -102,7 +102,7 @@
 
     function screenshot(){
       html2canvas(document.querySelector("#map")).then(canvas => {
-        
+
         //var context = canvas.getContext("2d");
         //var imageData = context.getImageData(55, 50, 200, 100);
 //
@@ -348,7 +348,12 @@
             <a id="titleSave" class="nav-link" href="#" onclick='javascript:screenshot()'>Screenshot</a>
           </li>
           <li class="nav-item">
-            <a id="titleProf" class="nav-link" href="profile.html" onclick=''>Profile</a>
+            <a id="titleProf" class="nav-link" href="#" data-toggle="modal" data-target="#modProf" onclick='javascript:getProfile()'>Profile</a>
+            <div class="modal fade" id="modProf" tabindex="-1" role="dialog" aria-labelledby="titleProf">
+              <form id="profile" class="form-horizontal" action="/user/profile_write" method="POST">
+                <div id="dlg_prof" class="modal-dialog" role="document"></div>
+              </form>
+            </div>
           </li>
           <li class="nav-item">
             <a id="titleSignUp" class="nav-link" href="#" data-toggle="modal" data-target="#modSignUp">Sign up</a>
@@ -379,6 +384,7 @@
   <!-- <div class="container">
     <div class="row">
       <div class="col-lg-12 text-center"> -->
+      <video hidden></video>
         <div id="map"></div>
 
         <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
@@ -397,6 +403,7 @@
   });
   $( "#dlg_signup" ).load( "signup.html" );
   $( "#dlg_viewhistory" ).load( "viewhistory.html" );
+  $( "#dlg_prof" ).load( "profile.html" );
 
 
   // 2. LOGIN FORM
@@ -433,105 +440,128 @@
     });
   });
 
-    // 4. Signup FORM
-    $( "#signup" ).submit(function( event ) {
-      console.log("Signup start");
-      // Stop form from submitting normally
-      event.preventDefault();
-      var $form = $( this ),
+  // 4. Signup FORM
+  $( "#signup" ).submit(function( event ) {
+    console.log("Signup start");
+    // Stop form from submitting normally
+    event.preventDefault();
+    var $form = $( this ),
 
-      pilotRadioButton = $form.find( "input[id='new_type_pilot']" );
-      groundcrewRadioButton = $form.find( "input[id='new_type_groundcrew'] ");
-      if(pilotRadioButton.is(':checked')){
-          v_new_type = pilotRadioButton.val();
+    pilotRadioButton = $form.find( "input[id='new_type_pilot']" );
+    groundcrewRadioButton = $form.find( "input[id='new_type_groundcrew'] ");
+    if(pilotRadioButton.is(':checked')){
+        v_new_type = pilotRadioButton.val();
+    } else {
+        v_new_type = groundcrewRadioButton.val();
+    }
+
+    v_new_name = $form.find( "input[id='new_name']" ).val(),
+    v_new_passwd = $form.find( "input[id='new_passwd']" ).val(),
+    v_new_color = $form.find( "input[id='new_color']" ).val(),
+    url = $form.attr( "action" );
+    console.log("type:"+v_new_type);
+
+    // Send the data using post
+    $.post(url, { new_type:v_new_type, new_name:v_new_name, new_passwd:v_new_passwd, new_color:v_new_color } )
+     .done(function(data){
+      if(data.msg == "") {
+        $("#signupMsg").html("Signed up successfully.");
+        $("#signupBtn").hide();
       } else {
-          v_new_type = groundcrewRadioButton.val();
+        $("#signupMsg").html(data.msg);
       }
-
-      v_new_name = $form.find( "input[id='new_name']" ).val(),
-      v_new_passwd = $form.find( "input[id='new_passwd']" ).val(),
-      v_new_color = $form.find( "input[id='new_color']" ).val(),
-      url = $form.attr( "action" );
-      console.log("type:"+v_new_type);
-
-      // Send the data using post
-      $.post(url, { new_type:v_new_type, new_name:v_new_name, new_passwd:v_new_passwd, new_color:v_new_color } )
-       .done(function(data){
-        if(data.msg == "") {
-          $("#signupMsg").html("Signed up successfully.");
-          $("#signupBtn").hide();
-        } else {
-          $("#signupMsg").html(data.msg);
-        }
-      });
     });
+  });
 
 
-    $( "#flightHistory" ).submit(function( event ) {
-      console.log("View flight history start" + event);
-      console.log("View flight history start" + event);
+  $( "#flightHistory" ).submit(function( event ) {
+    console.log("View flight history start" + event);
+    console.log("View flight history start" + event);
 
-      var all_checks = document.getElementById("returnJson").value;
-      console.log("View flight history start >>>  " +all_checks);
+    var all_checks = document.getElementById("returnJson").value;
+    console.log("View flight history start >>>  " +all_checks);
 
-      event.preventDefault();
+    event.preventDefault();
 
-      // Get some values from elements on the page:
-      var $form = $( this ),
-            url = $form.attr( "action" );
+    // Get some values from elements on the page:
+    var $form = $( this ),
+          url = $form.attr( "action" );
 
-            const hist = new Set()
-            all_checks = all_checks.split(",");
-            for(var i=0;i<all_checks.length;i++) {
-              hist.add(all_checks[i]);
-            };
+          const hist = new Set()
+          all_checks = all_checks.split(",");
+          for(var i=0;i<all_checks.length;i++) {
+            hist.add(all_checks[i]);
+          };
 
-            for (let fl_id of hist) {
-              console.log("hist : "+fl_id);
-                $.get("/glider/Realtime_Tracking_Read_FlightId", { flight_id: fl_id})
-                    .done(function(data){
-                      jQuery.each(data, function( index, value ) {
-                        //console.log("loop 2: "+index);
-                        console.log("loop 2: "+value.flight_id);
+          for (let fl_id of hist) {
+            console.log("hist : "+fl_id);
+              $.get("/glider/Realtime_Tracking_Read_FlightId", { flight_id: fl_id})
+                  .done(function(data){
+                    jQuery.each(data, function( index, value ) {
+                      //console.log("loop 2: "+index);
+                      console.log("loop 2: "+value.flight_id);
 
-                        // Add edge
-                        if(index > 0){
+                      // Add edge
+                      if(index > 0){
 
-                            const flighthistoryPlanCoordinates = [
-                              { lat: data[index-1].lat, lng: data[index-1].lng },
-                              { lat: data[index].lat, lng: data[index].lng },
-                            ];
-                            const flighthistoryPath = new google.maps.Polyline({
-                              path: flighthistoryPlanCoordinates,
-                              geodesic: true,
-                              strokeColor: "red",
-                              strokeOpacity: 0.3,
-                              strokeWeight: 10,
-                            });
+                          const flighthistoryPlanCoordinates = [
+                            { lat: data[index-1].lat, lng: data[index-1].lng },
+                            { lat: data[index].lat, lng: data[index].lng },
+                          ];
+                          const flighthistoryPath = new google.maps.Polyline({
+                            path: flighthistoryPlanCoordinates,
+                            geodesic: true,
+                            strokeColor: "red",
+                            strokeOpacity: 0.3,
+                            strokeWeight: 10,
+                          });
 
-                            flighthistoryPath.setMap(map);
+                          flighthistoryPath.setMap(map);
 
-                        }
+                      }
 
-                        var google_lat_lng = new google.maps.LatLng(value.lat, value.lng);
-                        var marker_fh = new google.maps.Marker({
-                          position: google_lat_lng,
-                          icon: {
-                                  path: google.maps.SymbolPath.CIRCLE,
-                                  scale: 5,
-                                },
-                          map: map
-                        });
-
-                        flighthistory_markers.push(marker_fh);
-
+                      var google_lat_lng = new google.maps.LatLng(value.lat, value.lng);
+                      var marker_fh = new google.maps.Marker({
+                        position: google_lat_lng,
+                        icon: {
+                                path: google.maps.SymbolPath.CIRCLE,
+                                scale: 5,
+                              },
+                        map: map
                       });
 
-                });
+                      flighthistory_markers.push(marker_fh);
 
-            }
+                    });
 
+              });
+
+          }
+
+  });
+
+  // 6. Profile FORM
+  $( "#profile" ).submit(function( event ) {
+    console.log("Profile write start");
+    // Stop form from submitting normally
+    event.preventDefault();
+    var $form = $( this ),
+
+    v_prof_passwd = $form.find( "input[id='profile_passwd']" ).val(),
+    v_prof_color  = $form.find( "input[id='profile_color']" ).val(),
+    url = $form.attr( "action" );
+
+    // Send the data using post
+    $.post(url, { prof_passwd:v_prof_passwd, prof_color:v_prof_color } )
+     .done(function(data){
+      if(data.msg == "") {
+        $("#profileMsg").html("Updated successfully.");
+        $("#profileBtn").hide();
+      } else {
+        $("#profileMsg").html(data.msg);
+      }
     });
+  });
 
   </script>
 </body>

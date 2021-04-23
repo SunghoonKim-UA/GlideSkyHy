@@ -1,155 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-
-  <title>GlideSkyHy</title>
-
-  <!-- Bootstrap core CSS -->
-  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/sk_common.css" rel="stylesheet">
-
-  <!-- Custom fonts for this template -->
-  <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
-  <link href="vendor/colorpicker/css/bootstrap-colorpicker.css" rel="stylesheet">
-
-  <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-
-  <!-- Custom styles for this template -->
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-  <!-- Bootstrap core JavaScript -->
-  <!-- <script src="vendor/jquery/jquery.slim.min.js"></script> -->
-  <!-- <script src="vendor/easeljs.min.js"></script>-->
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="vendor/colorpicker/js/bootstrap-colorpicker.min.js"></script>
-  <script src="js/sk_common.js"></script>
-  <script src="js/view_pilot.js"></script>
-  <script src="js/view_history.js"></script>
-  <!--<script  type="text/javascript"  src="../routes/index.js"></script>-->
-
-
-  <style type="text/css">
-    body{
-    	overflow: hidden;
-    }
-
-    #frame{
-    	width:850px;
-    	height:500px;
-    	position: absolute;
-    	top: 10%;
-    	left: 10%;
-    }
-
-    #screenshot{
-    	position: absolute;
-    }
-
-  </style>
- 
-  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
-  <script type="text/javascript">
-
-  
-    function screenshot(){
-      html2canvas(document.querySelector("#capture")).then(canvas => {
-        
-
-        //var context = canvas.getContext("2d");
-        //var imageData = context.getImageData(55, 50, 200, 100);
-//
-        //const image = document.getElementById('imgCaptured');
-//
-//
-        //context.drawImage(image, 10, 10);
-
-        // ------
-
-        //image.addEventListener('load', e => {
-		//  //context.drawImage(imageData, 33, 71, 104, 124, 21, 20, 87, 104);
-		//  context.putImageData(imageData, 55, 170);
-		//});
-
-		//-----
-
-       //const dataURI = canvas.toDataURL();
-//
-       //console.log(dataURI);
-
-       //const imgCaptured = document.querySelector("imgCaptured");
-
-//
-       //imgCaptured.src = dataURI;
-
-      });
-    }
-
-
-
-
-
-    	$(".body").empty();
-        $.get("/glider/Images_Read").done(function(image_all){
-              // console.log("rest  ./routes/glider/Flight_Read  "+glider_all);
-                jQuery.each(image_all, function( index, image ) {
-                  if(image){
-                    // console.log(glider);
-                      // image
-
-                      var img = document.createElement("IMG");
-                      img.src = image.image_url;
-                      img.style.width = "600px";
-                      img.style.height = "400px";
-
-                      document.getElementById('container').appendChild(img);
-
-                  } else {
-                    console.log("can't find image data");
-                  }
-              });
+<div class="modal-content">
+  <div class="modal-header">
+    <h4 class="modal-title" id="myModalLabel">Profile</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  </div>
+  <div class="modal-body" id="profile">
+    <script>
+      function getProfile() {
+        $.get("/user/profile_read").done(function(glider){
+          $("#profileMsg").html("");
+          $("#profileBtn").show();
+          $("#profile_name").html("Username : "+glider.user_name+"("+glider.type+")");
+          $("#profile_passwd").val(glider.password);
+          $("#profile_color").val(glider.color);
         });
-
-
-
-  </script>
-
-</head>
-
-<body>
-
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="index.html">GlideSkyHy</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
+      }
+    </script>
+    <div class="form-group">
+      <label id="profile_name"></label>
     </div>
-  </nav>
-
-
-
-  <!-- Profile Content -->
-
-	<div id="capture" style="padding: 10px; background: #f5da55">
-	    <h4 style="color: #000; ">Hello world!</h4>
-	</div>
-	<button onclick="screenshot()">Take Screenshot</button>
-
-	<img src="" id="imgCaptured">
-
-	<div id="container">
-	</div>
-
-
-</body>
-
-</html>
+    <div class="form-group">
+      <label for="profile_passwd" class="col-sm-2 control-label">Password</label>
+      <input type="text" class="form-control" id="profile_passwd" required>
+    </div>
+    <div class="form-group">
+      <label for="profile_color" class="col-sm-2 control-label">Color</label>
+      <input type="text" class="form-control input-lg" id="profile_color" required>
+      <script>
+        $(function () {
+          $('#profile_color').colorpicker();
+        });
+      </script>
+    </div>
+    <div class="alert alert-primary" role="alert" id="profileMsg"></div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="submit" id="profileBtn" class="btn btn-primary">Save</button>
+  </div>
+</div>
