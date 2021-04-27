@@ -226,7 +226,7 @@
 
               flightPath.setMap(map);
 
-              vertical_speed = (old_alt - curr_alt) / 5;
+              vertical_speed = (curr_alt - old_alt) / 5;
 
               var curr_alt_ft = curr_alt*3.28084;
               var vertical_speed_knts = vertical_speed*1.94384;
