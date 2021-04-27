@@ -5,9 +5,6 @@ const glider = mongoose.model('glider');
 const flight = mongoose.model('flight');
 const location = mongoose.model('location');
 const images = mongoose.model('images');
-
-// const history = mongoose.model('flight_history');
-//const testWrite = mongoose.model('test');
 const realtime_tracking = mongoose.model('realtime_tracking_db');
 
 const {v4: uuidV4} = require('uuid');
@@ -30,24 +27,34 @@ router.get('/getCurrGlider', (req, res) => {
 
       execObj.then(function (location) {
          console.log(req.path+":"+"location:"+location);
-      //   location.forEach(function (locationDoc){
-      //     const newTestEntry = new testWrite();
-      //     newTestEntry.Name = locationDoc.name;
-      //     newTestEntry.timestamp = new Date();
-      //     newTestEntry.lat = locationDoc.position[0];
-      //     newTestEntry.lng = locationDoc.position[1];
-      //     newTestEntry.alt = locationDoc.position[2];
-      //     newTestEntry.vertical_speed = locationDoc.position[3];
-      //     newTestEntry.save();
-      // });
 
         res.status(200).send(location); // send json location data to client
       });
 
-    }
+   }
 });
 
+router.get('/getallGliders', (req, res) => {
+  //console.log("getallGliders:"+req.query.lat_s+":"+req.query.lat_e+":"+req.query.lng_s+":"+req.query.lng_e);
+  // if(req.query.lat_s == undefined || req.query.lat_s > 180 || req.query.lat_s < -180
+  //  ||req.query.lat_e == undefined || req.query.lat_e > 180 || req.query.lat_e < -180
+  //  ||req.query.lng_s == undefined || req.query.lng_s > 180 || req.query.lng_s < -180
+  //  ||req.query.lng_e == undefined || req.query.lng_e > 180 || req.query.lng_e < -180)  {
+  //   console.log("Invalid lat and lng");
+  //   res.status(500).send({ error: 'Invalid lat and lng' });
+  // } else {
+    var execObj = location.find()//{ 
+                                 // 'position.0': { $gte: req.query.lat_s, $lte: req.query.lat_e }
+                                //, 'position.1': { $gte: req.query.lng_s, $lte: req.query.lng_e } })
+                                //.populate('fly_object') 
+                          .exec();
+    execObj.then(function (location) {
+      console.log(req.path+":"+"location:"+location);
+      res.status(200).send(location); // send json location data to client
+    });
 
+  //}
+});
 
 router.get('/Location_Current_Read', (req, res) => {
     console.log("Location_Current_Read:"+req.query.name);
@@ -61,10 +68,6 @@ router.get('/Location_Current_Read', (req, res) => {
       res.status(200).send(location); // send json location data to client
     });
 });
-
-
-
-
 
 
 router.get('/Flight_Read', (req, res) => {
