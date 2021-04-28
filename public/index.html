@@ -283,23 +283,35 @@ function getallpilots(){
   initMulitview()
   if(tmr_op!=null)  {
     console.log("in function get all pilots");
-    $.get("/glider/getallGliders", { lat_s: 31, lat_e: 33
+    $.get( "/user/getMyInfo").done(function(glider){
+  
+                console.log("Glider info:"+glider.name);
+                //var myGlider = glider;
+            
+            $.get("/glider/getallGliders", { lat_s: 31, lat_e: 33
                                         , lng_s: -112, lng_e: -109})
                 .done(function(data){
-                    jQuery.each(data, function( index, value ) { // for each: index in data update glider position
-                      let image_op = "/img/glider.png";
+                  jQuery.each(data, function( index, value ) { // for each: index in data update glider position
+                    let image_op = "/img/glider.png";
 
-                      console.log("jQuery output "+index);
+                    console.log("jQuery output "+value.name);
+                    
+                   if(value.name != glider.name){
                       var location_op = new google.maps.LatLng(value.position[0], value.position[1]);
-                      
+                    
                       //param["glider_icon_op"].setPosition(location_op);
-                      
+                      console.log("Inside if state "+value.name);
                       console.log("Test index lat: "+value.position[0]+"Test index lng:"+ value.position[1]);
                       
                       var icon_op = {
                                 url: image_op, // url
-                                scaledSize: new google.maps.Size(100, 100) // size
-                                // rotation: [45]
+                                scaledSize: new google.maps.Size(100, 100), // size
+                                //path : "M -1,0 A 1,1 0 0 0 -3,0 1,1 0 0 0 -1,0M 1,0 A 1,1 0 0 0 3,0 1,1 0 0 0 1,0M -3,3 Q 0,5 3,3",
+                                //key: "sr22",
+                                //scale: 0.35,
+                                //size: [64, 64],
+                                //anchor: [32, 32],
+                                //rotation: [45]
                             };
 
                       const feature_op =  {
@@ -330,11 +342,13 @@ function getallpilots(){
 
                       overlayObjList.push(glider_icon_op);
                       overlayObjList.push(infowindow_op);
-
-              });
-
+                   }
+                });
             });
-          }
+        //});
+
+    });
+  }
 }
 
 
@@ -352,8 +366,10 @@ function getallpilots(){
 
         var icon = {
                   url: iconBase + 'glider.png', // url
+                  //path : "m 32.73767,14.08306 -0.428878,0.167119 -0.357398,1.215153 -4.074339,0.07148 3.783898,0.546248 -1.139152,0.382987 -0.357398,0.617013 -0.50345,2.242172 v 5.86133 L 27.233738,25.61544 16.660953,26.08306 16.583274,25.829878 5.6609533,26.08306 5.003574,26.616154 4.0743388,28.474625 3.9313796,29.40386 l 0.2859185,0.6792 23.7312369,2.751822 1.712418,0.07148 0.860848,4.789135 1.139152,4.074339 0.36192,3.645461 -8.577555,0.857755 -0.285918,0.214439 -0.357399,1.143674 0.214439,0.786276 0.428878,0.428878 8.934954,0.236741 -0.14296,0.621014 -1.429592,1.572552 1.715511,-1.000715 v 2.07291 l 0.428878,-0.265761 -0.07148,-1.807149 1.780324,1.286634 -1.422926,-2.00143 0.07148,-0.478055 8.577555,-0.308221 0.643317,-0.142959 0.130574,-1.072195 -0.487972,-0.786275 -0.643317,-0.69035 -7.868711,-0.882203 0.220391,-3.288062 0.779609,-4.145819 0.864423,-4.683916 21.872766,-2.464047 3.859899,-0.535953 0.402912,-1.393996 -0.545871,-1.286634 -1.072194,-1.31937 -1.143674,-0.110222 -10.007148,-0.285919 v 0.500358 l -10.721944,-0.500358 -2.215869,-0.428878 -0.214439,-5.861329 -0.428878,-1.92995 -1.649983,-1.383702 4,-0.403289 -4,-0.357398 z",
                   scaledSize: new google.maps.Size(100, 100), // size
-                  rotation: [45]
+                  //path : "M -1,0 A 1,1 0 0 0 -3,0 1,1 0 0 0 -1,0M 1,0 A 1,1 0 0 0 3,0 1,1 0 0 0 1,0M -3,3 Q 0,5 3,3",
+                  //rotation: [117],
               };
 
         const feature =  {
