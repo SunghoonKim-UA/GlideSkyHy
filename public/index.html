@@ -172,6 +172,7 @@
 
        $.post( "/glider/Flight_End", { flight_id: v_flight_id, end: d.toLocaleString(), duration:(t2-t1)/1000} );
        clearInterval(tmr_pilot);
+       initMultiview();
     }
 
     function getlocationRealTime(param)
@@ -199,6 +200,9 @@
               map.setCenter({lat:curr_lat, lng:curr_lng});
 
               param["glider_icon"].setPosition(google_lat_lng);
+              var rot_glider = rotated_glider(map.getProjection().fromLatLngToPoint(new google.maps.LatLng(old_lat,old_lng)));
+              param["glider_icon"].setIcon(rot_glider);
+              realtime_markers.push(glider_icon);
 
               //glider_icon.icon.setRotation(45);
 
@@ -233,7 +237,7 @@
               var postingRealtime = $.post( "/glider/Realtime_Tracking_Write", { flight_id: v_flight_id, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:vertical_speed_knts } );
               //var locationUpdateRealTime = $.post( "/glider/Location_Update", { name: name_user, lat:curr_lat, lng:curr_lng, alt:curr_alt, vertical_speed:vertical_speed_knts } );
               var contentString =
-              curr_alt_ft.toFixed(1) + ' ft ' + "<br>" + vertical_speed_knts.toFixed(1) + ' knts ';
+              curr_alt_ft.toFixed(1) + ' ft ' + "<br>" + vertical_speed_knts.toFixed(1) + ' knts';
 
               param["infowindow"].setContent(contentString);
             }
@@ -284,10 +288,10 @@ function getallpilots(){
   if(tmr_op!=null)  {
     console.log("in function get all pilots");
     $.get( "/user/getMyInfo").done(function(glider){
-  
+
                 console.log("Glider info:"+glider.name);
                 //var myGlider = glider;
-            
+
             $.get("/glider/getallGliders", { lat_s: 31, lat_e: 33
                                         , lng_s: -112, lng_e: -109})
                 .done(function(data){
@@ -295,14 +299,14 @@ function getallpilots(){
                     let image_op = "/img/glider.png";
 
                     console.log("jQuery output "+value.name);
-                    
+
                    if(value.name != glider.name){
                       var location_op = new google.maps.LatLng(value.position[0], value.position[1]);
-                    
+
                       //param["glider_icon_op"].setPosition(location_op);
                       console.log("Inside if state "+value.name);
                       console.log("Test index lat: "+value.position[0]+"Test index lng:"+ value.position[1]);
-                      
+
                       var icon_op = {
                                 url: image_op, // url
                                 scaledSize: new google.maps.Size(100, 100), // size
@@ -331,11 +335,14 @@ function getallpilots(){
 
                       var lat_op = value.position[2];
                       var lng_op = value.position[3];
+                      if(lat_op == null)  lat_op = 0;
+                      if(lng_op == null)  lng_op = 0;
 
                       var infoboxcontentString =  lat_op.toFixed(1) +' ft ' +  "<br>" + lng_op.toFixed(1)+' knts';
-                      
+
                       var infowindow_op = new google.maps.InfoWindow({
-                          content: infoboxcontentString
+                          content: infoboxcontentString,
+                          disableAutoPan: true    // focus on my glider only! don't move this map.
                       });
 
                       infowindow_op.open(map,glider_icon_op);
@@ -356,7 +363,7 @@ function getallpilots(){
     {
       // console.log("locationRealTime()::");
       if(realtime_counter == 0) {
-       initGroundCrew();
+        initGroundCrew();
 
         realtime_counter = 100000; // Can record 27.78 hrs realtime flight  data
 
@@ -380,6 +387,7 @@ function getallpilots(){
           var marker = new google.maps.Marker({
             position: feature.position,
             icon: icon,
+            animation: google.maps.Animation.DROP,
             map: map,
           });
           return marker;
@@ -388,7 +396,7 @@ function getallpilots(){
         glider_icon = addMarker(feature);
         realtime_markers.push(glider_icon);
 
-        var contentString =  '0 ft ' +  "<br>" + '0 knts ';
+        var contentString =  '0 ft ' +  "<br>" + '0 knts';
 
         var infowindow = new google.maps.InfoWindow({
              content: contentString
@@ -397,7 +405,7 @@ function getallpilots(){
         infowindow.open(map,glider_icon);
 
         var param = {"glider_icon": glider_icon, "infowindow": infowindow}
-      
+
         // Before calling getlocationRealTime,
         // Get my user info and write to the databse only if
         // I am a pilot
@@ -417,7 +425,7 @@ function getallpilots(){
                     console.log("postingFlight_Write.flight_id:"+data.flight_id);
                     v_flight_id = data.flight_id;
                     getlocationRealTime(param);
-                   
+
                   });
        }
 

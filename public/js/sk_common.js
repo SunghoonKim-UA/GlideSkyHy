@@ -67,3 +67,20 @@ function checkLogin(data)  {
 function calGap(base, obj1) {
   return Math.abs(obj1-base);
 }
+
+function rotated_glider(param_point) {
+  var degree_div_45 = Math.atan2(param_point.y, param_point.x) * 180 / Math.PI / 45;
+  console.log("degree_div_45:"+param_point.y+"//"+param_point.x+"//"+Math.atan2(param_point.y, param_point.x) * 180 / Math.PI);
+  var rot_icon = "glider_0.png"
+  if(degree_div_45 >= 1 && degree_div_45 < 2) rot_icon = "glider_45.png";
+  if(degree_div_45 >= 2 && degree_div_45 < 3) rot_icon = "glider_90.png";
+  if(degree_div_45 >= 3 && degree_div_45 < 4) rot_icon = "glider_135.png";
+  if(degree_div_45 >= 4 && degree_div_45 < 5) rot_icon = "glider_180.png";
+  if(degree_div_45 >= 5 && degree_div_45 < 6) rot_icon = "glider_225.png";
+  if(degree_div_45 >= 6 && degree_div_45 < 7) rot_icon = "glider_270.png";
+  if(degree_div_45 >= 7 && degree_div_45 < 8) rot_icon = "glider_315.png";
+  return {
+            url: '/img/'+rot_icon, // url
+            scaledSize: new google.maps.Size(100, 100) // size
+        };
+}
