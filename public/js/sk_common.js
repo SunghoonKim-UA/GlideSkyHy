@@ -33,7 +33,7 @@ function afterLogin(data) {
     $("#titleFlight").hide();
     $("#titleViewHist").hide();
     $("#titleClearClicks").hide();
-    $("#titleVidCall").hide();
+    $("#titleVidCall").show();
     $("#titleSave").hide();
   }
   $("#titleProf").show();

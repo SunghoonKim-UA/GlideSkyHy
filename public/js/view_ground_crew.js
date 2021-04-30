@@ -91,7 +91,7 @@ function drawMap() {
 
           glider_icon_gc = addMarkerGc(feature_gc);
 
-          var contentString =  '<font color='+value.fly_object[0].color+'>Name: ' + value.name + "<br>" + value.position[2]+' ft ' +  "<br>" + value.position[3]+' knts</font>';
+          var contentString =  '<font color='+value.fly_object[0].color+'>Name: ' + value.name + "<br>" + value.position[2].toFixed(1)+' ft ' +  "<br>" + value.position[3].toFixed(1)+' knts</font>';
 
           var infowindowGc = new google.maps.InfoWindow({
                content: contentString
