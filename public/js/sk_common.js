@@ -68,9 +68,11 @@ function calGap(base, obj1) {
   return Math.abs(obj1-base);
 }
 
-function rotated_glider(param_point) {
-  var degree_div_45 = Math.atan2(param_point.y, param_point.x) * 180 / Math.PI / 45;
-  console.log("degree_div_45:"+param_point.y+"//"+param_point.x+"//"+Math.atan2(param_point.y, param_point.x) * 180 / Math.PI);
+function rotated_glider(x, y) {
+  var degree_d = Math.atan2(y, x) * 180 / Math.PI;
+  if(degree_d<0)  degree_d=degree_d+360;
+  var degree_div_45 = degree_d / 45;
+  console.log("degree_div_45:"+y+"//"+x+"//"+degree_d);
   var rot_icon = "glider_0.png"
   if(degree_div_45 >= 1 && degree_div_45 < 2) rot_icon = "glider_45.png";
   if(degree_div_45 >= 2 && degree_div_45 < 3) rot_icon = "glider_90.png";

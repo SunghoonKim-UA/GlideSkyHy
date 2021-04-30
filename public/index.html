@@ -123,9 +123,7 @@
         videoElem.srcObject = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
         const videoTrack = videoElem.srcObject.getVideoTracks()[0];
         var imageCapture = new ImageCapture(videoTrack);
-        console.log(imageCapture);
         imageCapture.grabFrame().then(function(imageBitmap) {
-          console.log('Grabbed frame:', imageBitmap);
           canvas.width = imageBitmap.width;
           canvas.height = imageBitmap.height;
           canvas.getContext('2d').drawImage(imageBitmap, 0, 0);
@@ -163,8 +161,8 @@
       $("#titleFlight").html("Start Flight");
       realtime_counter = 0;
 
-      console.log("realtime_counter outside  getCurrentPosition: "+realtime_counter);
-      console.log("realtime_markers outside  getCurrentPosition: "+realtime_markers);
+      // console.log("realtime_counter outside  getCurrentPosition: "+realtime_counter);
+      // console.log("realtime_markers outside  getCurrentPosition: "+realtime_markers);
 
        var d = new Date();
        var t2 = d.getTime();
@@ -188,19 +186,24 @@
            old_lng = curr_lng;
            vertical_speed = 0;
            old_alt = curr_alt;
+           old_coord = map.getProjection().fromLatLngToPoint(new google.maps.LatLng(old_lat,old_lng));
            curr_lat = position.coords.latitude;
            curr_lng = position.coords.longitude;
            curr_alt = position.coords.altitude;
+           // curr_lat = old_lat+ ((Math.floor(Math.random() * 20)-10)/1000);
+           // curr_lng = old_lng+ ((Math.floor(Math.random() * 20)-10)/1000);
+           // curr_alt = 0;
+           curr_coord = map.getProjection().fromLatLngToPoint(new google.maps.LatLng(curr_lat,curr_lng));
           // inc+=1;
-           console.log("curr_lat : "+curr_lat+"  curr_lng: "+curr_lng);
+           console.log("curr_lat : "+curr_lat+"  curr_lng: "+curr_lng+"//current_degr_point:"+map.getProjection().fromLatLngToPoint(new google.maps.LatLng(curr_lat,curr_lng)));
            if( calGap(curr_lat, old_lat) > cleaning_criteria || calGap(curr_lng, old_lng) > cleaning_criteria ) {
-              console.log("invalid difference range. lat: "+calGap(curr_lat, old_lat)+", lng: "+calGap(curr_lng, old_lng));
+              // console.log("invalid difference range. lat: "+calGap(curr_lat, old_lat)+", lng: "+calGap(curr_lng, old_lng));
            } else {
                var google_lat_lng = new google.maps.LatLng(curr_lat, curr_lng);
               map.setCenter({lat:curr_lat, lng:curr_lng});
 
               param["glider_icon"].setPosition(google_lat_lng);
-              var rot_glider = rotated_glider(map.getProjection().fromLatLngToPoint(new google.maps.LatLng(old_lat,old_lng)));
+              var rot_glider = rotated_glider(old_coord.x-curr_coord.x,old_coord.y-curr_coord.y);
               param["glider_icon"].setIcon(rot_glider);
               realtime_markers.push(glider_icon);
 
@@ -243,13 +246,13 @@
             }
 
           if(realtime_counter>0) {
-            console.log("realtime_counter inside  getCurrentPosition: "+realtime_counter);
-            console.log("realtime_markers inside  getCurrentPosition: "+realtime_markers);
+            // console.log("realtime_counter inside  getCurrentPosition: "+realtime_counter);
+            // console.log("realtime_markers inside  getCurrentPosition: "+realtime_markers);
             realtime_markers.push(marker);
           }
          }
        ); // getCurrentPosition end
-       console.log("realtime_counter:"+realtime_counter);
+       // console.log("realtime_counter:"+realtime_counter);
 
        realtime_counter = realtime_counter-1;
        if(realtime_counter>0) {
@@ -626,11 +629,8 @@ function getallpilots(){
 
 
   $( "#flightHistory" ).submit(function( event ) {
-    console.log("View flight history start" + event);
-    console.log("View flight history start" + event);
-
     var all_checks = document.getElementById("returnJson").value;
-    console.log("View flight history start >>>  " +all_checks);
+    // console.log("View flight history start >>>  " +all_checks);
 
     event.preventDefault();
 
