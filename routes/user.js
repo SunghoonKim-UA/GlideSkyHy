@@ -77,9 +77,9 @@ router.post('/login', (req, res) => {
         if(glider.type == "pilot"){
           const newTestEntry = new location();
           newTestEntry.name = req.body.u_name;
-          newTestEntry.position[0] = req.body.lat;
-          newTestEntry.position[1] = req.body.lng;
-          newTestEntry.position[2] = req.body.alt;
+          newTestEntry.position[0] = Number(req.body.lat);
+          newTestEntry.position[1] = Number(req.body.lng);
+          newTestEntry.position[2] = Number(req.body.alt);
           newTestEntry.position[3] = 0;
           newTestEntry.fly_object = glider._id;
           newTestEntry.type = glider.type;

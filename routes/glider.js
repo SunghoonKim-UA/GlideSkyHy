@@ -143,7 +143,7 @@ router.post('/Realtime_Tracking_Write', (req, res) => {
     newRealtimeEntry.vertical_speed = req.body.vertical_speed;
     newRealtimeEntry.save(function(){
       // piggyback and update our info in location as well
-      location.findOneAndUpdate({name: req.cookies.user_name}, {$set:{position: [req.body.lat, req.body.lng, req.body.alt, req.body.vertical_speed] }}, {new: true}, (err, doc) => {
+      location.findOneAndUpdate({name: req.cookies.user_name}, {$set:{position: [Number(req.body.lat), Number(req.body.lng), Number(req.body.alt), Number(req.body.vertical_speed)] }}, {new: true}, (err, doc) => {
       if (err) {
           console.log("You might be a groundcrew, so no updating!");
           console.log("Something wrong when updating data!");
