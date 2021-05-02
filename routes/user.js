@@ -70,23 +70,23 @@ router.post('/login', (req, res) => {
       if(glider == null)  {
         res.render("login", {message : "Invalid Username and Password"});
       } else {
-          res.cookie('_id',glider._id);
-          res.cookie('user_name',glider.user_name);
-          res.cookie('user_type',glider.type);
+        res.cookie('_id',glider._id);
+        res.cookie('user_name',glider.user_name);
+        res.cookie('user_type',glider.type);
 
-          if(glider.type == "pilot"){
-            const newTestEntry = new location();
-            newTestEntry.name = req.body.u_name;
-            newTestEntry.position[0] = req.body.lat;
-            newTestEntry.position[1] = req.body.lng;
-            newTestEntry.position[2] = req.body.alt;
-            newTestEntry.position[3] = 0;
-            newTestEntry.fly_object = glider._id;
-            newTestEntry.type = glider.type;
-            newTestEntry.save();
-          }
-          res.render("success_login", {user_name : glider.user_name});
-          // res.status(200).send(location); // send json location data to client
+        if(glider.type == "pilot"){
+          const newTestEntry = new location();
+          newTestEntry.name = req.body.u_name;
+          newTestEntry.position[0] = req.body.lat;
+          newTestEntry.position[1] = req.body.lng;
+          newTestEntry.position[2] = req.body.alt;
+          newTestEntry.position[3] = 0;
+          newTestEntry.fly_object = glider._id;
+          newTestEntry.type = glider.type;
+          newTestEntry.save();
+        }
+        res.render("success_login", {user_name : glider.user_name});
+        // res.status(200).send(location); // send json location data to client
       }
   });
 

@@ -43,10 +43,10 @@ router.get('/getallGliders', (req, res) => {
   //   console.log("Invalid lat and lng");
   //   res.status(500).send({ error: 'Invalid lat and lng' });
   // } else {
-    var execObj = location.find()//{ 
+    var execObj = location.find()//{
                                  // 'position.0': { $gte: req.query.lat_s, $lte: req.query.lat_e }
                                 //, 'position.1': { $gte: req.query.lng_s, $lte: req.query.lng_e } })
-                                //.populate('fly_object') 
+                                //.populate('fly_object')
                           .exec();
     execObj.then(function (location) {
       console.log(req.path+":"+"location:"+location);
@@ -141,21 +141,20 @@ router.post('/Realtime_Tracking_Write', (req, res) => {
     newRealtimeEntry.lng = req.body.lng;
     newRealtimeEntry.alt = req.body.alt;
     newRealtimeEntry.vertical_speed = req.body.vertical_speed;
-    newRealtimeEntry.save();
+    newRealtimeEntry.save(function(){
+      // piggyback and update our info in location as well
+      location.findOneAndUpdate({name: req.cookies.user_name}, {$set:{position: [req.body.lat, req.body.lng, req.body.alt, req.body.vertical_speed] }}, {new: true}, (err, doc) => {
+      if (err) {
+          console.log("You might be a groundcrew, so no updating!");
+          console.log("Something wrong when updating data!");
+      } else {
+        console.log("Location_Update: " + doc);
+      }
+      });
 
-
-    // piggyback and update our info in location as well
-    location.findOneAndUpdate({name: req.cookies.user_name}, {$set:{position: [req.body.lat, req.body.lng, req.body.alt, req.body.vertical_speed] }}, {new: true}, (err, doc) => {
-    if (err) {
-        console.log("You might be a groundcrew, so no updating!");
-        console.log("Something wrong when updating data!");
-    } else {
-      console.log("Location_Update: " + doc);
-    }
+      res.status(200)
+         .send("Write successfully"); // send response
     });
-
-    res.status(200)
-       .send("Write successfully"); // send response
 });
 
 
@@ -171,18 +170,18 @@ router.post('/Flight_Write', (req, res) => {
     newflight.start = req.body.start;
     // newflight.end = req.body.end;
     // newflight.duration = req.body.duration;
-    newflight.save();
+    newflight.save(function() {
+      // update recent_flight_id to glider
+      glider.findOneAndUpdate({_id: newflight.user_id}, {$set:{recent_flight_id:newflight._id}}, {new: true}, (err, doc) => {
+          if (err) {
+              console.log("Something wrong when updating data! in Flight_Write");
+          }
 
-    // update recent_flight_id to glider
-    glider.findOneAndUpdate({_id: newflight.user_id}, {$set:{recent_flight_id:newflight._id}}, {new: true}, (err, doc) => {
-        if (err) {
-            console.log("Something wrong when updating data! in Flight_Write");
-        }
+          console.log(doc);
+      });
 
-        console.log(doc);
+      res.status(200).json({ "flight_id" : newflight._id }); // send response
     });
-
-    res.status(200).json({ "flight_id" : newflight._id }); // send response
 });
 
 
@@ -194,12 +193,10 @@ router.post('/Flight_End', (req, res) => {
         if (err) {
             console.log("Something wrong when updating data! in Flight_End");
         }
-
         console.log(doc);
+
+        res.status(200).send("Write successfully"); // send response
     });
-
-
-    res.status(200).send("Write successfully"); // send response
 });
 
 
