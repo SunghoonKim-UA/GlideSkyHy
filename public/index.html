@@ -467,7 +467,7 @@ function getallpilots(){
             <a id="titleFlight" class="nav-link" href="#" onclick='javascript: startFlightTime = new Date(); locationRealTime()'>Start Flight</a>
           </li>
           <li class="nav-item">
-            <a id="titleViewHist" class="nav-link" href="#" data-toggle="modal" data-target="#modViewHist" onclick='javascript:getHistory()'>View History</a>
+            <a id="titleViewHist" class="nav-link" href="#" data-toggle="modal" data-target="#modViewHist" onclick='javascript:getHistory(1)'>View History</a>
             <div class="modal fade" id="modViewHist" tabindex="-1" role="dialog" aria-labelledby="titleViewHist" >
               <form id="flightHistory" class="user" action="/user/flightHistory" method="GET" >
                 <div id="dlg_viewhistory" class="modal-dialog" role="document" style="min-width:600px;text-align: left;" ></div>
@@ -645,6 +645,7 @@ function getallpilots(){
 
           for (let fl_id of hist) {
             console.log("hist : "+fl_id);
+            var last_lat = 0, last_lng = 0;
               $.get("/glider/Realtime_Tracking_Read_FlightId", { flight_id: fl_id})
                   .done(function(data){
                     jQuery.each(data, function( index, value ) {
@@ -669,6 +670,7 @@ function getallpilots(){
                           flighthistoryPath.setMap(map);
 
                       }
+                      last_lat = data[index].lat; last_lng = data[index].lng;
 
                       var google_lat_lng = new google.maps.LatLng(value.lat, value.lng);
                       var marker_fh = new google.maps.Marker({
@@ -683,6 +685,7 @@ function getallpilots(){
                       flighthistory_markers.push(marker_fh);
 
                     });
+                    map.setCenter({lat:last_lat, lng:last_lng});
 
               });
 

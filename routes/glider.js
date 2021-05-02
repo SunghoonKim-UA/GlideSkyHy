@@ -9,6 +9,12 @@ const realtime_tracking = mongoose.model('realtime_tracking_db');
 
 const {v4: uuidV4} = require('uuid');
 
+function toNumber1(param)  {
+  if(param == null) return 0;
+  else if(Number(param) == NaN) return 0;
+  else return Number(param);
+}
+
 // Fetch from location table in specific region with lat long conditions
 router.get('/getCurrGlider', (req, res) => {
     console.log("getCurrGlider:"+req.query.lat_s+":"+req.query.lat_e+":"+req.query.lng_s+":"+req.query.lng_e);
@@ -77,19 +83,21 @@ router.get('/Flight_Read', (req, res) => {
         page_no = req.query.page_no-1;
       }
       // applied paging for less burden in client
-      var execObj = flight.find({user_id: req.cookies._id})
-                          .limit(7)
-                          .skip(page_no*7)
-                          .sort({start: -1})
-                          .exec();
-      execObj.then(function (glider) {
-        console.log(req.path+":"+"glider:"+glider);
-        if(glider == null)  {
-          console.log("glider not found in location db");
-        }
-        console.log("Flight_Read: "+glider);
-        res.status(200).send(glider);
+      var execObj1 = flight.countDocuments({user_id: req.cookies._id, end:{$ne:null}}, function (err, count) {
+        var execObj = flight.find({user_id: req.cookies._id, end:{$ne:null}})
+                            .limit(7)
+                            .skip(page_no*7)
+                            .sort({start: -1})
+                            .exec();
+        execObj.then(function (glider) {
+          console.log(req.path+":"+"glider:"+glider);
+          if(glider == null)  {
+            console.log("glider not found in location db");
+          }
+          console.log("Flight_Read: "+glider);
+          res.status(200).json({total_cnt:count, glider:glider});
 
+        });
       });
 });
 
@@ -116,7 +124,7 @@ router.post('/Location_Update', (req, res) => {
     console.log("Location_Update: "+req.body.name + " " + req.body.lat+ " " + req.body.lng+ " " + req.body.alt+ " " + req.body.vertical_speed);
 
     // var execObj = location.findOneAndUpdate({name: req.body.Name}, {$set:{name:req.body.Name, position: [req.body.lat, req.body.lng, req.body.alt, req.body.vertical_speed] }}, {new: true}, (err, doc) => {
-    location.findOneAndUpdate({name: req.body.name}, {$set:{position: [req.body.lat, req.body.lng, req.body.alt, req.body.vertical_speed] }}, {new: true}, (err, doc) => {
+    location.findOneAndUpdate({name: req.body.name}, {$set:{position: [toNumber1(req.body.lat), toNumber1(req.body.lng), toNumber1(req.body.alt), toNumber1(req.body.vertical_speed)] }}, {new: true}, (err, doc) => {
         if (err) {
             console.log("You might be a groundcrew, so no updating!");
             console.log("Something wrong when updating data!");

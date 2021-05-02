@@ -7,6 +7,12 @@ const flight = mongoose.model('flight');
 const location = mongoose.model('location');
 // const realtime_tracking = mongoose.model('realtime_tracking_db');
 
+function toNumber1(param)  {
+  if(param == null) return 0;
+  else if(Number(param) == NaN) return 0;
+  else return Number(param);
+}
+
 router.get('/getCurrSt', (req, res) => {
     console.log(req.path+":"+req.cookies._id);
     if(req.cookies._id == null || req.cookies._id == undefined)  {
@@ -77,9 +83,9 @@ router.post('/login', (req, res) => {
         if(glider.type == "pilot"){
           const newTestEntry = new location();
           newTestEntry.name = req.body.u_name;
-          newTestEntry.position[0] = Number(req.body.lat);
-          newTestEntry.position[1] = Number(req.body.lng);
-          newTestEntry.position[2] = Number(req.body.alt);
+          newTestEntry.position[0] = toNumber1(req.body.lat);
+          newTestEntry.position[1] = toNumber1(req.body.lng);
+          newTestEntry.position[2] = toNumber1(req.body.alt);
           newTestEntry.position[3] = 0;
           newTestEntry.fly_object = glider._id;
           newTestEntry.type = glider.type;

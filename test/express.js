@@ -164,8 +164,8 @@ describe('/user/login', () => {
               expect(res).to.have.cookie('user_type');
               // to test repeatedly, remove test data.
               location.findOneAndDelete({ name: doc.user_name }, function(err1, doc1){
+                done();
               });
-              done();
         });
     });
   });

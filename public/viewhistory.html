@@ -2,7 +2,7 @@
     <div class="modal-header">
       <h4 class="modal-title" id="myModalLabel">View History</h4>
     </div>
-    <div class="modal-body" style="width: 300%;">
+    <div class="modal-body">
       <input type="hidden" id="returnJson" />
       <table class="table_flight_history" id="table_flight_history_id">
         <tr><th> &nbsp;&nbsp;&nbsp;  Select &nbsp;&nbsp;&nbsp;  </th><th>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;    Start &nbsp;&nbsp;&nbsp;  </th><th> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;   End &nbsp;&nbsp;&nbsp;  </th><th>  &nbsp;&nbsp;&nbsp; Duration &nbsp;&nbsp;&nbsp;  </th></tr>
@@ -12,11 +12,17 @@
 
         <script>
           var history_page_no = 1;
-          function getHistory() {
+          function getHistory(page_no) {
+            // console.log(page_no);
+            if(page_no == null) history_page_no = 1;
+            else                history_page_no = page_no;
             $(".table_flight_history").empty();
+            $(".table_flight_history").append("<tr><th> &nbsp;&nbsp;&nbsp;  Select &nbsp;&nbsp;&nbsp;  </th><th>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;    Start &nbsp;&nbsp;&nbsp;  </th><th> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;   End &nbsp;&nbsp;&nbsp;  </th><th>  &nbsp;&nbsp;&nbsp; Duration &nbsp;&nbsp;&nbsp;  </th></tr>");
             $.get("/glider/Flight_Read?page_no="+history_page_no).done(function(glider_all){
               // console.log("rest  ./routes/glider/Flight_Read  "+glider_all);
-                jQuery.each(glider_all, function( index, glider ) {
+              // paging
+                // console.log("glider_all.total_page:"+glider_all.total_cnt);
+                jQuery.each(glider_all.glider, function( index, glider ) {
                   if(glider){
                     // console.log(glider);
                       // checkbox
@@ -25,8 +31,47 @@
                   } else {
                     // console.log("can't find glider in flight db");
                   }
-              });
+                });
+                pagination(glider_all.total_cnt);
             });
+          }
+          function pagination(total_cnt) {
+            // pagination
+            var doc_per_page = 7;
+            var cnt_pagination = 5;
+            // prev
+            if(history_page_no <= cnt_pagination) {
+              // deactivate prev
+              $("#vh_prev").hide();
+            } else {
+              // activate prev
+              $("#vh_prev").show();
+              $("#vh_prev").href = "javascript:getHistory("+(history_page_no-cnt_pagination)+")";
+            }
+            // 1~5
+            var unit_no = Number.parseInt((history_page_no-1)/cnt_pagination)+1;
+            // console.log("unit_no:"+unit_no+"//"+Number(history_page_no));
+            for(var ii=unit_no; ii<unit_no+cnt_pagination; ii++) {
+              if(ii > total_cnt/doc_per_page+1) {
+                // deactivate prev
+                $("#vh_"+(ii-unit_no+1)).hide();
+              } else {
+                // activate prev
+                $("#vh_"+(ii-unit_no+1)).show();
+                $("#vh_"+(ii-unit_no+1)).attr("href", "javascript:getHistory("+(ii)+")");
+                $("#vh_"+(ii-unit_no+1)).html(ii);
+              }
+            }
+            // next
+            if(total_cnt/doc_per_page <= cnt_pagination || history_page_no+cnt_pagination > total_cnt/doc_per_page) {
+              // deactivate prev
+              $("#vh_next").hide();
+            } else {
+              // activate prev
+              $("#vh_next").show();
+              $("#vh_next").href = "javascript:getHistory("+(history_page_no+cnt_pagination)+")";
+            }
+
           }
 
           function getCheckbox() {
@@ -44,6 +89,25 @@
 
         </script>
       </table>
+      <nav aria-label="Page navigation">
+        <ul class="pagination">
+          <li>
+            <a id="vh_prev" href="#" aria-label="Previous">
+              <span>&laquo;</span>
+            </a>
+          </li>
+          <li><a id="vh_1" href="#">1</a></li>
+          <li><a id="vh_2" href="#">2</a></li>
+          <li><a id="vh_3" href="#">3</a></li>
+          <li><a id="vh_4" href="#">4</a></li>
+          <li><a id="vh_5" href="#">5</a></li>
+          <li>
+            <a id="vh_next" href="#" aria-label="Next">
+              <span>&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
