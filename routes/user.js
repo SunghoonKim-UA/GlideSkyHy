@@ -9,7 +9,7 @@ const location = mongoose.model('location');
 
 function toNumber1(param)  {
   if(param == null) return 0;
-  else if(Number(param) == NaN) return 0;
+  else if(isNaN(param)) return 0;
   else return Number(param);
 }
 

@@ -224,8 +224,8 @@ describe('/glider/Flight_Read', () => {
               expect(res).to.have.status(200);
               expect(res).to.not.be.null;
               expect(res).to.be.an('object'); // output type is a object
-              expect(res.body).to.have.lengthOf.at.least(7); // 1+ objects
-              expect(res.body).to.have.lengthOf.at.most(7); // max 7 objects
+              expect(res.body.glider).to.have.lengthOf.at.least(7); // 1+ objects
+              expect(res.body.glider).to.have.lengthOf.at.most(7); // max 7 objects
               done();
         });
     });
@@ -238,7 +238,7 @@ describe('/glider/Flight_Read', () => {
           expect(res).to.have.status(200);
           expect(res).to.not.be.null;
           expect(res).to.be.an('object'); // output type is a object
-          expect(res.body).to.have.lengthOf(0); // no objects
+          expect(res.body.glider).to.have.lengthOf(0); // no objects
           done();
     });
   });

@@ -11,7 +11,7 @@ const {v4: uuidV4} = require('uuid');
 
 function toNumber1(param)  {
   if(param == null) return 0;
-  else if(Number(param) == NaN) return 0;
+  else if(isNaN(param)) return 0;
   else return Number(param);
 }
 
@@ -83,7 +83,7 @@ router.get('/Flight_Read', (req, res) => {
         page_no = req.query.page_no-1;
       }
       // applied paging for less burden in client
-      var execObj1 = flight.countDocuments({user_id: req.cookies._id, end:{$ne:null}}, function (err, count) {
+      flight.countDocuments({user_id: req.cookies._id, end:{$ne:null}}, function (err, count) {
         var execObj = flight.find({user_id: req.cookies._id, end:{$ne:null}})
                             .limit(7)
                             .skip(page_no*7)
