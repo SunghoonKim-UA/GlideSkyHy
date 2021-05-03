@@ -104,18 +104,6 @@
       audio: false
     };
     async function screenshot(){
-//       html2canvas(document.querySelector("#map")).then(canvas => {
-//
-//         //var context = canvas.getContext("2d");
-//         //var imageData = context.getImageData(55, 50, 200, 100);
-// //
-// //context.putImageData(imageData, 55, 170);
-//
-//         const dataURI = canvas.toDataURL();
-//
-//         $.post( "/glider/Images_Write", { image_url: dataURI} );
-//
-      // });
       const videoElem = document.querySelector("#video1");
       const canvas = document.querySelector("#canvas1");
       try {
@@ -138,6 +126,12 @@
 
             newImg.src = url;
             $('#scModal').modal();
+
+            var a  = document.createElement('a');
+            a.href = url;
+            a.download = 'screenshot_GlideSkyHy.png';
+
+            a.click();
           }, 'image/jpeg', 0.50);
         }).catch(function(error) {
           console.log('grabFrame() error: ', error);
@@ -491,7 +485,7 @@ function getallpilots(){
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                   </div>
                   <div class="modal-body">
-                    <img id="scPreview"/>
+                    <img id="scPreview" width="70%"/>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
